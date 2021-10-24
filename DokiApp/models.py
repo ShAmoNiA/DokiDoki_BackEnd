@@ -3,12 +3,14 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    is_doctor = models.BooleanField(default=False)
+
     username = models.CharField(unique=True, max_length=64)
     email = models.EmailField(unique=True)
     phone = models.CharField(unique=True, max_length=20, blank=True, null=True)
     fullname = models.CharField(max_length=100, blank=True)
 
-    verify_email_token = models.CharField(max_length=64)
+    verify_email_token = models.CharField(max_length=64, default="default")
 
     @property
     def verified_email(self):
@@ -19,3 +21,7 @@ class User(AbstractUser):
     def verify_email(self):
         self.verify_email_token = "verified"
         self.save()
+
+    @property
+    def is_patient(self):
+        return not self.is_doctor
