@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-e_*=a036h1x$8vj_&usyz04g&_jqr2^&t_5q=op&d5pgbxw_c_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTH_USER_MODEL = 'DokiApp.User'
+
 ALLOWED_HOSTS = []
 
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'DokiApp',
 ]
 
 MIDDLEWARE = [
