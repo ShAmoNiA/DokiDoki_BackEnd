@@ -181,3 +181,83 @@ class TestSignUp(TestCase):
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         SignUp.as_view()(request)
         self.assertNotEqual(User.objects.get(id=1).password, "12345")
+
+
+class TestLogIn(TestCase):
+
+    def test_login(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.verify_email()
+        user.save()
+
+        data = {"username": "user", "password": "password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data['success'])
+        self.assertEqual(list(response.data)[1], 'token')
+
+    def test_email_not_verified(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.save()
+
+        data = {"username": "user", "password": "password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 405)
+        response_result = {'success': False, 'message': 'Email is not verified'}
+        self.assertEqual(response.data, response_result)
+
+    def test_password_error(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.verify_email()
+        user.save()
+
+        data = {"username": "user", "password": "wrong_password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['non_field_errors'][0], "Unable to log in with provided credentials.")
+
+    def test_username_error(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.verify_email()
+        user.save()
+
+        data = {"username": "wrong_user", "password": "password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['non_field_errors'][0], "Unable to log in with provided credentials.")
+
+    def test_input_error(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.verify_email()
+        user.save()
+
+        data = {"password": "password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['username'][0], 'This field is required.')
+        self.assertEqual(len(response.data), 1)
+
+        data = {"username": "user"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['password'][0], 'This field is required.')
+        self.assertEqual(len(response.data), 1)
+
+        data = {}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['username'][0], 'This field is required.')
+        self.assertEqual(response.data['password'][0], 'This field is required.')
+        self.assertEqual(len(response.data), 2)
