@@ -170,3 +170,14 @@ class TestSignUp(TestCase):
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['password'][0], 'Password is too short')
+
+    def test_password_hashed(self):
+        data = {"username": "a",
+                "password": "12345",
+                "email": "user_1@gmail.com",
+                "phone": "+989372223344",
+                "fullname": "the first user",
+                "is_doctor": False}
+        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+        SignUp.as_view()(request)
+        self.assertNotEqual(User.objects.get(id=1).password, "12345")
