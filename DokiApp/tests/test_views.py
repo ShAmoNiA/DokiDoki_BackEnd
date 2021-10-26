@@ -300,3 +300,42 @@ class TestLogOut(TestCase):
         response = LogOut.as_view()(request)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
+
+
+class TestVerifyEmail(TestCase):
+
+    def test_verify_email(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="the_token")
+        data = {"email": "e@gmail.com", "token": "the_token"}
+        request = RequestFactory().post('api/verify_email', data, content_type='application/json')
+        response = VerifyEmail.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Your email verified successfully")
+        self.assertTrue(User.objects.get(id=1).verified_email)
+
+    def test_verified_before(self):
+        user = mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="the_token")
+        user.verify_email()
+        data = {"email": "e@gmail.com", "token": "the_token"}
+        request = RequestFactory().post('api/verify_email', data, content_type='application/json')
+        response = VerifyEmail.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ERROR: your email verified before")
+        self.assertTrue(User.objects.get(id=1).verified_email)
+
+    def test_token_error(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="the_token")
+        data = {"email": "e@gmail.com", "token": "the_wrong_token"}
+        request = RequestFactory().post('api/verify_email', data, content_type='application/json')
+        response = VerifyEmail.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ERROR: privateTokenError")
+        self.assertFalse(User.objects.get(id=1).verified_email)
+
+    def test_no_such_user(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="the_token")
+        data = {"email": "b@gmail.com", "token": "the_wrong_token"}
+        request = RequestFactory().post('api/verify_email', data, content_type='application/json')
+        with self.assertRaises(Exception) as raised:
+            VerifyEmail.as_view()(request)
+        self.assertEqual("<class 'DokiApp.models.User.DoesNotExist'>", str(type(raised.exception)))
