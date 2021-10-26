@@ -29,6 +29,19 @@ AUTH_USER_MODEL = 'DokiApp.User'
 
 ALLOWED_HOSTS = []
 
+HOST = "127.0.0.1"
+PORT = "8000"
+DOKI_APP_BASE_URL = 'api'
+
+# Email config:
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ntm.patronage@gmail.com'
+EMAIL_HOST_PASSWORD = 'NTM1400NTM'
+DEFAULT_FROM_EMAIL = 'ntm.patronage@gmail.com'
+DEFAULT_TO_EMAIL = 'ehsan.karbasian@gmail.com'
+
 
 # Application definition
 INSTALLED_APPS = [

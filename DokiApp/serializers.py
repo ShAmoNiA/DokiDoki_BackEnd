@@ -4,6 +4,8 @@ from re import search as validateRegex
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import User
 
+from .email_functions import send_verification_email
+
 
 class UserSerializer(ModelSerializer):
     class Meta:
@@ -33,9 +35,5 @@ class UserSerializer(ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
 
-        # self.send_verification_email(user)
+        send_verification_email(user)
         return user
-
-    # def send_verification_email(self, user):
-    #     email = user.email
-    #     send_email(email)

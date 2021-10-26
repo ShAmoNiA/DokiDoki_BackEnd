@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from .settings import DOKI_APP_BASE_URL
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('DokiApp.urls')),
+    path(DOKI_APP_BASE_URL + "/", include('DokiApp.urls')),
 ]
