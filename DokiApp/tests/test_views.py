@@ -4,6 +4,9 @@ from django.test import Client
 
 from mixer.backend.django import mixer
 
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+
 from ..views import *
 from ..models import *
 
@@ -267,6 +270,10 @@ class TestLogIn(TestCase):
 
 class TestLogOut(TestCase):
 
+    class CustomIsAuthenticated(IsAuthenticated):
+        def has_permission(self, request, view):
+            return bool(request.user)
+
     def setUp(self):
         user = mixer.blend('DokiApp.User', username="user")
         user.set_password("password")
@@ -276,15 +283,20 @@ class TestLogOut(TestCase):
         data = {"username": "user", "password": "password"}
         request = RequestFactory().post('api/login', data, content_type='application/json')
         response = LogIn.as_view()(request)
+        self.user = user
         self.token = response.data['token']
 
     def test_logout(self):
-        """ Tested with postman """
-        request = RequestFactory().post('api/logout', data={}, content_type='application/json')
+        request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
+
+        request.__setattr__('authed_user', self.user)
+        LogOut.permission_classes = (self.CustomIsAuthenticated, )
+
         response = LogOut.as_view()(request)
 
     def test_not_authed(self):
         request = RequestFactory().post('api/logout', data={}, content_type='application/json')
+        LogOut.permission_classes = (IsAuthenticated, )
         response = LogOut.as_view()(request)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
