@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test import RequestFactory
+from django.test import Client
 
 from mixer.backend.django import mixer
 
@@ -197,6 +198,7 @@ class TestLogIn(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['success'])
         self.assertEqual(list(response.data)[1], 'token')
+        self.assertEqual(User.objects.get(id=1).auth_token.key, response.data['token'])
 
     def test_email_not_verified(self):
         user = mixer.blend('DokiApp.User', username="user")
@@ -261,3 +263,28 @@ class TestLogIn(TestCase):
         self.assertEqual(response.data['username'][0], 'This field is required.')
         self.assertEqual(response.data['password'][0], 'This field is required.')
         self.assertEqual(len(response.data), 2)
+
+
+class TestLogOut(TestCase):
+
+    def setUp(self):
+        user = mixer.blend('DokiApp.User', username="user")
+        user.set_password("password")
+        user.verify_email()
+        user.save()
+
+        data = {"username": "user", "password": "password"}
+        request = RequestFactory().post('api/login', data, content_type='application/json')
+        response = LogIn.as_view()(request)
+        self.token = response.data['token']
+
+    def test_logout(self):
+        """ Tested with postman """
+        request = RequestFactory().post('api/logout', data={}, content_type='application/json')
+        response = LogOut.as_view()(request)
+
+    def test_not_authed(self):
+        request = RequestFactory().post('api/logout', data={}, content_type='application/json')
+        response = LogOut.as_view()(request)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
