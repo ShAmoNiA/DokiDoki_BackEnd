@@ -339,3 +339,22 @@ class TestVerifyEmail(TestCase):
         with self.assertRaises(Exception) as raised:
             VerifyEmail.as_view()(request)
         self.assertEqual("<class 'DokiApp.models.User.DoesNotExist'>", str(type(raised.exception)))
+
+
+class TestResetPassword(TestCase):
+
+    def test_forgot_password(self):
+        mixer.blend("DokiApp.User", email="e@gmail.com")
+        data = {"email": "e@gmail.com"}
+        request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
+        response = forgot_password(request)
+        response_result = {'success': True, 'message': 'email sent'}
+        self.assertEqual(response.data, response_result)
+
+    def test_forgot_password_wrong_email(self):
+        mixer.blend("DokiApp.User", email="e@gmail.com")
+        data = {"email": "wrong@gmail.com"}
+        request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
+        response = forgot_password(request)
+        response_result = {'success': False, 'message': 'user not found'}
+        self.assertEqual(response.data, response_result)

@@ -21,6 +21,7 @@ class TestUser(TestCase):
         self.assertEqual(obj.phone, "09371112233")
         self.assertEqual(obj.fullname, "full name 1")
         self.assertEqual(obj.verify_email_token, "6843gt43hfr")
+        self.assertEqual(len(obj.reset_password_token), 64)
 
     def test_duplicated_username(self):
         mixer.blend("DokiApp.User", username="username_1")
@@ -49,5 +50,9 @@ class TestUser(TestCase):
         self.assertFalse(obj_3.verified_email)
 
     def test_verify_email(self):
-        obj = mixer.blend('DokiApp.User', verify_email_token="verified")
-        self.assertTrue(obj.verified_email)
+        obj_1 = mixer.blend('DokiApp.User', verify_email_token="verified")
+        self.assertTrue(obj_1.verified_email)
+
+        obj_2 = mixer.blend('DokiApp.User', verify_email_token="ewb")
+        obj_2.verify_email()
+        self.assertTrue(obj_2.verified_email)
