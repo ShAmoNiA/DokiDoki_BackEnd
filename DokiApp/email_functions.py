@@ -32,7 +32,7 @@ def send_verification_email(user):
                'name': user.username,
                'action': 'verify_email',
                'app_base_url': DOKI_APP_BASE_URL,
-               'verify_email_token': user.verify_email_token}
+               'token': user.verify_email_token}
     html_content = get_template('email_template.html').render(context=context)
 
     send_email("Verify email", message, [user.email], html_content)
