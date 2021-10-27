@@ -1,3 +1,5 @@
+from secrets import token_hex
+
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -77,10 +79,39 @@ def forgot_password(request):
     user = User.objects.filter(email=email)
     if user.count() == 0:
         return Response(data={"success": False, "message": "user not found"})
-
     user = user[0]
-    reset_password_token = user.reset_password_token
+    
+    reset_password_token = token_hex(64)
+    user.reset_password_token = reset_password_token
+    user.save()
     send_reset_pass_email(email, user.fullname, reset_password_token)
 
     return Response(data={"success": True, "message": "email sent"})
 
+
+class ResetPassword(APIView):
+
+    def post(self, request):
+        token = request.data['token']
+        email = request.data['email']
+        password_1 = request.data['password_1']
+        password_2 = request.data['password_2']
+
+        user = User.objects.filter(email=email)
+        if user.count() == 0:
+            return Response(data={"success": False, "message": "user not found"})
+        elif password_1 != password_2:
+            return Response(data={"success": False, "message": "passwords are different"})
+
+        user = user[0]
+        if not user.verified_email:
+            return Response(data={"success": False, "message": "Your email is not verified"})
+        elif user.reset_password_token == "expired":
+            return Response(data={"success": False, "message": "Your token is expired"})
+        elif user.reset_password_token != token:
+            return Response(data={"success": False, "message": "Your token is wrong"})
+
+        user.set_password(password_1)
+        user.reset_password_token = "expired"
+        user.save()
+        return Response(data={"success": True, "message": "Password changed successfully. you can sign in."})
