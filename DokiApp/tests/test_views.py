@@ -349,7 +349,9 @@ class TestResetPassword(TestCase):
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
         response_result = {'success': True, 'message': 'email sent'}
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_result)
+        self.assertEqual(len(User.objects.get(id=1).reset_password_token), 128)
 
     def test_forgot_password_wrong_email(self):
         mixer.blend("DokiApp.User", email="e@gmail.com")
@@ -357,4 +359,85 @@ class TestResetPassword(TestCase):
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
         response_result = {'success': False, 'message': 'user not found'}
+        self.assertEqual(response.data, response_result)
+    
+    def test_reset_password(self):
+        token = token_hex(32)
+        mixer.blend('DokiApp.User', username="user", email="e@gmail.com",
+                    verify_email_token="verified", reset_password_token=token)
+        data = {"email": "e@gmail.com",
+                "token": token,
+                "password_1": "new_password",
+                "password_2": "new_password"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": True, "message": "Password changed successfully. you can sign in."}
+        self.assertEqual(response.data, response_result)
+        user = User.objects.get(id=1)
+        self.assertEqual(user.reset_password_token, "expired")
+        self.assertEqual(authenticate(username="user", password="new_password"), user)
+
+    def test_reset_password_wrong_email(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com")
+        data = {"email": "wrong_e@gmail.com",
+                "token": "token",
+                "password_1": "new_password",
+                "password_2": "new_password"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": False, "message": "user not found"}
+        self.assertEqual(response.data, response_result)
+
+    def test_reset_password_different_pass(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com")
+        data = {"email": "e@gmail.com",
+                "token": "token",
+                "password_1": "new_password",
+                "password_2": "new_password_2"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": False, "message": "passwords are different"}
+        self.assertEqual(response.data, response_result)
+
+    def test_reset_password_email_not_verified(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com")
+        data = {"email": "e@gmail.com",
+                "token": "token",
+                "password_1": "new_password",
+                "password_2": "new_password"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": False, "message": "Your email is not verified"}
+        self.assertEqual(response.data, response_result)
+
+    def test_reset_password_expired_token(self):
+        mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="verified")
+        data = {"email": "e@gmail.com",
+                "token": "token",
+                "password_1": "new_password",
+                "password_2": "new_password"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": False, "message": "Your token is expired"}
+        self.assertEqual(response.data, response_result)
+
+    def test_reset_password_wrong_token(self):
+        token_1 = token_hex(32)
+        token_2 = token_hex(32)
+        while token_1 == token_2:
+            token_2 = token_hex(32)
+        mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="verified", reset_password_token=token_1)
+        data = {"email": "e@gmail.com",
+                "token": token_2,
+                "password_1": "new_password",
+                "password_2": "new_password"}
+        request = RequestFactory().post('api/reset_password', data, content_type='application/json')
+        response = ResetPassword.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": False, "message": "Your token is wrong"}
         self.assertEqual(response.data, response_result)
