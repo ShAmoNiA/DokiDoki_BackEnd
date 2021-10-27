@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -10,6 +11,7 @@ from rest_framework.permissions import AllowAny
 
 from .models import User
 from .helper_functions import result_page
+from .email_functions import send_reset_pass_email
 
 
 class SignUp(APIView):
@@ -66,3 +68,19 @@ class VerifyEmail(APIView):
             result = "ERROR: privateTokenError"
 
         return result_page(request, result)
+
+
+@api_view(['GET'])
+def forgot_password(request):
+    email = request.GET['email']
+
+    user = User.objects.filter(email=email)
+    if user.count() == 0:
+        return Response(data={"success": False, "message": "user not found"})
+
+    user = user[0]
+    reset_password_token = user.reset_password_token
+    send_reset_pass_email(email, user.fullname, reset_password_token)
+
+    return Response(data={"success": True, "message": "email sent"})
+
