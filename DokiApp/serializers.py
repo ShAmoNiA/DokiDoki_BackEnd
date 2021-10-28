@@ -16,8 +16,8 @@ class UserSerializer(ModelSerializer):
 
     def validate_password(self, password):
         if is_hard_password(password):
-            raise ValidationError('Password is too easy')
-        return password
+            return password
+        raise ValidationError('Password is too short')
 
     def validate_email(self, email):
         if is_valid_email(email):
