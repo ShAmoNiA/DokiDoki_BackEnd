@@ -1,5 +1,4 @@
 from re import search as validate_regex
-from ..DokiDoki.settings import DEBUG
 
 
 def is_valid_email(text: str):
@@ -14,13 +13,11 @@ def is_valid_email(text: str):
 
 
 def is_hard_password(text: str):
-    if DEBUG:
-        return True
-    else:
-        return len(text) > 7 and \
-               any(char.isdigit() for char in text) and \
-               any(char.isupper() for char in text) and \
-               any(char.islower() for char in text)
+    return True
+    # return len(text) > 7 and \
+    #        any(char.isdigit() for char in text) and \
+    #        any(char.isupper() for char in text) and \
+    #        any(char.islower() for char in text)
 
 
 def is_valid_phone_number(text: str):

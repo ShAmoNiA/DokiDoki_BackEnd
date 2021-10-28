@@ -6,7 +6,7 @@ from .models import User
 
 from .email_functions import send_verification_email
 
-from string_validator import is_valid_email, is_hard_password, is_valid_phone_number
+from .string_validator import is_valid_email, is_hard_password, is_valid_phone_number
 
 
 class UserSerializer(ModelSerializer):
