@@ -6,6 +6,8 @@ from .models import User
 
 from .email_functions import send_verification_email
 
+from .string_validator import is_valid_email, is_hard_password, is_valid_phone_number
+
 
 class UserSerializer(ModelSerializer):
     class Meta:
@@ -13,19 +15,17 @@ class UserSerializer(ModelSerializer):
         fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname')
 
     def validate_password(self, password):
-        if len(password) < 5:
-            raise ValidationError('Password is too short')
-        return password
+        if is_hard_password(password):
+            return password
+        raise ValidationError('Password is too short')
 
     def validate_email(self, email):
-        EMAIL_REGEX = r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
-        if validateRegex(EMAIL_REGEX, email):
+        if is_valid_email(email):
             return email
         raise ValidationError('Invalid email')
 
     def validate_phone(self, phone):
-        PHONE_REGEX = r'^(0|0098|\+98)9\d{9}$'
-        if validateRegex(PHONE_REGEX, phone):
+        if is_valid_phone_number(phone):
             return phone
         raise ValidationError('Invalid phone number')
 
