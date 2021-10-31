@@ -24,6 +24,15 @@ class SignUp(APIView):
         return Response({'success': False, 'message': user_serializer.errors})
 
 
+class CheckUsername(APIView):
+    def get(self,request, username):
+        user = User.objects.filter(username=username)
+        if user.exists():
+            return Response({"exists": True})
+        else:
+            return Response({"exists": False})
+
+
 class LogIn(ObtainAuthToken):
     permission_classes = (AllowAny, )
 
