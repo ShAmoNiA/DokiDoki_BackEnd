@@ -80,6 +80,9 @@ def forgot_password(request):
     if user.count() == 0:
         return Response(data={"success": False, "message": "user not found"})
     user = user[0]
+
+    if not user.verified_email:
+        return Response(data={"success": False, "message": "email not verified"})
     
     reset_password_token = token_hex(64)
     user.reset_password_token = reset_password_token

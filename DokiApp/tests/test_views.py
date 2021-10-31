@@ -344,7 +344,8 @@ class TestVerifyEmail(TestCase):
 class TestResetPassword(TestCase):
 
     def test_forgot_password(self):
-        mixer.blend("DokiApp.User", email="e@gmail.com")
+        user = mixer.blend("DokiApp.User", email="e@gmail.com")
+        user.verify_email()
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
@@ -354,11 +355,20 @@ class TestResetPassword(TestCase):
         self.assertEqual(len(User.objects.get(id=1).reset_password_token), 128)
 
     def test_forgot_password_wrong_email(self):
-        mixer.blend("DokiApp.User", email="e@gmail.com")
+        user = mixer.blend("DokiApp.User", email="e@gmail.com")
+        user.verify_email()
         data = {"email": "wrong@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
         response_result = {'success': False, 'message': 'user not found'}
+        self.assertEqual(response.data, response_result)
+
+    def test_forgot_password_email_not_verified(self):
+        mixer.blend("DokiApp.User", email="e@gmail.com")
+        data = {"email": "e@gmail.com"}
+        request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
+        response = forgot_password(request)
+        response_result = {'success': False, 'message': 'email not verified'}
         self.assertEqual(response.data, response_result)
     
     def test_reset_password(self):
