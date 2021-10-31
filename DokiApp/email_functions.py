@@ -36,3 +36,18 @@ def send_verification_email(user):
     html_content = get_template('email_template.html').render(context=context)
 
     send_email("Verify email", message, [user.email], html_content)
+
+
+def send_reset_pass_email(email, fullname, token):
+    context = {
+        'HOST': HOST,
+        'PORT': PORT,
+        'app_base_url': DOKI_APP_BASE_URL,
+        'email': email,
+        'name': fullname,
+        'token': token}
+    html_content = get_template('reset_password.html').render(context=context)
+    send_email(subject='reset password',
+               message='message',
+               to_list=[email],
+               html_content=html_content)

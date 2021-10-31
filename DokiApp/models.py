@@ -1,3 +1,5 @@
+from secrets import token_hex
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -10,6 +12,7 @@ class User(AbstractUser):
     phone = models.CharField(unique=True, max_length=20, blank=True, null=True)
     fullname = models.CharField(max_length=100, blank=True)
 
+    reset_password_token = models.CharField(max_length=64, default="expired")
     verify_email_token = models.CharField(max_length=64, default="default")
 
     @property
