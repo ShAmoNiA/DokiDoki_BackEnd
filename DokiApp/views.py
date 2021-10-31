@@ -13,7 +13,19 @@ from rest_framework.permissions import AllowAny
 
 from .models import User
 from .helper_functions import result_page
-from .email_functions import send_reset_pass_email
+from .email_functions import send_reset_pass_email, send_text_email
+
+
+@api_view(['POST'])
+def send_email_by_front(request):
+    subject = request.data["subject"]
+    message = request.data["message"]
+    to_list = request.data["to_list"]
+
+    to_list = to_list.split(" ")
+    send_text_email(subject, message, to_list)
+
+    return Response({"success": True, "message": "email sent"}, status=status.HTTP_200_OK)
 
 
 class SignUp(APIView):
