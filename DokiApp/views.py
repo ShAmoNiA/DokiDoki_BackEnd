@@ -42,7 +42,7 @@ class SignUp(APIView):
 
 class CheckUsername(APIView):
     def get(self,request, username):
-        user = User.objects.filter(username=username)
+        user = User.objects.filter(username__iexact=username)
         if user.exists():
             return Response({"exists": True})
         else:
