@@ -451,3 +451,19 @@ class TestResetPassword(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {"success": False, "message": "Your token is wrong"}
         self.assertEqual(response.data, response_result)
+
+
+class TestCheckUsername(TestCase):
+
+    def test_exists(self):
+        mixer.blend('DokiApp.User', username="user_1")
+        request = RequestFactory().get('api/check_username')
+        response = CheckUsername.as_view()(request, "user_1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["exists"])
+
+    def test_not_exists(self):
+        request = RequestFactory().get('api/check_username')
+        response = CheckUsername.as_view()(request, "user_1")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["exists"])
