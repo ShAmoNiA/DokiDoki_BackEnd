@@ -110,19 +110,19 @@ class ResetPassword(APIView):
 
         user = User.objects.filter(email=email)
         if user.count() == 0:
-            return Response(data={"success": False, "message": "user not found"})
+            return result_page(request, "user not found")
         elif password_1 != password_2:
-            return Response(data={"success": False, "message": "passwords are different"})
+            return result_page(request, "passwords are different")
 
         user = user[0]
         if not user.verified_email:
-            return Response(data={"success": False, "message": "Your email is not verified"})
+            return result_page(request, "Your email is not verified")
         elif user.reset_password_token == "expired":
-            return Response(data={"success": False, "message": "Your token is expired"})
+            return result_page(request, "Your token is expired")
         elif user.reset_password_token != token:
-            return Response(data={"success": False, "message": "Your token is wrong"})
+            return result_page(request, "Your token is wrong")
 
         user.set_password(password_1)
         user.reset_password_token = "expired"
         user.save()
-        return Response(data={"success": True, "message": "Password changed successfully. you can sign in."})
+        return result_page(request, "Password changed successfully. you can sign in.")
