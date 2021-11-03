@@ -349,9 +349,8 @@ class TestResetPassword(TestCase):
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
-        response_result = {'success': True, 'message': 'email sent'}
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "email sent")
         self.assertEqual(len(User.objects.get(id=1).reset_password_token), 128)
 
     def test_forgot_password_wrong_email(self):
@@ -360,16 +359,16 @@ class TestResetPassword(TestCase):
         data = {"email": "wrong@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
-        response_result = {'success': False, 'message': 'user not found'}
-        self.assertEqual(response.data, response_result)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "user not found")
 
     def test_forgot_password_email_not_verified(self):
         mixer.blend("DokiApp.User", email="e@gmail.com")
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
         response = forgot_password(request)
-        response_result = {'success': False, 'message': 'email not verified'}
-        self.assertEqual(response.data, response_result)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "email not verified")
     
     def test_reset_password(self):
         token = token_hex(32)
@@ -382,8 +381,7 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": True, "message": "Password changed successfully. you can sign in."}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "Password changed successfully. you can sign in.")
         user = User.objects.get(id=1)
         self.assertEqual(user.reset_password_token, "expired")
         self.assertEqual(authenticate(username="user", password="new_password"), user)
@@ -397,8 +395,7 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": False, "message": "user not found"}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "user not found")
 
     def test_reset_password_different_pass(self):
         mixer.blend('DokiApp.User', email="e@gmail.com")
@@ -409,8 +406,7 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": False, "message": "passwords are different"}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "passwords are different")
 
     def test_reset_password_email_not_verified(self):
         mixer.blend('DokiApp.User', email="e@gmail.com")
@@ -421,8 +417,7 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": False, "message": "Your email is not verified"}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "Your email is not verified")
 
     def test_reset_password_expired_token(self):
         mixer.blend('DokiApp.User', email="e@gmail.com", verify_email_token="verified")
@@ -433,8 +428,7 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": False, "message": "Your token is expired"}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "Your token is expired")
 
     def test_reset_password_wrong_token(self):
         token_1 = token_hex(32)
@@ -449,5 +443,20 @@ class TestResetPassword(TestCase):
         request = RequestFactory().post('api/reset_password', data, content_type='application/json')
         response = ResetPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        response_result = {"success": False, "message": "Your token is wrong"}
-        self.assertEqual(response.data, response_result)
+        self.assertContains(response, "Your token is wrong")
+
+
+class TestCheckUsername(TestCase):
+
+    def test_exists(self):
+        mixer.blend('DokiApp.User', username="user_1")
+        request = RequestFactory().get('api/check_username')
+        response = CheckUsername.as_view()(request, "user_1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["exists"])
+
+    def test_not_exists(self):
+        request = RequestFactory().get('api/check_username')
+        response = CheckUsername.as_view()(request, "user_1")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["exists"])
