@@ -1,6 +1,11 @@
 from re import search as validate_regex
 
 
+def is_valid_username(text: str):
+    username_regex = r'^(?![_.0-9])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$'
+    return validate_regex(username_regex, text)
+
+
 def is_valid_email(text: str):
     email_regex = r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
     email_regex_prof = r'(?:[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*|\"(?:[' \

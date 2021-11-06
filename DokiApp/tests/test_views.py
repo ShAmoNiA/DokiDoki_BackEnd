@@ -100,6 +100,23 @@ class TestSignUp(TestCase):
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['username'][0], 'This field may not be blank.')
 
+    def test_invalid_username(self):
+        INVALID_USERNAMES = ["4name", ".name", "_name", "user_.name", "user._name", "user__name", "user..name",
+                             "user$name", "user#name", "user@name", "user!name", "user&name", "user^name"]
+
+        data = {"username": "username",
+                "password": "password_1",
+                "email": "user_1@gmail.com",
+                "phone": "09372244222",
+                "fullname": "the first user",
+                "is_doctor": True}
+
+        for username in INVALID_USERNAMES:
+            data["username"] = username
+            request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+            response = SignUp.as_view()(request)
+            self.assertEqual(response.data['message']['username'][0], 'username is invalid')
+
     def test_invalid_email(self):
         INVALID_EMAILS = ["@gmail.com", "gmail.com", "a@gmail@com", "A@gmail", "InvalidEmail@.com"]
 

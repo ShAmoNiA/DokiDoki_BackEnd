@@ -6,13 +6,18 @@ from .models import User
 
 from .email_functions import send_verification_email
 
-from .string_validator import is_valid_email, is_hard_password, is_valid_phone_number
+from .string_validator import *
 
 
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname')
+
+    def validate_username(self, username):
+        if is_valid_username(username):
+            return username
+        raise ValidationError('username is invalid')
 
     def validate_password(self, password):
         if is_hard_password(password):
