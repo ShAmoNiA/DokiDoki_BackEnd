@@ -75,3 +75,24 @@ class TestUser(TestCase):
         obj_2 = mixer.blend('DokiApp.User', verify_email_token="ewb")
         obj_2.verify_email()
         self.assertTrue(obj_2.verified_email)
+
+
+class TestDoctorProfile(TestCase):
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.DoctorProfile')
+        self.assertEqual(obj.pk, 1)
+
+
+class TestPatientProfile(TestCase):
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.DoctorProfile')
+        self.assertEqual(obj.pk, 1)
+
+
+class TestImage(TestCase):
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.Image')
+        self.assertEqual(obj.pk, 1)

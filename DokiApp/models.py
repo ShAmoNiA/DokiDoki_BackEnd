@@ -4,6 +4,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+class Image(models.Model):
+    pass
+
+
 class User(AbstractUser):
     is_doctor = models.BooleanField(default=False)
 
@@ -14,7 +18,8 @@ class User(AbstractUser):
 
     reset_password_token = models.CharField(max_length=64, default="expired")
     verify_email_token = models.CharField(max_length=64, default="default")
-    sex = models.CharField(max_length=1,choices=(('F', 'Female',),('M', 'Male',),('U', 'Unsure',),('P','Prefer not to say')),default='P')
+    sex = models.CharField(max_length=1, choices=(('F', 'Female',), ('M', 'Male',), ('U', 'Unsure',),
+                                                  ('P', 'Prefer not to say')), default='P')
 
     @property
     def verified_email(self):
@@ -29,3 +34,11 @@ class User(AbstractUser):
     @property
     def is_patient(self):
         return not self.is_doctor
+
+
+class DoctorProfile(models.Model):
+    pass
+
+
+class PatientProfile(models.Model):
+    pass
