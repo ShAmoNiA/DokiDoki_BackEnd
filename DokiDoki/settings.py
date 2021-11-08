@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,20 +30,20 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'DokiApp.User'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['185.141.107.81']
 
-HOST = "127.0.0.1"
-PORT = "8000"
+HOST = os.environ.get('HOST')
+PORT = os.environ.get('PORT')
 DOKI_APP_BASE_URL = 'api'
 
 # Email config:
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ntm.patronage@gmail.com'
-EMAIL_HOST_PASSWORD = 'NTM1400NTM'
-DEFAULT_FROM_EMAIL = 'ntm.patronage@gmail.com'
-DEFAULT_TO_EMAIL = 'ehsan.karbasian@gmail.com'
+EMAIL_USE_TLS = True
 
 
 # Application definition
