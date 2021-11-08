@@ -12,7 +12,7 @@ from .string_validator import *
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname')
+        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname','sex')
 
     def validate_username(self, username):
         if is_valid_username(username):
@@ -42,3 +42,5 @@ class UserSerializer(ModelSerializer):
 
         send_verification_email(user)
         return user
+
+

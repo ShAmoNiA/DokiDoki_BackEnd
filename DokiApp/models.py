@@ -14,6 +14,7 @@ class User(AbstractUser):
 
     reset_password_token = models.CharField(max_length=64, default="expired")
     verify_email_token = models.CharField(max_length=64, default="default")
+    sex = models.CharField(max_length=1,choices=(('F', 'Female',),('M', 'Male',),('U', 'Unsure',),('P','Prefer not to say')),default='P')
 
     @property
     def verified_email(self):

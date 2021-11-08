@@ -22,8 +22,13 @@ auth_urls = [
     path('reset_password', ResetPassword.as_view(), name='ResetPassword'),
 ]
 
+profile_urls = [
+    path('edit_profile' , edit_profile),
+]
+
 pack_list = [
     auth_urls,
+    profile_urls
 ]
 
 
