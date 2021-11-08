@@ -12,7 +12,7 @@ from .string_validator import is_valid_email, is_hard_password, is_valid_phone_n
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname')
+        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname','sex')
 
     def validate_password(self, password):
         if is_hard_password(password):
@@ -37,3 +37,5 @@ class UserSerializer(ModelSerializer):
 
         send_verification_email(user)
         return user
+
+
