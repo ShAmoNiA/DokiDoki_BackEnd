@@ -100,6 +100,23 @@ class TestSignUp(TestCase):
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['username'][0], 'This field may not be blank.')
 
+    def test_invalid_username(self):
+        INVALID_USERNAMES = ["4name", ".name", "_name", "user_.name", "user._name", "user__name", "user..name",
+                             "user$name", "user#name", "user@name", "user!name", "user&name", "user^name"]
+
+        data = {"username": "username",
+                "password": "password_1",
+                "email": "user_1@gmail.com",
+                "phone": "09372244222",
+                "fullname": "the first user",
+                "is_doctor": True}
+
+        for username in INVALID_USERNAMES:
+            data["username"] = username
+            request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+            response = SignUp.as_view()(request)
+            self.assertEqual(response.data['message']['username'][0], 'username is invalid')
+
     def test_invalid_email(self):
         INVALID_EMAILS = ["@gmail.com", "gmail.com", "a@gmail@com", "A@gmail", "InvalidEmail@.com"]
 
@@ -288,11 +305,19 @@ class TestLogOut(TestCase):
 
     def test_logout(self):
         request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
-
         request.__setattr__('authed_user', self.user)
         LogOut.permission_classes = (self.CustomIsAuthenticated, )
 
         response = LogOut.as_view()(request)
+        response_result = {'success': True, 'message': 'logged out successfully.'}
+        self.assertEqual(response.data, response_result)
+
+    def test_logout_failure(self):
+        request = RequestFactory().post('api/logout', content_type='application/json')
+        request.__setattr__('authed_user', self.user)
+        LogOut.permission_classes = (self.CustomIsAuthenticated,)
+
+        LogOut.as_view()(request)
 
     def test_not_authed(self):
         request = RequestFactory().post('api/logout', data={}, content_type='application/json')
@@ -369,7 +394,7 @@ class TestResetPassword(TestCase):
         response = forgot_password(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email not verified")
-    
+
     def test_reset_password(self):
         token = token_hex(32)
         mixer.blend('DokiApp.User', username="user", email="e@gmail.com",
@@ -460,3 +485,17 @@ class TestCheckUsername(TestCase):
         response = CheckUsername.as_view()(request, "user_1")
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data["exists"])
+
+
+class TestSendEmail(TestCase):
+
+    def test_send(self):
+        EMAIL = "ntm.patronage@gmail.com"
+        data = {"subject": "the_subject",
+                "message": "the_message",
+                "to_list": EMAIL}
+        request = RequestFactory().post('api/send_email', data, content_type='application/json')
+        response = send_email_by_front(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True, 'message': 'email sent'}
+        self.assertEqual(response.data, response_result)

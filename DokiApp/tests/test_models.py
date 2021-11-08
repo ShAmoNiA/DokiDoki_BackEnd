@@ -1,9 +1,28 @@
 from django.test import TestCase
-from mixer.backend.django import mixer
+from mixer.backend.django import Mixer
 
 from django.db import IntegrityError
 
 from ..models import *
+
+
+class NeutralMixer(Mixer):
+    def blend(self, scheme, **values):
+
+        type_mixer = self.get_typemixer(scheme)
+        try:
+            return type_mixer.blend(**values)
+        except Exception as e:
+            if self.params.get('silence'):
+                return None
+            if e.args:
+                e.args = ('Mixer (%s): %s' % (scheme, e.args[0]),) + e.args[1:]
+                # The line below is deleted, so errors won't be logged in commandline
+                # LOGGER.error(traceback.format_exc())
+            raise
+
+
+mixer = NeutralMixer()
 
 
 class TestUser(TestCase):
