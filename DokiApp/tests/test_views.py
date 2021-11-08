@@ -305,11 +305,19 @@ class TestLogOut(TestCase):
 
     def test_logout(self):
         request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
-
         request.__setattr__('authed_user', self.user)
         LogOut.permission_classes = (self.CustomIsAuthenticated, )
 
         response = LogOut.as_view()(request)
+        response_result = {'success': True, 'message': 'logged out successfully.'}
+        self.assertEqual(response.data, response_result)
+
+    def test_logout_failure(self):
+        request = RequestFactory().post('api/logout', content_type='application/json')
+        request.__setattr__('authed_user', self.user)
+        LogOut.permission_classes = (self.CustomIsAuthenticated,)
+
+        LogOut.as_view()(request)
 
     def test_not_authed(self):
         request = RequestFactory().post('api/logout', data={}, content_type='application/json')
@@ -386,7 +394,7 @@ class TestResetPassword(TestCase):
         response = forgot_password(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email not verified")
-    
+
     def test_reset_password(self):
         token = token_hex(32)
         mixer.blend('DokiApp.User', username="user", email="e@gmail.com",
@@ -477,3 +485,17 @@ class TestCheckUsername(TestCase):
         response = CheckUsername.as_view()(request, "user_1")
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data["exists"])
+
+
+class TestSendEmail(TestCase):
+
+    def test_send(self):
+        EMAIL = "ntm.patronage@gmail.com"
+        data = {"subject": "the_subject",
+                "message": "the_message",
+                "to_list": EMAIL}
+        request = RequestFactory().post('api/send_email', data, content_type='application/json')
+        response = send_email_by_front(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True, 'message': 'email sent'}
+        self.assertEqual(response.data, response_result)

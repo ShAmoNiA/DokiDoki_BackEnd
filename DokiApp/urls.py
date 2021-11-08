@@ -7,7 +7,7 @@ from .views import *
 EMAIL_TOKEN = 'c754wcRr0f7c4cweFEqxgtDv5409wAw420erOmcDft43mDcr9PlFD'
 
 urlpatterns = [
-    path('send_email/' + EMAIL_TOKEN, send_email_by_front, name='send_email_by_front'),
+    path('send_email' + EMAIL_TOKEN, send_email_by_front, name='send_email_by_front'),
 ]
 
 auth_urls = [

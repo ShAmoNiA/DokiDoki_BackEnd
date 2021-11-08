@@ -27,7 +27,7 @@ class UserSerializer(ModelSerializer):
     def validate_email(self, email):
         if is_valid_email(email):
             return email
-        raise ValidationError('Invalid email')
+        # raise ValidationError('Invalid email')
 
     def validate_phone(self, phone):
         if is_valid_phone_number(phone):

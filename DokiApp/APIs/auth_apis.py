@@ -58,7 +58,10 @@ class LogOut(APIView):
             if request.data["username"] == "user":
                 return Response({"success": True, "message": "logged out successfully."})
         except:
-            request.user.auth_token.delete()
+            try:
+                request.user.auth_token.delete()
+            except:
+                pass
             return Response({"success": True, "message": "logged out successfully."})
 
 
