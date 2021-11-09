@@ -2,17 +2,23 @@ from secrets import token_hex
 from re import search as validateRegex
 
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import User
+from .models import *
 
 from .email_functions import send_verification_email
 
 from .string_validator import *
 
 
+class ImageSerializer(ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname','sex')
+        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex')
 
     def validate_username(self, username):
         if is_valid_username(username):
@@ -42,5 +48,3 @@ class UserSerializer(ModelSerializer):
 
         send_verification_email(user)
         return user
-
-

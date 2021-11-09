@@ -23,7 +23,8 @@ auth_urls = [
 ]
 
 profile_urls = [
-    path('edit_profile' , edit_profile),
+    path('edit_profile', edit_profile),
+    path('upload_image', ImageView.as_view(), name='UploadImage'),
 ]
 
 pack_list = [

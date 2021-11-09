@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.test import RequestFactory
 from django.test import Client
+from django.test.client import encode_multipart
 
 from mixer.backend.django import mixer
 
@@ -498,4 +499,42 @@ class TestSendEmail(TestCase):
         response = send_email_by_front(request)
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True, 'message': 'email sent'}
+        self.assertEqual(response.data, response_result)
+
+
+class TestImageView(TestCase):
+
+    @staticmethod
+    def generate_photo_file():
+        import os
+        import io
+        from PIL import Image as ImageCreator
+
+        file = io.BytesIO()
+        image = ImageCreator.new('RGBA', size=(100, 100), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'test.png'
+        file.seek(0)
+        return file
+
+    def test_upload_image(self):
+        # TODO: fix this function
+        photo_file = self.generate_photo_file()
+        data = {'image': photo_file}
+
+        request = RequestFactory().post('api/upload_image', data,
+                                        content_type='multipart/form-data; boundary=<calculated when request is sent>')
+        response = ImageView.as_view()(request)
+
+        self.assertEqual(response.status_code, 200)
+        response_result = {"image_url": "/images/default.png"}
+        self.assertEqual(response.data, response_result)
+
+    def test_upload_image_default(self):
+        request = RequestFactory().post('api/upload_image',
+                                        content_type='multipart/form-data; boundary=<calculated when request is sent>')
+        response = ImageView.as_view()(request)
+
+        self.assertEqual(response.status_code, 200)
+        response_result = {"image_url": "/images/default.png"}
         self.assertEqual(response.data, response_result)
