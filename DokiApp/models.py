@@ -5,21 +5,29 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Image(models.Model):
-    pass
+    image = models.ImageField(default="default.png", null=True, blank=True)
 
 
 class User(AbstractUser):
-    is_doctor = models.BooleanField(default=False)
+    SEX_CHOICES = (('F', 'Female',),
+                   ('M', 'Male',),
+                   ('U', 'Unsure',),
+                   ('P', 'Prefer not to say'))
+
+    profile_picture_url = models.CharField(max_length=512, null=True, blank=True)
 
     username = models.CharField(unique=True, max_length=64)
     email = models.EmailField(unique=True)
     phone = models.CharField(unique=True, max_length=20, blank=True, null=True)
     fullname = models.CharField(max_length=100, blank=True)
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='P')
 
     reset_password_token = models.CharField(max_length=64, default="expired")
     verify_email_token = models.CharField(max_length=64, default="default")
-    sex = models.CharField(max_length=1, choices=(('F', 'Female',), ('M', 'Male',), ('U', 'Unsure',),
-                                                  ('P', 'Prefer not to say')), default='P')
+
+    is_doctor = models.BooleanField(default=False)
 
     @property
     def verified_email(self):
@@ -37,8 +45,13 @@ class User(AbstractUser):
 
 
 class DoctorProfile(models.Model):
-    pass
+    degree = models.CharField(max_length=128, default="general")
+    medical_degree_photo = models.CharField(max_length=128, null=True)
+    # CV = ?
+    office_location = models.CharField(max_length=128, null=True)
 
 
 class PatientProfile(models.Model):
-    pass
+    weight = models.IntegerField(default=0)
+    height = models.IntegerField(default=0)
+    medical_records = models.TextField(null=True)
