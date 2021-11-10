@@ -40,10 +40,18 @@ class UserSerializer(ModelSerializer):
             return phone
         raise ValidationError('Invalid phone number')
 
+    def set_profile(self, user):
+        is_doctor = user.is_doctor
+        if is_doctor:
+            DoctorProfile.objects.create(user=user)
+        else:
+            PatientProfile.objects.create(user=user)
+
     def create(self, validated_data):
         user = super().create(validated_data)
         user.verify_email_token = token_hex(64)
         user.set_password(validated_data['password'])
+        self.set_profile(user)
         user.save()
 
         send_verification_email(user)

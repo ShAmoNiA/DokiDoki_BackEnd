@@ -48,6 +48,32 @@ class TestSignUp(TestCase):
         self.assertEqual(user.is_superuser, False)
         self.assertEqual(user.is_staff, False)
 
+    def test_profile_created(self):
+        data = {"username": "username_1",
+                "password": "password_1",
+                "email": "user_1@gmail.com",
+                "phone": "09372244222",
+                "fullname": "the first user",
+                "is_doctor": False}
+        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+        SignUp.as_view()(request)
+        patient_user = User.objects.get(id=1)
+
+        data = {"username": "username_2",
+                "password": "password_2",
+                "email": "user_2@gmail.com",
+                "phone": "09372244322",
+                "fullname": "the second user",
+                "is_doctor": True}
+        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+        SignUp.as_view()(request)
+        doctor_user = User.objects.get(id=2)
+
+        patient_profile = PatientProfile.objects.get(id=1)
+        doctor_profile = DoctorProfile.objects.get(id=1)
+        self.assertEqual(patient_profile.user, patient_user)
+        self.assertEqual(doctor_profile.user, doctor_user)
+
     def test_duplicated_username(self):
         mixer.blend('DokiApp.User', username="username_1")
 

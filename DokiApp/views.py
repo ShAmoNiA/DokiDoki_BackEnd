@@ -37,7 +37,7 @@ class ImageView(APIView):
         if image_serializer.is_valid():
             image_serializer.save()
             return Response({"image_url": image_serializer.data["image"]}, status=status.HTTP_200_OK)
-        return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
