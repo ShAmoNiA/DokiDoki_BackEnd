@@ -95,3 +95,7 @@ class PatientProfile(models.Model):
             self.user = user
             self.save()
             return "the profile set successfully"
+
+
+class Tag(models.Model):
+    title = models.CharField(max_length=64)

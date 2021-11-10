@@ -238,3 +238,14 @@ class TestImage(TestCase):
         obj = mixer.blend('DokiApp.Image', image="default.png")
         self.assertEqual(obj.pk, 1)
         self.assertEqual(obj.image, "default.png")
+
+
+class TestTag(TestCase):
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.Tag')
+        self.assertEqual(obj.pk, 1)
+        
+        obj = mixer.blend('DokiApp.tag', title="the title")
+        self.assertEqual(obj.pk, 2)
+        self.assertEqual(obj.title, "the title")
