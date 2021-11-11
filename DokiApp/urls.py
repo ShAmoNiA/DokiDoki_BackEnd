@@ -25,6 +25,7 @@ auth_urls = [
 profile_urls = [
     path('edit_profile', edit_profile),
     path('upload_image', ImageView.as_view(), name='UploadImage'),
+    path('add_tag', AddTag.as_view(), name='AddTag'),
 ]
 
 pack_list = [

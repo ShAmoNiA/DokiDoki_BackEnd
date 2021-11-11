@@ -56,3 +56,14 @@ class UserSerializer(ModelSerializer):
 
         send_verification_email(user)
         return user
+
+
+class TagSerializer(ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('title',)
+
+    def validate_title(self, title):
+        if " " in title or title == "":
+            raise ValidationError('Invalid title')
+        return title

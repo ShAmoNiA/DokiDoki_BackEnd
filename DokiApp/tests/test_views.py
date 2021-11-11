@@ -564,3 +564,45 @@ class TestImageView(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {"image_url": "/images/default.png"}
         self.assertEqual(response.data, response_result)
+
+
+class TestAddTag(TestCase):
+
+    def test_success(self):
+        data = {"title": "the_title"}
+        request = RequestFactory().post('api/add_tag', data, content_type='application/json')
+        response = AddTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": True, "message": "tag added successfully"}
+        self.assertEqual(response_result, response.data)
+
+    def test_data_saved(self):
+        data = {"title": "the_title"}
+        request = RequestFactory().post('api/add_tag', data, content_type='application/json')
+        AddTag.as_view()(request)
+        tag = Tag.objects.get(id=1)
+        self.assertEqual(tag.title, "the_title")
+
+    def test_invalid_title(self):
+        data = {"title": "the title"}
+        request = RequestFactory().post('api/add_tag', data, content_type='application/json')
+        response = AddTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'message': 'tag not added', 'success': False}
+        self.assertEqual(response_result, response.data)
+
+    def test_empty_title(self):
+        data = {"title": ""}
+        request = RequestFactory().post('api/add_tag', data, content_type='application/json')
+        response = AddTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'message': 'tag not added', 'success': False}
+        self.assertEqual(response_result, response.data)
+
+    def test_not_title(self):
+        data = dict({})
+        request = RequestFactory().post('api/add_tag', data, content_type='application/json')
+        response = AddTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'message': 'tag not added', 'success': False}
+        self.assertEqual(response_result, response.data)

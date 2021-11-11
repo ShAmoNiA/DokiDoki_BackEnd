@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from .models import *
 from .helper_functions import result_page
 
-from .serializers import ImageSerializer
+from .serializers import ImageSerializer, TagSerializer
 
 from .APIs.auth_apis import *
 
@@ -37,7 +37,18 @@ class ImageView(APIView):
         if image_serializer.is_valid():
             image_serializer.save()
             return Response({"image_url": image_serializer.data["image"]}, status=status.HTTP_200_OK)
-        # return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddTag(APIView):
+
+    def post(self, request):
+        tag_serializer = TagSerializer(data=request.data)
+        if tag_serializer.is_valid():
+            tag_serializer.save()
+            return Response({"success": True, "message": "tag added successfully"}, status=status.HTTP_200_OK)
+
+        return Response({"success": False, "message": "tag not added"}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
