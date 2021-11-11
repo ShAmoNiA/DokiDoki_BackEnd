@@ -68,6 +68,8 @@ class DoctorProfile(models.Model):
     cv = models.TextField(default="default")
     office_location = models.CharField(max_length=128, null=True)
 
+    expertise_tags = models.CharField(max_length=512, default="")
+
     def set_user(self, user):
         if user.has_profile:
             return "The user already has a profile"
@@ -98,4 +100,4 @@ class PatientProfile(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=64)
+    title = models.CharField(max_length=64, unique=True)

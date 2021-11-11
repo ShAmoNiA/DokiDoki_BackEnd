@@ -150,15 +150,17 @@ class TestDoctorProfile(TestCase):
         self.assertEqual(obj.medical_degree_photo, None)
         self.assertEqual(obj.cv, "default")
         self.assertEqual(obj.office_location, None)
+        self.assertEqual(obj.expertise_tags, "")
 
         obj = mixer.blend('DokiApp.DoctorProfile', degree="the degree", user=None,
-                          medical_degree_photo="photo", office_location="location")
+                          medical_degree_photo="photo", office_location="location", expertise_tags="12 4 8 13")
         self.assertEqual(obj.pk, 2)
         self.assertEqual(obj.user, None)
         self.assertEqual(obj.degree, "the degree")
         self.assertEqual(obj.medical_degree_photo, "photo")
         self.assertEqual(obj.cv, "default")
         self.assertEqual(obj.office_location, "location")
+        self.assertEqual(obj.expertise_tags, "12 4 8 13")
 
     def test_set_user(self):
         obj = mixer.blend('DokiApp.DoctorProfile', user=None)
@@ -246,6 +248,13 @@ class TestTag(TestCase):
         obj = mixer.blend('DokiApp.Tag')
         self.assertEqual(obj.pk, 1)
         
-        obj = mixer.blend('DokiApp.tag', title="the title")
+        obj = mixer.blend('DokiApp.Tag', title="the title")
         self.assertEqual(obj.pk, 2)
         self.assertEqual(obj.title, "the title")
+
+    def test_unique(self):
+        obj = mixer.blend('DokiApp.Tag', title="the title")
+        self.assertEqual(obj.title, "the title")
+        with self.assertRaises(Exception) as raised:
+            mixer.blend('DokiApp.Tag', title="the title")
+        self.assertEqual(IntegrityError, type(raised.exception))
