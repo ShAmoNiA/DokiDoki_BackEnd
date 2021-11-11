@@ -14,7 +14,7 @@ from django.db.models import Q
 from .models import *
 from .helper_functions import *
 
-from .serializers import ImageSerializer, TagSerializer
+from .serializers import *
 
 from .APIs.auth_apis import *
 
@@ -111,10 +111,18 @@ def edit_profile(request):
     if not request.user.is_authenticated:
         return Response({"success": False, "message": "You must login first"})
     user = request.user
-    if 'sex' in request.data:
-        user.sex = request.data["sex"]
-    if 'fullname' in request.data:
-        user.fullname = request.data["fullname"]
+
+    if user.is_doctor:
+        doctor = user.get_profile()
+        serializer = DoctorProfileSerializer(doctor, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    else:
+        patient = user.get_profile()
+        serializer = PatientProfileSerializer(patient, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
     serializer = UserSerializer(request.user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
