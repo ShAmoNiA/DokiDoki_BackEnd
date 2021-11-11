@@ -606,3 +606,35 @@ class TestAddTag(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {'message': 'tag not added', 'success': False}
         self.assertEqual(response_result, response.data)
+
+
+class TestSearchByTag(TestCase):
+
+    fixtures = ['tags.json']
+
+    def test_all(self):
+        data = {"title": ""}
+        request = RequestFactory().post('api/search_by_tag', data, content_type='application/json')
+        response = SearchByTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        tags = "Cardiologist Oncologist Gastroenterologist Pulmonologist Nephrologist Endocrinologist Ophthalmologist "\
+               "Otolaryngologist Dermatologist Psychiatrist Neurologist Radiologist Anesthesiologist Surgeon "
+        response_result = {'success': True, 'tags': tags}
+        self.assertEqual(response_result, response.data)
+
+    def test_a_title(self):
+        data = {"title": "ur"}
+        request = RequestFactory().post('api/search_by_tag', data, content_type='application/json')
+        response = SearchByTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        tags = "Neurologist Surgeon "
+        response_result = {'success': True, 'tags': tags}
+        self.assertEqual(response_result, response.data)
+
+    def test_not_found(self):
+        data = {"title": "a_title_that_there_is_not_in_saved_tags"}
+        request = RequestFactory().post('api/search_by_tag', data, content_type='application/json')
+        response = SearchByTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True, 'tags': ''}
+        self.assertEqual(response_result, response.data)

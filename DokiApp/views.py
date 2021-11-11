@@ -51,6 +51,17 @@ class AddTag(APIView):
         return Response({"success": False, "message": "tag not added"}, status=status.HTTP_200_OK)
 
 
+class SearchByTag(APIView):
+
+    def post(self, request):
+        title = request.data['title']
+        tags = Tag.objects.filter(title__icontains=title).values_list('title', flat=True)
+        result = ""
+        for tag in tags:
+            result += tag + " "
+        return Response({"success": True, "tags": result}, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 def edit_profile(request):
     if not request.user.is_authenticated:
