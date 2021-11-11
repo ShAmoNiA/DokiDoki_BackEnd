@@ -9,8 +9,10 @@ from rest_framework.parsers import FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
+from django.db.models import Q
+
 from .models import *
-from .helper_functions import result_page
+from .helper_functions import result_page, entity_adapter
 
 from .serializers import ImageSerializer, TagSerializer
 
@@ -60,6 +62,20 @@ class SearchByTag(APIView):
         for tag in tags:
             result += tag + " "
         return Response({"success": True, "tags": result}, status=status.HTTP_200_OK)
+
+
+class SearchDoctorByName(APIView):
+
+    def post(self, request):
+        key = request.data["key"]
+        full_name_q = Q(fullname__icontains=key)
+        first_name_q = Q(first_name__icontains=key)
+        last_name_q = Q(last_name__icontains=key)
+        search_query = full_name_q | first_name_q | last_name_q
+        doctors = User.objects.filter(is_doctor=True).filter(search_query)
+
+        doctors_list = entity_adapter(doctors, UserSerializer)
+        return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

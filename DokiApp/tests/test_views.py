@@ -638,3 +638,58 @@ class TestSearchByTag(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True, 'tags': ''}
         self.assertEqual(response_result, response.data)
+
+
+class TestSearchDoctorByName(TestCase):
+
+    fixtures = ['doctors.json']
+
+    def test_all(self):
+        data = {"key": ""}
+        request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
+        response = SearchDoctorByName.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'DRE', 'sex': 'P'},
+                   2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'CJ', 'sex': 'P'},
+                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
+                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
+                   4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'Ali sadeghi', 'sex': 'P'}}
+        response_result = {'success': True, 'doctors': doctors}
+        self.assertEqual(response_result, response.data)
+
+    def test_a_name(self):
+        data = {"key": "rE"}
+        request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
+        response = SearchDoctorByName.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'DRE', 'sex': 'P'}}
+        response_result = {'success': True, 'doctors': doctors}
+        self.assertEqual(response_result, response.data)
+
+        data = {"key": "o"}
+        request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
+        response = SearchDoctorByName.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'DRE', 'sex': 'P'},
+                   2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'CJ', 'sex': 'P'},
+                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
+                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
+                   4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
+                       'fullname': 'Ali sadeghi', 'sex': 'P'}}
+        response_result = {'success': True, 'doctors': doctors}
+        self.assertEqual(response_result, response.data)
+
+    def test_not_found(self):
+        data = {"key": "dogg"}
+        request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
+        response = SearchDoctorByName.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        doctors = {}
+        response_result = {'success': True, 'doctors': doctors}
+        self.assertEqual(response_result, response.data)
