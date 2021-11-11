@@ -1,0 +1,50 @@
+[
+  {
+    "model": "DokiApp.User",
+    "pk": 5,
+    "fields": {
+      "username": "patient_1",
+      "fullname": "patient_1",
+      "first_name": "patient_1",
+      "last_name": "patient_1",
+      "is_doctor": false,
+      "email": "patient_1@gmail.com"
+    }
+  },
+  {
+    "model": "DokiApp.User",
+    "pk": 6,
+    "fields": {
+      "username": "patient_2",
+      "fullname": "patient_2",
+      "first_name": "patient_2",
+      "last_name": "patient_2",
+      "is_doctor": false,
+      "email": "patient_2@gmail.com"
+    }
+  },
+  {
+    "model": "DokiApp.User",
+    "pk": 7,
+    "fields": {
+      "username": "patient_3",
+      "fullname": "patient_3",
+      "first_name": "patient_3",
+      "last_name": "patient_3",
+      "is_doctor": false,
+      "email": "patient_3@gmail.com"
+    }
+  },
+  {
+    "model": "DokiApp.User",
+    "pk": 8,
+    "fields": {
+      "username": "patient_4",
+      "fullname": "patient_4",
+      "first_name": "patient_4",
+      "last_name": "patient_4",
+      "is_doctor": false,
+      "email": "patient_4@gmail.com"
+    }
+  }
+]

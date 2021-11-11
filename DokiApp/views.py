@@ -96,6 +96,16 @@ class PreviewDoctorProfile(APIView):
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
 
+class PreviewPatientProfile(APIView):
+
+    def post(self, request):
+        username = request.data["username"]
+        user = User.objects.get(username=username)
+
+        profile = patient_profile_adapter(user)
+        return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 def edit_profile(request):
     if not request.user.is_authenticated:

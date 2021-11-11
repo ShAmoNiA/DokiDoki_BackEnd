@@ -86,7 +86,7 @@ class PatientProfile(models.Model):
 
     weight = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
-    medical_records = models.TextField(null=True)
+    medical_records = models.TextField(null=True, default="nothing yet")
 
     def set_user(self, user):
         if user.has_profile:

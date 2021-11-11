@@ -615,8 +615,9 @@ class TestSearchForTag(TestCase):
         request = RequestFactory().post('api/search_by_tag', data, content_type='application/json')
         response = SearchForTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        tags = "Cardiologist Oncologist Gastroenterologist Pulmonologist Nephrologist Endocrinologist Ophthalmologist "\
-               "Otolaryngologist Dermatologist Psychiatrist Neurologist Radiologist Anesthesiologist Surgeon "
+        tags = "Cardiologist Oncologist Gastroenterologist Pulmonologist Nephrologist " \
+               "Endocrinologist Ophthalmologist Otolaryngologist Dermatologist " \
+               "Psychiatrist Neurologist Radiologist Anesthesiologist Surgeon "
         response_result = {'success': True, 'tags': tags}
         self.assertEqual(response_result, response.data)
 
@@ -744,4 +745,19 @@ class TestPreviewDoctorProfile(TestCase):
                                        'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
                                        'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
                                        'expertise_tags': 'og_loc eye head'}}
+        self.assertEqual(response.data, response_result)
+
+
+class TestPreviewPatientProfile(TestCase):
+    fixtures = ['patients.json', 'patient_profiles.json']
+
+    def test_preview(self):
+        data = {"username": "patient_1"}
+        request = RequestFactory().post('api/preview_patient_profile', data, content_type='application/json')
+        response = PreviewPatientProfile.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True,
+                           'profile': {'username': 'patient_1', 'password': '', 'email': 'patient_1@gmail.com',
+                                       'is_doctor': False, 'phone': None, 'fullname': 'patient_1', 'sex': 'P',
+                                       'weight': 0, 'height': 0, 'medical_records': 'nothing yet'}}
         self.assertEqual(response.data, response_result)

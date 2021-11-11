@@ -31,6 +31,7 @@ profile_urls = [
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 
     path('preview_doctor_profile', PreviewDoctorProfile.as_view(), name='PreviewDoctorProfile'),
+    path('preview_patient_profile', PreviewPatientProfile.as_view(), name='PreviewPatientProfile'),
 ]
 
 pack_list = [

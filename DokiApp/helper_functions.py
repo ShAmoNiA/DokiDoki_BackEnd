@@ -37,3 +37,14 @@ def doctor_profile_adapter(user):
     data["office_location"] = profile.office_location
     data["expertise_tags"] = profile.expertise_tags
     return data
+
+
+def patient_profile_adapter(user):
+    user_serializer = UserSerializer(instance=user)
+    profile = user.profile
+
+    data = user_serializer.data
+    data["weight"] = profile.weight
+    data["height"] = profile.height
+    data["medical_records"] = profile.medical_records
+    return data
