@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from .models import *
-from .helper_functions import result_page, entity_adapter
+from .helper_functions import *
 
 from .serializers import ImageSerializer, TagSerializer
 
@@ -53,11 +53,12 @@ class AddTag(APIView):
         return Response({"success": False, "message": "tag not added"}, status=status.HTTP_200_OK)
 
 
-class SearchByTag(APIView):
+class SearchForTag(APIView):
 
     def post(self, request):
-        title = request.data['title']
-        tags = Tag.objects.filter(title__icontains=title).values_list('title', flat=True)
+        key = request.data["key"]
+        tags = Tag.objects.filter(title__icontains=key).values_list('title', flat=True)
+
         result = ""
         for tag in tags:
             result += tag + " "
@@ -68,12 +69,19 @@ class SearchDoctorByName(APIView):
 
     def post(self, request):
         key = request.data["key"]
-        full_name_q = Q(fullname__icontains=key)
-        first_name_q = Q(first_name__icontains=key)
-        last_name_q = Q(last_name__icontains=key)
-        search_query = full_name_q | first_name_q | last_name_q
+        search_query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | Q(last_name__icontains=key)
         doctors = User.objects.filter(is_doctor=True).filter(search_query)
 
+        doctors_list = entity_adapter(doctors, UserSerializer)
+        return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
+
+
+class SearchDoctorByTag(APIView):
+
+    def post(self, request):
+        key = request.data["key"]
+        profiles = DoctorProfile.objects.filter(expertise_tags__icontains=key)
+        doctors = profile_to_user_adapter(profiles)
         doctors_list = entity_adapter(doctors, UserSerializer)
         return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
 

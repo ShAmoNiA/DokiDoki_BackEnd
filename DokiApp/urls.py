@@ -26,8 +26,9 @@ profile_urls = [
     path('edit_profile', edit_profile),
     path('upload_image', ImageView.as_view(), name='UploadImage'),
     path('add_tag', AddTag.as_view(), name='AddTag'),
-    path('search_by_tag', SearchByTag.as_view(), name='SearchByTag'),
+    path('search_by_tag', SearchForTag.as_view(), name='SearchForTag'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
+    path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]
 
 pack_list = [

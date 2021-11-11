@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import User
 
 
 def result_page(request, result):
@@ -12,3 +13,12 @@ def entity_adapter(query_set, serializer_class):
         data = user_serializer.data
         result[item.id] = data
     return result
+
+
+def profile_to_user_adapter(query_set):
+    IDs = []
+    users = User.objects.all()
+    for user in users:
+        if user.profile in query_set:
+            IDs.append(user.id)
+    return User.objects.filter(id__in=IDs)
