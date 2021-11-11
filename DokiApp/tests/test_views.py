@@ -761,3 +761,58 @@ class TestPreviewPatientProfile(TestCase):
                                        'is_doctor': False, 'phone': None, 'fullname': 'patient_1', 'sex': 'P',
                                        'weight': 0, 'height': 0, 'medical_records': 'nothing yet'}}
         self.assertEqual(response.data, response_result)
+
+
+class TestEditProfile(TestCase):
+
+    def signup(self):
+        data = {"username": "username_1",
+                "password": "password_1",
+                "email": "user_1@gmail.com",
+                "phone": "09372244222",
+                "fullname": "the first user",
+                "is_doctor": True}
+        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+        SignUp.as_view()(request)
+
+        data = {"username": "username_2",
+                "password": "password_2",
+                "email": "user_2@gmail.com",
+                "phone": "09372244322",
+                "fullname": "the second user",
+                "is_doctor": False}
+        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
+        SignUp.as_view()(request)
+
+    def test_not_authed(self):
+        self.signup()
+        data = {}
+        request = RequestFactory().post('api/edit_profile', data, content_type='application/json')
+        response = edit_profile(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': False, 'message': 'You must login first'}
+        self.assertEqual(response.data, response_result)
+
+    def test_change_doctor_profile(self):
+        self.signup()
+        pass
+
+    def test_change_patient_profile(self):
+        self.signup()
+        pass
+
+    def test_doctor_profile_updated(self):
+        self.signup()
+        pass
+
+    def test_patient_profile_updated(self):
+        self.signup()
+        pass
+
+    def test_doctor_user_updated(self):
+        self.signup()
+        pass
+
+    def test_patient_user_updated(self):
+        self.signup()
+        pass

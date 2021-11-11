@@ -69,18 +69,17 @@ class PatientProfileSerializer(ModelSerializer):
         model = PatientProfile
         fields = ('user', 'weight', 'height', 'medical_records')
 
-    def validate_height(self,height):
+    def validate_height(self, height):
         if height < 25 or height > 270:
             raise ValidationError("Enter height in centimeters")
         else:
             return height
 
-    def validate_weight(self,weight):
+    def validate_weight(self, weight):
         if weight < 20 or weight > 500:
             raise ValidationError("Enter Weight in kilogram")
         else:
             return weight
-
 
 
 class TagSerializer(ModelSerializer):

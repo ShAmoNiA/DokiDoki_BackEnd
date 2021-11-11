@@ -34,7 +34,7 @@ def send_email_by_front(request):
 class ImageView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         image_serializer = ImageSerializer(data=request.data)
         if image_serializer.is_valid():
             image_serializer.save()
@@ -109,21 +109,20 @@ class PreviewPatientProfile(APIView):
 @api_view(['POST'])
 def edit_profile(request):
     if not request.user.is_authenticated:
-        return Response({"success": False, "message": "You must login first"})
+        return Response({"success": False, "message": "You must login first"}, status=status.HTTP_200_OK)
     user = request.user
+    profile = user.get_profile()
 
     if user.is_doctor:
-        doctor = user.get_profile()
-        serializer = DoctorProfileSerializer(doctor, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializerClass = DoctorProfileSerializer
     else:
-        patient = user.get_profile()
-        serializer = PatientProfileSerializer(patient, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializerClass = PatientProfileSerializer
+
+    serializer = serializerClass(profile, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
 
     serializer = UserSerializer(request.user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response({"success": True, "message": "Profile changed"}, status=status.HTTP_200_OK)
+    return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)

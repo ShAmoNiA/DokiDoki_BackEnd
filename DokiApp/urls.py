@@ -23,7 +23,6 @@ auth_urls = [
 ]
 
 profile_urls = [
-    path('edit_profile', edit_profile),
     path('upload_image', ImageView.as_view(), name='UploadImage'),
     path('add_tag', AddTag.as_view(), name='AddTag'),
     path('search_by_tag', SearchForTag.as_view(), name='SearchForTag'),
@@ -32,6 +31,8 @@ profile_urls = [
 
     path('preview_doctor_profile', PreviewDoctorProfile.as_view(), name='PreviewDoctorProfile'),
     path('preview_patient_profile', PreviewPatientProfile.as_view(), name='PreviewPatientProfile'),
+
+    path('edit_profile', edit_profile),
 ]
 
 pack_list = [
