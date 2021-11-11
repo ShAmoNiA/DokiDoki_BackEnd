@@ -313,7 +313,6 @@ class TestLogIn(TestCase):
 
 
 class TestLogOut(TestCase):
-
     class CustomIsAuthenticated(IsAuthenticated):
         def has_permission(self, request, view):
             return bool(request.user)
@@ -333,7 +332,7 @@ class TestLogOut(TestCase):
     def test_logout(self):
         request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
         request.__setattr__('authed_user', self.user)
-        LogOut.permission_classes = (self.CustomIsAuthenticated, )
+        LogOut.permission_classes = (self.CustomIsAuthenticated,)
 
         response = LogOut.as_view()(request)
         response_result = {'success': True, 'message': 'logged out successfully.'}
@@ -348,7 +347,7 @@ class TestLogOut(TestCase):
 
     def test_not_authed(self):
         request = RequestFactory().post('api/logout', data={}, content_type='application/json')
-        LogOut.permission_classes = (IsAuthenticated, )
+        LogOut.permission_classes = (IsAuthenticated,)
         response = LogOut.as_view()(request)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
@@ -609,7 +608,6 @@ class TestAddTag(TestCase):
 
 
 class TestSearchForTag(TestCase):
-
     fixtures = ['tags.json']
 
     def test_all(self):
@@ -641,7 +639,6 @@ class TestSearchForTag(TestCase):
 
 
 class TestSearchDoctorByName(TestCase):
-
     fixtures = ['doctors.json']
 
     def test_all(self):
@@ -695,7 +692,6 @@ class TestSearchDoctorByName(TestCase):
 
 
 class TestSearchDoctorByTag(TestCase):
-
     fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json']
 
     def test_all(self):
@@ -733,3 +729,19 @@ class TestSearchDoctorByTag(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True, 'doctors': {}}
         self.assertEqual(response_result, response.data)
+
+
+class TestPreviewDoctorProfile(TestCase):
+    fixtures = ['doctors.json', 'doctor_profiles.json']
+
+    def test_preview(self):
+        data = {"username": "DRE"}
+        request = RequestFactory().post('api/preview_doctor_profile', data, content_type='application/json')
+        response = PreviewDoctorProfile.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True,
+                           'profile': {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True,
+                                       'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
+                                       'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
+                                       'expertise_tags': 'og_loc eye head'}}
+        self.assertEqual(response.data, response_result)

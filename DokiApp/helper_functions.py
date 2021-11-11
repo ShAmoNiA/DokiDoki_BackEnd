@@ -1,5 +1,7 @@
 from django.shortcuts import render
+
 from .models import User
+from .serializers import UserSerializer
 
 
 def result_page(request, result):
@@ -22,3 +24,16 @@ def profile_to_user_adapter(query_set):
         if user.profile in query_set:
             IDs.append(user.id)
     return User.objects.filter(id__in=IDs)
+
+
+def doctor_profile_adapter(user):
+    user_serializer = UserSerializer(instance=user)
+    profile = user.profile
+
+    data = user_serializer.data
+    data["degree"] = profile.degree
+    data["medical_degree_photo"] = profile.medical_degree_photo
+    data["cv"] = profile.cv
+    data["office_location"] = profile.office_location
+    data["expertise_tags"] = profile.expertise_tags
+    return data
