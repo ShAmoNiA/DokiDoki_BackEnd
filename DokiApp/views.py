@@ -87,20 +87,26 @@ class SearchDoctorByTag(APIView):
 
 
 class PreviewDoctorProfile(APIView):
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request):
-        username = request.data["username"]
-        user = User.objects.get(username=username)
+        user = request.user
+
+        if user.is_patient:
+            return Response({"success": False, "message": "The user is not doctor"}, status=status.HTTP_200_OK)
 
         profile = doctor_profile_adapter(user)
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
 
 class PreviewPatientProfile(APIView):
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request):
-        username = request.data["username"]
-        user = User.objects.get(username=username)
+        user = request.user
+
+        if user.is_doctor:
+            return Response({"success": False, "message": "The user is not patient"}, status=status.HTTP_200_OK)
 
         profile = patient_profile_adapter(user)
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)

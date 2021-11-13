@@ -12,6 +12,11 @@ from ..views import *
 from ..models import *
 
 
+class CustomIsAuthenticated(IsAuthenticated):
+    def has_permission(self, request, view):
+        return bool(request.user)
+
+
 class TestSignUp(TestCase):
 
     def test_sign_up_api(self):
@@ -313,9 +318,6 @@ class TestLogIn(TestCase):
 
 
 class TestLogOut(TestCase):
-    class CustomIsAuthenticated(IsAuthenticated):
-        def has_permission(self, request, view):
-            return bool(request.user)
 
     def setUp(self):
         user = mixer.blend('DokiApp.User', username="user")
@@ -332,7 +334,7 @@ class TestLogOut(TestCase):
     def test_logout(self):
         request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
         request.__setattr__('authed_user', self.user)
-        LogOut.permission_classes = (self.CustomIsAuthenticated,)
+        LogOut.permission_classes = (CustomIsAuthenticated,)
 
         response = LogOut.as_view()(request)
         response_result = {'success': True, 'message': 'logged out successfully.'}
@@ -738,6 +740,10 @@ class TestPreviewDoctorProfile(TestCase):
     def test_preview(self):
         data = {"username": "DRE"}
         request = RequestFactory().post('api/preview_doctor_profile', data, content_type='application/json')
+
+        request.__setattr__('authed_user', User.objects.get(username='DRE'))
+        PreviewDoctorProfile.permission_classes = (CustomIsAuthenticated,)
+
         response = PreviewDoctorProfile.as_view()(request)
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
