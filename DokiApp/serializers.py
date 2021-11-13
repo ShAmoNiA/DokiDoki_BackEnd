@@ -18,7 +18,7 @@ class ImageSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex')
+        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex','profile_picture_url')
 
     def validate_username(self, username):
         if is_valid_username(username):
