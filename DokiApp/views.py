@@ -86,30 +86,21 @@ class SearchDoctorByTag(APIView):
         return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
 
 
-class PreviewDoctorProfile(APIView):
+class ProfilePreview(APIView):
     permission_classes = (IsAuthenticated, )
 
     def post(self, request):
         user = request.user
 
-        if user.is_patient:
-            return Response({"success": False, "message": "The user is not doctor"}, status=status.HTTP_200_OK)
-
-        profile = doctor_profile_adapter(user)
+        profile = self.get_profile(user)
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
-
-class PreviewPatientProfile(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def post(self, request):
-        user = request.user
-
+    def get_profile(self, user):
         if user.is_doctor:
-            return Response({"success": False, "message": "The user is not patient"}, status=status.HTTP_200_OK)
-
-        profile = patient_profile_adapter(user)
-        return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
+            profile = doctor_profile_adapter(user)
+        else:
+            profile = patient_profile_adapter(user)
+        return profile
 
 
 @api_view(['POST'])

@@ -12,11 +12,6 @@ from ..views import *
 from ..models import *
 
 
-class CustomIsAuthenticated(IsAuthenticated):
-    def has_permission(self, request, view):
-        return bool(request.user)
-
-
 class TestSignUp(TestCase):
 
     def test_sign_up_api(self):
@@ -650,13 +645,13 @@ class TestSearchDoctorByName(TestCase):
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
         doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'DRE', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
                    2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'CJ', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
                    3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
+                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
                    4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'Ali sadeghi', 'sex': 'P'}}
+                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -666,7 +661,7 @@ class TestSearchDoctorByName(TestCase):
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
         doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'DRE', 'sex': 'P'}}
+                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'}}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -675,13 +670,13 @@ class TestSearchDoctorByName(TestCase):
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
         doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'DRE', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
                    2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'CJ', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
                    3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
+                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
                    4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'Ali sadeghi', 'sex': 'P'}}
+                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -703,13 +698,13 @@ class TestSearchDoctorByTag(TestCase):
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
         doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'DRE', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
                    2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'CJ', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
                    3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
+                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
                    4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'Ali sadeghi', 'sex': 'P'}}
+                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -719,9 +714,9 @@ class TestSearchDoctorByTag(TestCase):
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
         doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'fullname': 'DRE', 'sex': 'P'},
+                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
                    3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'phone': None, 'fullname': 'OG LOC', 'sex': 'P'}}
+                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'}}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -734,38 +729,40 @@ class TestSearchDoctorByTag(TestCase):
         self.assertEqual(response_result, response.data)
 
 
-class TestPreviewDoctorProfile(TestCase):
-    fixtures = ['doctors.json', 'doctor_profiles.json']
+class TestProfilePreview(TestCase):
+    fixtures = ['patients.json', 'patient_profiles.json',
+                'doctors.json', 'doctor_profiles.json']
 
-    def test_preview(self):
+    # def test_preview_patient(self):
+    #     data = {"username": "patient_1"}
+    #     request = RequestFactory().post('api/preview_patient_profile', data, content_type='application/json')
+    #     ProfilePreview.permission_classes = (AllowAny, )
+    #     response = ProfilePreview.as_view()(request)
+    #     self.assertEqual(response.status_code, 200)
+    #     response_result = {'success': True,
+    #                        'profile': {'username': 'patient_1', 'password': '', 'email': 'patient_1@gmail.com',
+    #                                    'is_doctor': False, 'phone': None, 'fullname': 'patient_1', 'sex': 'P',
+    #                                    'weight': 0, 'height': 0, 'medical_records': 'nothing yet'}}
+    #     self.assertEqual(response.data, response_result)
+
+    def test_preview_doctor(self):
         data = {"username": "DRE"}
         request = RequestFactory().post('api/preview_doctor_profile', data, content_type='application/json')
 
-        request.__setattr__('authed_user', User.objects.get(username='DRE'))
-        PreviewDoctorProfile.permission_classes = (CustomIsAuthenticated,)
+        request.__setattr__('user', User.objects.get(username='DRE'))
+        ProfilePreview.permission_classes = (AllowAny, )
+        login(request, User.objects.get(username='DRE'))
 
-        response = PreviewDoctorProfile.as_view()(request)
+        print(request.user.is_anonymous)
+        print(request.user.is_authenticated)
+
+        response = ProfilePreview.as_view()(request)
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
                            'profile': {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True,
                                        'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
                                        'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
                                        'expertise_tags': 'og_loc eye head'}}
-        self.assertEqual(response.data, response_result)
-
-
-class TestPreviewPatientProfile(TestCase):
-    fixtures = ['patients.json', 'patient_profiles.json']
-
-    def test_preview(self):
-        data = {"username": "patient_1"}
-        request = RequestFactory().post('api/preview_patient_profile', data, content_type='application/json')
-        response = PreviewPatientProfile.as_view()(request)
-        self.assertEqual(response.status_code, 200)
-        response_result = {'success': True,
-                           'profile': {'username': 'patient_1', 'password': '', 'email': 'patient_1@gmail.com',
-                                       'is_doctor': False, 'phone': None, 'fullname': 'patient_1', 'sex': 'P',
-                                       'weight': 0, 'height': 0, 'medical_records': 'nothing yet'}}
         self.assertEqual(response.data, response_result)
 
 
