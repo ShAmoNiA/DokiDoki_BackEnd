@@ -30,7 +30,7 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'DokiApp.User'
 
-ALLOWED_HOSTS = ['185.141.107.81','127.0.0.1']
+ALLOWED_HOSTS = ['185.141.107.81', '127.0.0.1']
 
 HOST = os.environ.get('HOST')
 PORT = os.environ.get('PORT')
@@ -112,6 +112,7 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
 

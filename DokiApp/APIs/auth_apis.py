@@ -53,16 +53,8 @@ class LogOut(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        try:
-            # This block will run for tests
-            if request.data["username"] == "user":
-                return Response({"success": True, "message": "logged out successfully."})
-        except:
-            try:
-                request.user.auth_token.delete()
-            except:
-                pass
-            return Response({"success": True, "message": "logged out successfully."})
+        request.user.auth_token.delete()
+        return Response({"success": True, "message": "logged out successfully."})
 
 
 class VerifyEmail(APIView):

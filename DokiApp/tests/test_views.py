@@ -12,6 +12,9 @@ from ..views import *
 from ..models import *
 
 
+LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
+
+
 class TestSignUp(TestCase):
 
     def test_sign_up_api(self):
@@ -323,28 +326,27 @@ class TestLogOut(TestCase):
         data = {"username": "user", "password": "password"}
         request = RequestFactory().post('api/login', data, content_type='application/json')
         response = LogIn.as_view()(request)
+
         self.user = user
         self.token = response.data['token']
 
     def test_logout(self):
-        request = RequestFactory().post('api/logout', {"username": "user"}, content_type='application/json')
-        request.__setattr__('authed_user', self.user)
-        LogOut.permission_classes = (CustomIsAuthenticated,)
+        self.client.force_login(self.user)
+        response = self.client.post(LOCALHOST_BASE_URL + 'logout')
 
-        response = LogOut.as_view()(request)
         response_result = {'success': True, 'message': 'logged out successfully.'}
         self.assertEqual(response.data, response_result)
 
-    def test_logout_failure(self):
-        request = RequestFactory().post('api/logout', content_type='application/json')
-        request.__setattr__('authed_user', self.user)
-        LogOut.permission_classes = (self.CustomIsAuthenticated,)
+    def test_token_deleted(self):
+        self.assertEqual(Token.objects.filter(key=self.token).count(), 1)
 
-        LogOut.as_view()(request)
+        self.client.force_login(self.user)
+        self.client.post(LOCALHOST_BASE_URL + 'logout')
+
+        self.assertEqual(Token.objects.filter(key=self.token).count(), 0)
 
     def test_not_authed(self):
         request = RequestFactory().post('api/logout', data={}, content_type='application/json')
-        LogOut.permission_classes = (IsAuthenticated,)
         response = LogOut.as_view()(request)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
@@ -728,94 +730,3 @@ class TestSearchDoctorByTag(TestCase):
         response_result = {'success': True, 'doctors': {}}
         self.assertEqual(response_result, response.data)
 
-
-class TestProfilePreview(TestCase):
-    fixtures = ['patients.json', 'patient_profiles.json',
-                'doctors.json', 'doctor_profiles.json']
-
-    # def test_preview_patient(self):
-    #     data = {"username": "patient_1"}
-    #     request = RequestFactory().post('api/preview_patient_profile', data, content_type='application/json')
-    #     ProfilePreview.permission_classes = (AllowAny, )
-    #     response = ProfilePreview.as_view()(request)
-    #     self.assertEqual(response.status_code, 200)
-    #     response_result = {'success': True,
-    #                        'profile': {'username': 'patient_1', 'password': '', 'email': 'patient_1@gmail.com',
-    #                                    'is_doctor': False, 'phone': None, 'fullname': 'patient_1', 'sex': 'P',
-    #                                    'weight': 0, 'height': 0, 'medical_records': 'nothing yet'}}
-    #     self.assertEqual(response.data, response_result)
-
-    def test_preview_doctor(self):
-        data = {"username": "DRE"}
-        request = RequestFactory().post('api/preview_doctor_profile', data, content_type='application/json')
-
-        request.__setattr__('user', User.objects.get(username='DRE'))
-        ProfilePreview.permission_classes = (AllowAny, )
-        login(request, User.objects.get(username='DRE'))
-
-        print(request.user.is_anonymous)
-        print(request.user.is_authenticated)
-
-        response = ProfilePreview.as_view()(request)
-        self.assertEqual(response.status_code, 200)
-        response_result = {'success': True,
-                           'profile': {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True,
-                                       'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
-                                       'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
-                                       'expertise_tags': 'og_loc eye head'}}
-        self.assertEqual(response.data, response_result)
-
-
-class TestEditProfile(TestCase):
-
-    def signup(self):
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": True}
-        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
-        SignUp.as_view()(request)
-
-        data = {"username": "username_2",
-                "password": "password_2",
-                "email": "user_2@gmail.com",
-                "phone": "09372244322",
-                "fullname": "the second user",
-                "is_doctor": False}
-        request = RequestFactory().post('api/sign_up', data, content_type='application/json')
-        SignUp.as_view()(request)
-
-    def test_not_authed(self):
-        self.signup()
-        data = {}
-        request = RequestFactory().post('api/edit_profile', data, content_type='application/json')
-        response = edit_profile(request)
-        self.assertEqual(response.status_code, 200)
-        response_result = {'success': False, 'message': 'You must login first'}
-        self.assertEqual(response.data, response_result)
-
-    def test_change_doctor_profile(self):
-        self.signup()
-        pass
-
-    def test_change_patient_profile(self):
-        self.signup()
-        pass
-
-    def test_doctor_profile_updated(self):
-        self.signup()
-        pass
-
-    def test_patient_profile_updated(self):
-        self.signup()
-        pass
-
-    def test_doctor_user_updated(self):
-        self.signup()
-        pass
-
-    def test_patient_user_updated(self):
-        self.signup()
-        pass
