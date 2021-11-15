@@ -18,7 +18,7 @@ class ImageSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex','profile_picture_url')
+        fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex', 'profile_picture_url')
 
     def validate_username(self, username):
         if is_valid_username(username):
@@ -33,7 +33,7 @@ class UserSerializer(ModelSerializer):
     def validate_email(self, email):
         if is_valid_email(email):
             return email
-        # raise ValidationError('Invalid email')
+        raise ValidationError('Invalid email')
 
     def validate_phone(self, phone):
         if is_valid_phone_number(phone):
