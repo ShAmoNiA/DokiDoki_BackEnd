@@ -45,6 +45,11 @@ class TestProfilePreview(TestCase):
 
 class TestEditProfile(TestCase):
 
+    def setUp(self):
+        mixer.blend('DokiApp.Tag', title="ddd")
+        mixer.blend('DokiApp.Tag', title="aaa")
+        mixer.blend('DokiApp.Tag', title="eee")
+
     def signup(self):
         data = {"username": "username_1",
                 "password": "password_1",
@@ -81,6 +86,16 @@ class TestEditProfile(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {"success": True, "message": "Profile changed successfully"}
         self.assertEqual(response.data, response_result)
+
+    def test_invalid_tags(self):
+        self.signup()
+        self.client.force_login(User.objects.get(id=1))
+        data = {'degree': 'NEW degree', 'cv': 'NEW cv', 'office_location': '021', 'expertise_tags': 'ddd aaa eee spam',
+                'fullname': 'NEW fullname', 'medical_degree_photo': "THE URL"}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['expertise_tags'][0], 'There is no tag: spam')
 
     def test_change_patient_profile(self):
         self.signup()

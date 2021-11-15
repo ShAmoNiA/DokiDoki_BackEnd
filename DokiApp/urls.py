@@ -31,7 +31,7 @@ profile_urls = [
 
 search_urls = [
     path('add_tag', AddTag.as_view(), name='AddTag'),
-    path('search_by_tag', SearchForTag.as_view(), name='SearchForTag'),
+    path('search_for_tag', SearchForTag.as_view(), name='SearchForTag'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]

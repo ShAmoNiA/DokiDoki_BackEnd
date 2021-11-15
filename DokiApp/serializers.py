@@ -63,6 +63,12 @@ class DoctorProfileSerializer(ModelSerializer):
         model = DoctorProfile
         fields = ('user', 'degree', 'medical_degree_photo', 'cv', 'office_location', 'expertise_tags')
 
+    def validate_expertise_tags(self, tags):
+        for tag in tags.split():
+            if Tag.objects.filter(title=tag).count() == 0:
+                raise ValidationError("There is no tag: " + tag)
+        return tags
+
 
 class PatientProfileSerializer(ModelSerializer):
     class Meta:
