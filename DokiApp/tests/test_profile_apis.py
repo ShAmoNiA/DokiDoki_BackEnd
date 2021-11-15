@@ -18,12 +18,7 @@ class TestProfilePreview(TestCase):
                 'doctors.json', 'doctor_profiles.json']
 
     def test_preview_patient(self):
-        self.maxDiff = None
-
-        user = User.objects.get(username='patient_1')
-
-        self.client.force_login(user)
-        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview')
+        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview' + '?username=patient_1')
 
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
@@ -33,10 +28,7 @@ class TestProfilePreview(TestCase):
         self.assertEqual(response.data, response_result)
 
     def test_preview_doctor(self):
-        user = User.objects.get(username='DRE')
-
-        self.client.force_login(user)
-        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview')
+        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview' + '?username=DRE')
 
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
@@ -45,6 +37,10 @@ class TestProfilePreview(TestCase):
                                        'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
                                        'profile_picture_url': None, 'expertise_tags': 'og_loc eye head'}}
         self.assertEqual(response.data, response_result)
+
+    def test_not_found(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview' + '?username=spam')
+        self.assertEqual(response.status_code, 404)
 
 
 class TestEditProfile(TestCase):

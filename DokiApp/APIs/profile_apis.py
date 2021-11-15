@@ -3,11 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
+
+from django.shortcuts import get_object_or_404
 
 from ..models import *
 from ..helper_functions import *
@@ -18,7 +19,8 @@ class ProfilePreview(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        user = request.user
+        username = request.GET['username']
+        user = get_object_or_404(User, username=username)
 
         profile = self.get_adapted_profile(user)
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
