@@ -15,7 +15,7 @@ from ..serializers import *
 
 
 class ProfilePreview(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
 
     def get(self, request):
         user = request.user
@@ -31,21 +31,21 @@ class ProfilePreview(APIView):
         return profile
 
 
-@api_view(['POST'])
-def edit_profile(request):
-    user = request.user
-    if not user.is_authenticated:
-        return Response({"success": False, "message": "You must login first"}, status=status.HTTP_200_OK)
-    profile = user.get_profile()
+class EditProfile(APIView):
+    permission_classes = (IsAuthenticated, )
 
-    data = pop_dangerous_keys(request)
-    serializerClass = get_profile_serializer(user)
+    def post(self, request):
+        user = request.user
+        profile = user.get_profile()
 
-    serializer = serializerClass(profile, data=data, partial=True)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
+        data = pop_dangerous_keys(request)
+        serializerClass = get_profile_serializer(user)
 
-    serializer = UserSerializer(user, data=data, partial=True)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)
+        serializer = serializerClass(profile, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        serializer = UserSerializer(user, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)

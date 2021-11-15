@@ -26,7 +26,7 @@ profile_urls = [
     path('upload_image', UploadImage.as_view(), name='UploadImage'),
 
     path('profile_preview', ProfilePreview.as_view(), name='ProfilePreview'),
-    path('edit_profile', edit_profile),
+    path('edit_profile', EditProfile.as_view(), name='EditProfile'),
 ]
 
 search_urls = [

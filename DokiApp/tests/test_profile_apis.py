@@ -71,10 +71,9 @@ class TestEditProfile(TestCase):
     def test_not_authed(self):
         self.signup()
         request = RequestFactory().post('api/edit_profile', content_type='application/json')
-        response = edit_profile(request)
-        self.assertEqual(response.status_code, 200)
-        response_result = {'success': False, 'message': 'You must login first'}
-        self.assertEqual(response.data, response_result)
+        response = EditProfile.as_view()(request)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
 
     def test_change_doctor_profile(self):
         self.signup()
