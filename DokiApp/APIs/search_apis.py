@@ -11,9 +11,11 @@ from django.db.models import Q
 from ..models import *
 from ..helper_functions import *
 from ..serializers import *
+from ..permissions import *
 
 
 class AddTag(APIView):
+    permission_classes = (IsAuthenticated, IsDoctor)
 
     def post(self, request):
         tag_serializer = TagSerializer(data=request.data)
@@ -25,6 +27,7 @@ class AddTag(APIView):
 
 
 class SearchForTag(APIView):
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         key = request.data["key"]
@@ -37,6 +40,7 @@ class SearchForTag(APIView):
 
 
 class SearchDoctorByName(APIView):
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         key = request.data["key"]
@@ -48,6 +52,7 @@ class SearchDoctorByName(APIView):
 
 
 class SearchDoctorByTag(APIView):
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         key = request.data["key"]

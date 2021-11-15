@@ -88,6 +88,6 @@ class TagSerializer(ModelSerializer):
         fields = ('title',)
 
     def validate_title(self, title):
-        if " " in title or title == "":
-            raise ValidationError('Invalid title')
-        return title
+        if is_valid_tag(title):
+            return title
+        raise ValidationError('Invalid title')
