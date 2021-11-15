@@ -23,20 +23,23 @@ auth_urls = [
 ]
 
 profile_urls = [
-    path('upload_image', ImageView.as_view(), name='UploadImage'),
+    path('upload_image', UploadImage.as_view(), name='UploadImage'),
+
+    path('profile_preview', ProfilePreview.as_view(), name='ProfilePreview'),
+    path('edit_profile', edit_profile),
+]
+
+search_urls = [
     path('add_tag', AddTag.as_view(), name='AddTag'),
     path('search_by_tag', SearchForTag.as_view(), name='SearchForTag'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
-
-    path('profile_preview', ProfilePreview.as_view(), name='ProfilePreview'),
-
-    path('edit_profile', edit_profile),
 ]
 
 pack_list = [
     auth_urls,
-    profile_urls
+    profile_urls,
+    search_urls
 ]
 
 
