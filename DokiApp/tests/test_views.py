@@ -741,11 +741,11 @@ class TestProfilePreview(TestCase):
         user = User.objects.get(username='patient_1')
 
         self.client.force_login(user)
-        response = self.client.post(LOCALHOST_BASE_URL + 'profile_preview')
+        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview')
 
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
-                           'profile': {'username': 'patient_1', 'password': '', 'fullname': 'patient_1', 'sex': 'P',
+                           'profile': {'username': 'patient_1', 'fullname': 'patient_1', 'sex': 'P',
                                        'is_doctor': False, 'phone': None,  'email': 'patient_1@gmail.com', 'weight': 0,
                                        'profile_picture_url': None, 'height': 0, 'medical_records': 'nothing yet'}}
         self.assertEqual(response.data, response_result)
@@ -754,11 +754,11 @@ class TestProfilePreview(TestCase):
         user = User.objects.get(username='DRE')
 
         self.client.force_login(user)
-        response = self.client.post(LOCALHOST_BASE_URL + 'profile_preview')
+        response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview')
 
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True,
-                           'profile': {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True,
+                           'profile': {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True,
                                        'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
                                        'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
                                        'profile_picture_url': None, 'expertise_tags': 'og_loc eye head'}}

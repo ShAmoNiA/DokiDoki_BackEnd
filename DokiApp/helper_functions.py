@@ -31,6 +31,7 @@ def doctor_profile_adapter(user):
     profile = user.profile
 
     data = user_serializer.data
+    data.pop('password')
 
     data["degree"] = profile.degree
     data["medical_degree_photo"] = profile.medical_degree_photo
@@ -45,6 +46,7 @@ def patient_profile_adapter(user):
     profile = user.profile
 
     data = user_serializer.data
+    data.pop('password')
 
     data["weight"] = profile.weight
     data["height"] = profile.height

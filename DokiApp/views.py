@@ -87,7 +87,7 @@ class SearchDoctorByTag(APIView):
 class ProfilePreview(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def post(self, request):
+    def get(self, request):
         user = request.user
 
         profile = self.get_adapted_profile(user)
