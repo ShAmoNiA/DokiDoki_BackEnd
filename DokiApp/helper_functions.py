@@ -58,7 +58,12 @@ def pop_dangerous_keys(request):
     dangerous_keys = ['password', 'username', 'email', 'is_doctor', 'user',
                       'reset_password_token', 'verify_email_token']
 
-    request.data._mutable = True
+    try:
+        # This will be run for tests:
+        request.data._mutable = True
+    except:
+        pass
+
     data = request.data
     for key in dangerous_keys:
         if key in data.keys():
