@@ -22,15 +22,26 @@ class ProfilePreview(APIView):
         username = request.GET['username']
         user = get_object_or_404(User, username=username)
 
-        profile = self.get_adapted_profile(user)
+        profile = self.get_adapted_and_filtered_profile(user)
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
-    def get_adapted_profile(self, user):
-        if user.is_doctor:
-            profile = doctor_profile_adapter(user)
-        else:
-            profile = patient_profile_adapter(user)
+    def get_adapted_and_filtered_profile(self, user):
+        profile = adapt_profile(user)
+        return self.filter_profile(profile)
+
+    def filter_profile(self, profile):
+        # TODO: filter the profile fields
         return profile
+
+
+class MyProfilePreview(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        user = request.user
+        profile = adapt_profile(user)
+
+        return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
 
 class EditProfile(APIView):

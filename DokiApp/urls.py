@@ -26,6 +26,8 @@ profile_urls = [
     path('upload_image', UploadImage.as_view(), name='UploadImage'),
 
     path('profile_preview', ProfilePreview.as_view(), name='ProfilePreview'),
+    path('my_profile_preview', MyProfilePreview.as_view(), name='MyProfilePreview'),
+
     path('edit_profile', EditProfile.as_view(), name='EditProfile'),
 ]
 
