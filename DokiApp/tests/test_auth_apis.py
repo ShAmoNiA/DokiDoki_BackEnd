@@ -9,19 +9,32 @@ from django.contrib.auth import authenticate
 from ..views import *
 from ..models import *
 
-
 LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
+
+DATA_USER_DOCTOR_1 = {"username": "username_1",
+                      "password": "password_1",
+                      "email": "user_1@gmail.com",
+                      "phone": "09372244222",
+                      "fullname": "the first user",
+                      "is_doctor": True}
+DATA_USER_DOCTOR_2 = {"username": "username_2",
+                      "password": "password_2",
+                      "email": "user_2@gmail.com",
+                      "phone": "09372244322",
+                      "fullname": "the second user",
+                      "is_doctor": True}
+DATA_USER_PATIENT_1 = {"username": "username_1",
+                       "password": "password_1",
+                       "email": "user_1@gmail.com",
+                       "phone": "09372244222",
+                       "fullname": "the first user",
+                       "is_doctor": False}
 
 
 class TestSignUp(TestCase):
 
     def test_sign_up_api(self):
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -29,12 +42,7 @@ class TestSignUp(TestCase):
         self.assertEqual(response.data, response_result)
 
     def test_sign_up_saved_data(self):
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         SignUp.as_view()(request)
         user = User.objects.get(id=1)
@@ -50,22 +58,12 @@ class TestSignUp(TestCase):
         self.assertEqual(user.is_staff, False)
 
     def test_profile_created(self):
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         SignUp.as_view()(request)
         patient_user = User.objects.get(id=1)
 
-        data = {"username": "username_2",
-                "password": "password_2",
-                "email": "user_2@gmail.com",
-                "phone": "09372244322",
-                "fullname": "the second user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_2)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         SignUp.as_view()(request)
         doctor_user = User.objects.get(id=2)
@@ -78,12 +76,8 @@ class TestSignUp(TestCase):
     def test_duplicated_username(self):
         mixer.blend('DokiApp.User', username="username_1")
 
-        data = {"username": "username_1",
-                "password": "password_2",
-                "email": "user_2@gmail.com",
-                "phone": "093722444444",
-                "fullname": "the second user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_2)
+        data["username"] = "username_1"
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -92,38 +86,24 @@ class TestSignUp(TestCase):
     def test_duplicated_email(self):
         mixer.blend('DokiApp.User', email="user_1@gmail.com")
 
-        data = {"username": "username_2",
-                "password": "password_2",
-                "email": "user_1@gmail.com",
-                "phone": "093722444444",
-                "fullname": "the second user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['message']['email'][0], 'user with this email already exists.')
 
     def test_duplicated_phone(self):
-        mixer.blend('DokiApp.User', phone="09372244222")
+        mixer.blend('DokiApp.User', phone="09372244322")
 
-        data = {"username": "username_2",
-                "password": "password_2",
-                "email": "user_2@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the second user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_2)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['message']['phone'][0], 'user with this phone already exists.')
 
     def test_blank_username(self):
-        data = {"username": "",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_1)
+        data["username"] = ""
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['username'][0], 'This field may not be blank.')
@@ -132,12 +112,7 @@ class TestSignUp(TestCase):
         INVALID_USERNAMES = ["4name", ".name", "_name", "user_.name", "user._name", "user__name", "user..name",
                              "user$name", "user#name", "user@name", "user!name", "user&name", "user^name"]
 
-        data = {"username": "username",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_1)
 
         for username in INVALID_USERNAMES:
             data["username"] = username
@@ -148,12 +123,7 @@ class TestSignUp(TestCase):
     def test_invalid_email(self):
         INVALID_EMAILS = ["@gmail.com", "gmail.com", "a@gmail@com", "A@gmail", "InvalidEmail@.com"]
 
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "",
-                "phone": "09372244222",
-                "fullname": "the first user",
-                "is_doctor": True}
+        data = dict(DATA_USER_DOCTOR_1)
 
         for email in INVALID_EMAILS:
             data["email"] = email
@@ -164,12 +134,7 @@ class TestSignUp(TestCase):
     def test_invalid_phone(self):
         INVALID_PHONES = ["16ewf54", "862+2", "+86331+34", "68+", "+853f77", "33"]
 
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
 
         for phone in INVALID_PHONES:
             data["phone"] = phone
@@ -180,12 +145,8 @@ class TestSignUp(TestCase):
             self.assertEqual(response.data['message']['phone'][0], 'Invalid phone number')
 
     def test_long_phone(self):
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "+981235486498313688432168",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
+        data["phone"] = "+981235486498313688432168"
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['phone'][0], 'Ensure this field has no more than 20 characters.')
@@ -193,12 +154,7 @@ class TestSignUp(TestCase):
     def test_valid_phone(self):
         VALID_PHONES = ["09123446548", "00989552345689", "+989213581456"]
 
-        data = {"username": "username_1",
-                "password": "password_1",
-                "email": "user_1@gmail.com",
-                "phone": "",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
 
         for phone in VALID_PHONES:
             data["phone"] = phone
@@ -210,26 +166,17 @@ class TestSignUp(TestCase):
             self.assertEqual(response.data, response_result)
 
     def test_short_password(self):
-        data = {"username": "a",
-                "password": "p_1",
-                "email": "user_1@gmail.com",
-                "phone": "+989372223344",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_PATIENT_1)
+        data["password"] = "p_1"
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
         self.assertEqual(response.data['message']['password'][0], 'Password is too short')
 
     def test_password_hashed(self):
-        data = {"username": "a",
-                "password": "12345678",
-                "email": "user_1@gmail.com",
-                "phone": "+989372223344",
-                "fullname": "the first user",
-                "is_doctor": False}
+        data = dict(DATA_USER_DOCTOR_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         SignUp.as_view()(request)
-        self.assertNotEqual(User.objects.get(id=1).password, "12345678")
+        self.assertNotEqual(User.objects.get(id=1).password, "password_1")
 
 
 class TestLogIn(TestCase):

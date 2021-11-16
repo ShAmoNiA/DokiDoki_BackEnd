@@ -47,24 +47,17 @@ class User(AbstractUser):
             result = PatientProfile.objects.filter(user=self).count()
         return bool(result)
 
-    def get_profile(self):
-        if self.is_doctor:
-            result = DoctorProfile.objects.filter(user=self).first()
-        else:
-            result = PatientProfile.objects.filter(user=self).first()
-        return result
-
     @property
     def verified_email(self):
         return self.verify_email_token == "verified"
 
-    def verify_email(self):
-        self.verify_email_token = "verified"
-        self.save()
-
     @property
     def is_patient(self):
         return not self.is_doctor
+
+    def verify_email(self):
+        self.verify_email_token = "verified"
+        self.save()
 
 
 class DoctorProfile(models.Model):

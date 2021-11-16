@@ -38,7 +38,7 @@ class EditProfile(APIView):
 
     def post(self, request):
         user = request.user
-        profile = user.get_profile()
+        profile = user.profile
 
         data = pop_dangerous_keys(request)
         serializerClass = get_profile_serializer(user)

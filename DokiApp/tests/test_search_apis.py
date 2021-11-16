@@ -9,8 +9,21 @@ from django.contrib.auth import authenticate
 from ..views import *
 from ..models import *
 
-
 LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
+
+ALL_DOCTORS_PROFILES = {
+    1: {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'DRE',
+        'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
+        'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc eye head'},
+    2: {'username': 'CJ', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'CJ',
+        'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
+        'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc'},
+    3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None,
+        'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
+        'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc eye'},
+    4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
+        'fullname': 'Ali sadeghi', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
+        'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc'}}
 
 
 class TestAddTag(TestCase):
@@ -121,21 +134,14 @@ class TestSearchForTag(TestCase):
 
 
 class TestSearchDoctorByName(TestCase):
-    fixtures = ['doctors.json']
+    fixtures = ['doctors.json', 'doctor_profiles.json']
 
     def test_all(self):
         data = {"key": ""}
         request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
-                   2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
-                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
-                   4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
+        doctors = ALL_DOCTORS_PROFILES
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -144,8 +150,7 @@ class TestSearchDoctorByName(TestCase):
         request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'}}
+        doctors = {1: ALL_DOCTORS_PROFILES[1]}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -153,14 +158,7 @@ class TestSearchDoctorByName(TestCase):
         request = RequestFactory().post('api/search_doctor_by_name', data, content_type='application/json')
         response = SearchDoctorByName.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
-                   2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
-                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
-                   4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
+        doctors = ALL_DOCTORS_PROFILES
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -181,14 +179,7 @@ class TestSearchDoctorByTag(TestCase):
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
-                   2: {'username': 'CJ', 'password': '', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'CJ', 'sex': 'P'},
-                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'},
-                   4: {'username': 'Ali', 'password': '', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'Ali sadeghi', 'sex': 'P'}}
+        doctors = ALL_DOCTORS_PROFILES
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
@@ -197,10 +188,7 @@ class TestSearchDoctorByTag(TestCase):
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: {'username': 'DRE', 'password': '', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None,
-                       'profile_picture_url': None, 'fullname': 'DRE', 'sex': 'P'},
-                   3: {'username': 'OG LOC', 'password': '', 'email': 'og.loc@gmail.com', 'is_doctor': True,
-                       'profile_picture_url': None, 'phone': None, 'fullname': 'OG LOC', 'sex': 'P'}}
+        doctors = {1: ALL_DOCTORS_PROFILES[1], 3: ALL_DOCTORS_PROFILES[3]}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 

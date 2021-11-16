@@ -47,8 +47,9 @@ class SearchDoctorByName(APIView):
         search_query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | Q(last_name__icontains=key)
         doctors = User.objects.filter(is_doctor=True).filter(search_query)
 
-        doctors_list = entity_adapter(doctors, UserSerializer)
-        return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
+        result = adapt_profile_list(doctors)
+
+        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
 
 class SearchDoctorByTag(APIView):
@@ -57,6 +58,6 @@ class SearchDoctorByTag(APIView):
     def post(self, request):
         key = request.data["key"]
         profiles = DoctorProfile.objects.filter(expertise_tags__icontains=key)
-        doctors = profile_to_user_adapter(profiles)
-        doctors_list = entity_adapter(doctors, UserSerializer)
-        return Response({"success": True, "doctors": doctors_list}, status=status.HTTP_200_OK)
+
+        return Response({"success": True, "doctors": adapt_doctor_profiles_to_profile_list(profiles)},
+                        status=status.HTTP_200_OK)

@@ -8,22 +8,30 @@ def result_page(request, result):
     return render(request, 'result.html', context={'result': result})
 
 
-def entity_adapter(query_set, serializer_class):
-    result = dict({})
-    for item in query_set:
-        user_serializer = serializer_class(instance=item)
-        data = user_serializer.data
-        result[item.id] = data
+def adapt_doctor_profiles_to_profile_list(profiles):
+    doctors = []
+    for profile in profiles:
+        doctors.append(profile.user)
+
+    result = {}
+    for doctor in doctors:
+        result[doctor.id] = doctor_profile_adapter(doctor)
     return result
 
 
-def profile_to_user_adapter(query_set):
-    IDs = []
-    users = User.objects.all()
+def adapt_profile_list(users):
+    result = {}
     for user in users:
-        if user.profile in query_set:
-            IDs.append(user.id)
-    return User.objects.filter(id__in=IDs)
+        result[user.id] = adapt_profile(user)
+    return result
+
+
+def adapt_profile(user):
+    if user.is_doctor:
+        profile = doctor_profile_adapter(user)
+    else:
+        profile = patient_profile_adapter(user)
+    return profile
 
 
 def doctor_profile_adapter(user):
