@@ -111,6 +111,31 @@ class TestEditProfile(TestCase):
         response_result = {"success": True, "message": "Profile changed successfully"}
         self.assertEqual(response.data, response_result)
 
+    def test_invalid_patient_weight(self):
+        self.client.force_login(User.objects.get(id=5))
+        data = {'weight': 17}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(str(response.data['weight'][0]), 'Enter Weight in kilograms')
+
+    def test_invalid_patient_height(self):
+        self.client.force_login(User.objects.get(id=5))
+        data = {'height': 23}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(str(response.data['height'][0]), 'Enter height in centimeters')
+
+    def test_invalid_patient_weight_and_height(self):
+        self.client.force_login(User.objects.get(id=5))
+        data = {'weight': 503, 'height': 273}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(str(response.data['weight'][0]), 'Enter Weight in kilograms')
+        self.assertEqual(str(response.data['height'][0]), 'Enter height in centimeters')
+
     def test_doctor_profile_updated(self):
         self.client.force_login(User.objects.get(id=1))
         data = {'degree': 'NEW degree', 'cv': 'NEW cv', 'office_location': '021', 'expertise_tags': 'ddd aaa eee',
