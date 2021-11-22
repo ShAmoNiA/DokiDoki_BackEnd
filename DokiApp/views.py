@@ -3,13 +3,21 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import FormParser
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
-from .models import User
-from .helper_functions import result_page
+from django.db.models import Q
+
+from .models import *
+from .helper_functions import *
+from .serializers import *
 
 from .APIs.auth_apis import *
+from .APIs.profile_apis import *
+from .APIs.search_apis import *
 
 
 @api_view(['POST'])
@@ -22,3 +30,14 @@ def send_email_by_front(request):
     send_text_email(subject, message, to_list)
 
     return Response({"success": True, "message": "email sent"}, status=status.HTTP_200_OK)
+
+
+class UploadImage(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        image_serializer = ImageSerializer(data=request.data)
+        if image_serializer.is_valid():
+            image_serializer.save()
+            return Response({"image_url": image_serializer.data["image"]}, status=status.HTTP_200_OK)
+        return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

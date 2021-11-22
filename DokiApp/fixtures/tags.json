@@ -1,0 +1,100 @@
+[
+  {
+    "model": "DokiApp.Tag",
+    "pk": 1,
+    "fields": {
+      "title": "Cardiologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 2,
+    "fields": {
+      "title": "Oncologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 3,
+    "fields": {
+      "title": "Gastroenterologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 4,
+    "fields": {
+      "title": "Pulmonologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 5,
+    "fields": {
+      "title": "Nephrologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 6,
+    "fields": {
+      "title": "Endocrinologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 7,
+    "fields": {
+      "title": "Ophthalmologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 8,
+    "fields": {
+      "title": "Otolaryngologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 9,
+    "fields": {
+      "title": "Dermatologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 10,
+    "fields": {
+      "title": "Psychiatrist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 11,
+    "fields": {
+      "title": "Neurologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 12,
+    "fields": {
+      "title": "Radiologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 13,
+    "fields": {
+      "title": "Anesthesiologist"
+    }
+  },
+  {
+    "model": "DokiApp.Tag",
+    "pk": 14,
+    "fields": {
+      "title": "Surgeon"
+    }
+  }
+]
