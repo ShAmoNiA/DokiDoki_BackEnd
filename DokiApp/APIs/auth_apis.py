@@ -17,7 +17,7 @@ from ..email_functions import send_reset_pass_email, send_text_email
 
 
 class SignUp(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
@@ -29,6 +29,7 @@ class SignUp(APIView):
 
 
 class CheckUsername(APIView):
+    permission_classes = (AllowAny, )
 
     def get(self, request, username):
         user = User.objects.filter(username__iexact=username)
@@ -36,7 +37,7 @@ class CheckUsername(APIView):
 
 
 class LogIn(ObtainAuthToken):
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -50,20 +51,15 @@ class LogIn(ObtainAuthToken):
 
 
 class LogOut(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request):
-        try:
-            # This block will run for tests
-            if request.data["username"] == "user":
-                return Response({"success": True, "message": "logged out successfully."})
-        except:
-            request.user.auth_token.delete()
-            return Response({"success": True, "message": "logged out successfully."})
+        request.user.auth_token.delete()
+        return Response({"success": True, "message": "logged out successfully."})
 
 
 class VerifyEmail(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         result = "Your email verified successfully"
@@ -101,6 +97,7 @@ def forgot_password(request):
 
 
 class ResetPassword(APIView):
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         token = request.data['token']
