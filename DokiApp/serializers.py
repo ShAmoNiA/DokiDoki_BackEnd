@@ -30,11 +30,6 @@ class UserSerializer(ModelSerializer):
             return password
         raise ValidationError('Password is too short')
 
-    def validate_email(self, email):
-        if is_valid_email(email):
-            return email
-        raise ValidationError('Invalid email')
-
     def validate_phone(self, phone):
         if is_valid_phone_number(phone):
             return phone
@@ -78,14 +73,12 @@ class PatientProfileSerializer(ModelSerializer):
     def validate_height(self, height):
         if height < 25 or height > 270:
             raise ValidationError("Enter height in centimeters")
-        else:
-            return height
+        return height
 
     def validate_weight(self, weight):
         if weight < 20 or weight > 500:
-            raise ValidationError("Enter Weight in kilogram")
-        else:
-            return weight
+            raise ValidationError("Enter Weight in kilograms")
+        return weight
 
 
 class TagSerializer(ModelSerializer):

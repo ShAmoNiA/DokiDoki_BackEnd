@@ -69,8 +69,7 @@ def pop_dangerous_keys(request):
     try:
         # This will be run for tests:
         request.data._mutable = True
-    except:
-        pass
+    except: pass
 
     data = request.data
     for key in dangerous_keys:
