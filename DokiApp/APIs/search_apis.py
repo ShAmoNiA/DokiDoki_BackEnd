@@ -57,7 +57,14 @@ class SearchDoctorByTag(APIView):
 
     def post(self, request):
         key = request.data["key"]
-        profiles = DoctorProfile.objects.filter(expertise_tags__icontains=key)
+        profiles = self.filter_doctors_by_expertise(key)
 
         return Response({"success": True, "doctors": adapt_doctor_profiles_to_profile_list(profiles)},
                         status=status.HTTP_200_OK)
+
+    def filter_doctors_by_expertise(self, key):
+        if key == "":
+            return DoctorProfile.objects.all()
+
+        doctor_ids = Expertise.objects.filter(tag__title__in=key.split()).values_list('doctor_id', flat=True)
+        return DoctorProfile.objects.filter(id__in=list(doctor_ids))

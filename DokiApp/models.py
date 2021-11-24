@@ -68,7 +68,13 @@ class DoctorProfile(models.Model):
     cv = models.TextField(default="default")
     office_location = models.CharField(max_length=128, null=True)
 
-    expertise_tags = models.CharField(max_length=512, default="")
+    @property
+    def expertise_tags(self):
+        tags = Expertise.objects.filter(doctor=self).values_list('tag', flat=True)
+        result = ''
+        for expertise in tags:
+            result += expertise.title + " "
+        return result
 
     def set_user(self, user):
         if user.has_profile:
@@ -101,3 +107,10 @@ class PatientProfile(models.Model):
 
 class Tag(models.Model):
     title = models.CharField(max_length=64, unique=True)
+
+
+class Expertise(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    image_url = models.CharField(max_length=512, null=True, blank=True)
