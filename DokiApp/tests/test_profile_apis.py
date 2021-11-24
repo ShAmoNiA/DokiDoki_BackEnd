@@ -20,8 +20,10 @@ COMPLETE_PROFILE_DOCTOR = {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doct
                            'profile_picture_url': None, 'expertise_tags': 'og_loc eye head'}
 
 # TODO: change the safe profile results
-SAFE_PROFILE_PATIENT = COMPLETE_PROFILE_PATIENT
-SAFE_PROFILE_DOCTOR = COMPLETE_PROFILE_DOCTOR
+SAFE_PROFILE_PATIENT = dict(COMPLETE_PROFILE_PATIENT)
+SAFE_PROFILE_DOCTOR = dict(COMPLETE_PROFILE_DOCTOR)
+SAFE_PROFILE_PATIENT.pop('phone')
+SAFE_PROFILE_DOCTOR.pop('phone')
 
 
 class TestProfilePreview(TestCase):

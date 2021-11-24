@@ -30,7 +30,7 @@ class ProfilePreview(APIView):
         return self.filter_profile(profile)
 
     def filter_profile(self, profile):
-        # TODO: filter the profile fields
+        profile.pop("phone")
         return profile
 
 
