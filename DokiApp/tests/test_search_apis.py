@@ -14,16 +14,16 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 ALL_DOCTORS_PROFILES = {
     1: {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'DRE',
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc eye head'},
+        'cv': 'default', 'office_location': None},
     2: {'username': 'CJ', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'CJ',
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc'},
+        'cv': 'default', 'office_location': None},
     3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None,
         'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
-        'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc eye'},
+        'medical_degree_photo': None, 'cv': 'default', 'office_location': None},
     4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
         'fullname': 'Ali sadeghi', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
-        'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': 'og_loc'}}
+        'medical_degree_photo': None, 'cv': 'default', 'office_location': None}}
 
 
 class TestAddTag(TestCase):
@@ -172,9 +172,10 @@ class TestSearchDoctorByName(TestCase):
 
 
 class TestSearchDoctorByTag(TestCase):
-    fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json']
+    fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json', 'expertises.json']
 
     def test_all(self):
+        self.maxDiff=None
         data = {"key": ""}
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)
@@ -184,16 +185,33 @@ class TestSearchDoctorByTag(TestCase):
         self.assertEqual(response_result, response.data)
 
     def test_a_title(self):
-        data = {"key": "Ey"}
+        data = {"key": "Endocrinologist"}
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
-        doctors = {1: ALL_DOCTORS_PROFILES[1], 3: ALL_DOCTORS_PROFILES[3]}
+        doctors = {2: ALL_DOCTORS_PROFILES[2], 3: ALL_DOCTORS_PROFILES[3]}
+        response_result = {'success': True, 'doctors': doctors}
+        self.assertEqual(response_result, response.data)
+
+    def test_some_title(self):
+        data = {"key": "Gastroenterologist Nephrologist"}
+        request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
+        response = SearchDoctorByTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        doctors = {1: ALL_DOCTORS_PROFILES[1], 2: ALL_DOCTORS_PROFILES[2]}
         response_result = {'success': True, 'doctors': doctors}
         self.assertEqual(response_result, response.data)
 
     def test_not_found(self):
         data = {"key": "spam"}
+        request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
+        response = SearchDoctorByTag.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        response_result = {'success': True, 'doctors': {}}
+        self.assertEqual(response_result, response.data)
+
+    def test_not_complete_key(self):
+        data = {"key": "Gastroe"}
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)
         self.assertEqual(response.status_code, 200)
