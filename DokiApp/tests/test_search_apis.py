@@ -13,7 +13,7 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 
 ALL_DOCTORS_PROFILES = {
     1: {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'DRE',
-        'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
+        'sex': 'P', 'profile_picture_url': "default.png", 'degree': 'general', 'medical_degree_photo': None,
         'cv': 'default', 'office_location': None, 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'},
     2: {'username': 'CJ', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'CJ',
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,

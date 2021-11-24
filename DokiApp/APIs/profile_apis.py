@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -55,6 +57,8 @@ class EditProfile(APIView):
         data = pop_dangerous_keys(request)
         serializerClass = get_profile_serializer(user)
 
+        self.delete_old_picture(user, data)
+
         serializer = serializerClass(profile, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -63,6 +67,11 @@ class EditProfile(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)
+
+    def delete_old_picture(self, user, data):
+        if ('profile_picture_url' in data) and (data['profile_picture_url'] != user.profile_picture_url):
+            Image.objects.get(image=user.profile_picture_url).delete()
+            os.remove(os.getcwd() + "/static/images/" + user.profile_picture_url)
 
 
 class AddExpertise(APIView):

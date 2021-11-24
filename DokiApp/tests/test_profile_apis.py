@@ -1,3 +1,6 @@
+import os
+from shutil import copyfile as copy
+
 from django.test import TestCase
 from django.test import RequestFactory
 from django.test.client import encode_multipart
@@ -13,11 +16,11 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 
 COMPLETE_PROFILE_PATIENT = {'username': 'patient_1', 'fullname': 'patient_1', 'sex': 'P',
                             'is_doctor': False, 'phone': None, 'email': 'patient_1@gmail.com', 'weight': 0,
-                            'profile_picture_url': None, 'height': 0, 'medical_records': 'nothing yet'}
+                            'profile_picture_url': "default.png", 'height': 0, 'medical_records': 'nothing yet'}
 COMPLETE_PROFILE_DOCTOR = {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True,
-                           'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general', 'cv': 'default',
-                           'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': None,
-                           'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
+                           'phone': None, 'fullname': 'DRE', 'sex': 'P', 'medical_degree_photo': None,
+                           'office_location': None, 'profile_picture_url': "default.png", 'degree': 'general',
+                           'cv': 'default', 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
 
 SAFE_PROFILE_PATIENT = dict(COMPLETE_PROFILE_PATIENT)
 SAFE_PROFILE_DOCTOR = dict(COMPLETE_PROFILE_DOCTOR)
@@ -205,6 +208,60 @@ class TestEditProfile(TestCase):
         self.assertEqual(profile.user, initial_profile.user)
 
 
+class TestChangeProfileImage(TestCase):
+    fixtures = ['patients.json', 'patient_profiles.json',
+                'doctors.json', 'doctor_profiles.json', 'images.json']
+
+    def restore_image(self):
+        original = os.getcwd() + '\\default.png'
+        target = os.getcwd() + r'\static\images\default.png'
+        copy(original, target)
+
+    def test_image_changed(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {'profile_picture_url': 'NEW_image_url'}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": True, "message": "Profile changed successfully"}
+        self.assertEqual(response.data, response_result)
+        self.assertEqual(User.objects.get(id=1).profile_picture_url, "NEW_image_url")
+
+        self.restore_image()
+
+    def test_the_same_image(self):
+        user = User.objects.get(id=1)
+        self.client.force_login(user)
+        profile_picture_url = user.profile_picture_url
+        data = {'profile_picture_url': profile_picture_url}
+        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(response.status_code, 200)
+        response_result = {"success": True, "message": "Profile changed successfully"}
+        self.assertEqual(response.data, response_result)
+
+        self.assertEqual(User.objects.get(id=1).profile_picture_url, profile_picture_url)
+
+    def test_old_image_deleted_from_database(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {'profile_picture_url': 'NEW_image_url'}
+        self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(Image.objects.all().count(), 0)
+
+        self.restore_image()
+
+    def test_old_image_deleted_from_files(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {'profile_picture_url': 'NEW_image_url'}
+        self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
+
+        self.assertEqual(Image.objects.all().count(), 0)
+        self.assertFalse(os.path.isfile(os.getcwd() + r'\static\images\default.png'))
+
+        self.restore_image()
+
+
 class TestAddExpertise(TestCase):
     fixtures = ['patients.json', 'patient_profiles.json',
                 'doctors.json', 'doctor_profiles.json',
@@ -225,7 +282,7 @@ class TestAddExpertise(TestCase):
 
     def test_tag_not_found(self):
         self.client.force_login(User.objects.get(id=1))
-        data={"image_url": "the_url", "tag": "spam"}
+        data = {"image_url": "the_url", "tag": "spam"}
         response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
 
         self.assertEqual(response.status_code, 404)
