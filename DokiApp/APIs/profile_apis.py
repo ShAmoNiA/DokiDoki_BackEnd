@@ -1,3 +1,11 @@
+"""
+contains:
+    ProfilePreview
+    MyProfilePreview
+    EditProfile
+    AddExpertise
+"""
+
 import os
 
 from rest_framework.views import APIView

@@ -4,9 +4,9 @@ from re import search as validateRegex
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import *
 
-from .email_functions import send_verification_email
+from .Helper_functions.email_functions import send_verification_email
 
-from .string_validator import *
+from .Helper_functions.string_validator import *
 
 
 class ImageSerializer(ModelSerializer):

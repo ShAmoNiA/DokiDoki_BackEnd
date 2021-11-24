@@ -1,3 +1,15 @@
+"""
+contains:
+    SignUp
+    CheckUsername
+    LogIn
+    LogOut
+    VerifyEmail
+    forgot_password
+    ResetPassword
+"""
+
+
 from secrets import token_hex
 
 from rest_framework.views import APIView
@@ -13,7 +25,7 @@ from rest_framework.permissions import AllowAny
 
 from ..models import User
 from ..Helper_functions.helper_functions import result_page
-from ..email_functions import send_reset_pass_email, send_text_email
+from ..Helper_functions.email_functions import send_reset_pass_email, send_text_email
 
 
 class SignUp(APIView):
