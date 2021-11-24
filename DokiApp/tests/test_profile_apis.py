@@ -15,9 +15,8 @@ COMPLETE_PROFILE_PATIENT = {'username': 'patient_1', 'fullname': 'patient_1', 's
                             'is_doctor': False, 'phone': None, 'email': 'patient_1@gmail.com', 'weight': 0,
                             'profile_picture_url': None, 'height': 0, 'medical_records': 'nothing yet'}
 COMPLETE_PROFILE_DOCTOR = {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True,
-                           'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general',
-                           'medical_degree_photo': None, 'cv': 'default', 'office_location': None,
-                           'profile_picture_url': None, 'expertise_tags': 'og_loc eye head'}
+                           'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general', 'cv': 'default',
+                           'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': None}
 
 # TODO: change the safe profile results
 SAFE_PROFILE_PATIENT = dict(COMPLETE_PROFILE_PATIENT)
@@ -87,7 +86,7 @@ class TestEditProfile(TestCase):
 
     def test_change_doctor_profile(self):
         self.client.force_login(User.objects.get(id=1))
-        data = {'degree': 'NEW degree', 'cv': 'NEW cv', 'office_location': '021', 'expertise_tags': 'ddd aaa eee',
+        data = {'degree': 'NEW degree', 'cv': 'NEW cv', 'office_location': '021',
                 'fullname': 'NEW fullname', 'medical_degree_photo': "THE URL"}
         response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
 
@@ -149,7 +148,6 @@ class TestEditProfile(TestCase):
         self.assertEqual(profile.medical_degree_photo, "THE URL")
         self.assertEqual(profile.cv, 'NEW cv')
         self.assertEqual(profile.office_location, '021')
-        self.assertEqual(profile.expertise_tags, 'ddd aaa eee')
 
     def test_patient_profile_updated(self):
         self.client.force_login(User.objects.get(id=5))

@@ -56,7 +56,7 @@ class UserSerializer(ModelSerializer):
 class DoctorProfileSerializer(ModelSerializer):
     class Meta:
         model = DoctorProfile
-        fields = ('user', 'degree', 'medical_degree_photo', 'cv', 'office_location', 'expertise_tags')
+        fields = ('user', 'degree', 'medical_degree_photo', 'cv', 'office_location')
 
     def validate_expertise_tags(self, tags):
         for tag in tags.split():
