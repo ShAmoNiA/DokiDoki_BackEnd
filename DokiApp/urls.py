@@ -32,7 +32,7 @@ profile_urls = [
 ]
 
 search_urls = [
-    path('search_for_tag', SearchForTag.as_view(), name='SearchForTag'),
+    path('all_tags', AllTags.as_view(), name='AllTags'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]

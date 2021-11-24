@@ -73,14 +73,3 @@ class PatientProfileSerializer(ModelSerializer):
         if weight < 20 or weight > 500:
             raise ValidationError("Enter Weight in kilograms")
         return weight
-
-
-class TagSerializer(ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('title',)
-
-    def validate_title(self, title):
-        if is_valid_tag(title):
-            return title
-        raise ValidationError('Invalid title')

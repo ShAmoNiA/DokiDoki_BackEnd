@@ -13,7 +13,3 @@ def is_hard_password(text: str):
 def is_valid_phone_number(text: str):
     phone_regex = r'^(0|0098|\+98)9\d{9}$'
     return validate_regex(phone_regex, text)
-
-
-def is_valid_tag(text: str):
-    return not (" " in text or text == "")

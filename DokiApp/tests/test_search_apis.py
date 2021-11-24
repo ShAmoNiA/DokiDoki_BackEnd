@@ -29,32 +29,14 @@ ALL_DOCTORS_PROFILES = {
 class TestSearchForTag(TestCase):
     fixtures = ['tags.json']
 
-    def test_all(self):
-        data = {"key": ""}
-        request = RequestFactory().post('api/search_for_tag', data, content_type='application/json')
-        response = SearchForTag.as_view()(request)
+    def test_all_tags(self):
+        request = RequestFactory().get('api/all_tags')
+        response = AllTags.as_view()(request)
         self.assertEqual(response.status_code, 200)
         tags = "Cardiologist Oncologist Gastroenterologist Pulmonologist Nephrologist " \
                "Endocrinologist Ophthalmologist Otolaryngologist Dermatologist " \
-               "Psychiatrist Neurologist Radiologist Anesthesiologist Surgeon "
+               "Psychiatrist Neurologist Radiologist Anesthesiologist Surgeon"
         response_result = {'success': True, 'tags': tags}
-        self.assertEqual(response_result, response.data)
-
-    def test_a_title(self):
-        data = {"key": "ur"}
-        request = RequestFactory().post('api/search_for_tag', data, content_type='application/json')
-        response = SearchForTag.as_view()(request)
-        self.assertEqual(response.status_code, 200)
-        tags = "Neurologist Surgeon "
-        response_result = {'success': True, 'tags': tags}
-        self.assertEqual(response_result, response.data)
-
-    def test_not_found(self):
-        data = {"key": "a_title_that_there_is_not_in_saved_tags"}
-        request = RequestFactory().post('api/search_for_tag', data, content_type='application/json')
-        response = SearchForTag.as_view()(request)
-        self.assertEqual(response.status_code, 200)
-        response_result = {'success': True, 'tags': ''}
         self.assertEqual(response_result, response.data)
 
 

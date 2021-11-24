@@ -14,17 +14,16 @@ from ..serializers import *
 from ..permissions import *
 
 
-class SearchForTag(APIView):
+class AllTags(APIView):
     permission_classes = (AllowAny, )
 
-    def post(self, request):
-        key = request.data["key"]
-        tags = Tag.objects.filter(title__icontains=key).values_list('title', flat=True)
+    def get(self, request):
+        tags = Tag.objects.all().values_list('title', flat=True)
 
         result = ""
         for tag in tags:
             result += tag + " "
-        return Response({"success": True, "tags": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "tags": result[:-1]}, status=status.HTTP_200_OK)
 
 
 class SearchDoctorByName(APIView):
