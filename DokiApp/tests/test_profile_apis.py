@@ -203,3 +203,57 @@ class TestEditProfile(TestCase):
         self.assertEqual(user.reset_password_token, initial_user.reset_password_token)
         self.assertEqual(user.verify_email_token, initial_user.verify_email_token)
         self.assertEqual(profile.user, initial_profile.user)
+
+
+class TestAddExpertise(TestCase):
+    fixtures = ['patients.json', 'patient_profiles.json',
+                'doctors.json', 'doctor_profiles.json',
+                'tags.json', 'expertises.json']
+
+    def test_not_authed(self):
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise')
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['detail'], "Authentication credentials were not provided.")
+
+    def test_not_doctor(self):
+        self.client.force_login(User.objects.get(id=5))
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise')
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['detail'], "You do not have permission to perform this action.")
+
+    def test_tag_not_found(self):
+        self.client.force_login(User.objects.get(id=1))
+        data={"image_url": "the_url", "tag": "spam"}
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_response(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {"image_url": "the_url", "tag": "Radiologist"}
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'message': 'Expertise saved successfully'})
+
+    def test_data_saved(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {"image_url": "the_url", "tag": "Radiologist"}
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
+
+        self.assertEqual(response.status_code, 200)
+        experience = Expertise.objects.get(id=9)
+        self.assertEqual(experience.image_url, "the_url")
+        self.assertEqual(experience.tag.title, "Radiologist")
+        self.assertEqual(experience.doctor, DoctorProfile.objects.get(id=1))
+
+    def test_repetitive_tag(self):
+        self.client.force_login(User.objects.get(id=1))
+        data = {"image_url": "the_url", "tag": "Radiologist"}
+        self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
+        response = self.client.post(LOCALHOST_BASE_URL + 'add_expertise', data=data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"success": True, "message": "You have recorded the expertise before"})

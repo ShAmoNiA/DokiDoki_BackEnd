@@ -29,6 +29,7 @@ profile_urls = [
     path('my_profile_preview', MyProfilePreview.as_view(), name='MyProfilePreview'),
 
     path('edit_profile', EditProfile.as_view(), name='EditProfile'),
+    path('add_expertise', AddExpertise.as_view(), name='AddExpertise'),
 ]
 
 search_urls = [

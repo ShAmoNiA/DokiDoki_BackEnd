@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from ..models import *
 from ..helper_functions import *
 from ..serializers import *
+from ..permissions import *
 
 
 class ProfilePreview(APIView):
@@ -62,3 +63,22 @@ class EditProfile(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)
+
+
+class AddExpertise(APIView):
+    permission_classes = (IsAuthenticated, IsDoctor)
+
+    def post(self, request):
+        image_url = request.data["image_url"]
+        tag = request.data["tag"]
+
+        tag = get_object_or_404(Tag, title=tag)
+        profile = request.user.profile
+
+        if Expertise.objects.filter(tag=tag, doctor=profile).count():
+            return Response({"success": True, "message": "You have recorded the expertise before"},
+                            status=status.HTTP_200_OK)
+
+        Expertise.objects.create(tag=tag, image_url=image_url, doctor=profile)
+        return Response({"success": True, "message": "Expertise saved successfully"}, status=status.HTTP_200_OK)
+
