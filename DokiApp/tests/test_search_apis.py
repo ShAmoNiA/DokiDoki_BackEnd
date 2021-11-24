@@ -14,16 +14,16 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 ALL_DOCTORS_PROFILES = {
     1: {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'DRE',
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None},
+        'cv': 'default', 'office_location': None, 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'},
     2: {'username': 'CJ', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'CJ',
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None},
-    3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None,
-        'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
-        'medical_degree_photo': None, 'cv': 'default', 'office_location': None},
+        'cv': 'default', 'office_location': None, 'expertise_tags': 'Nephrologist Endocrinologist'},
+    3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None, 'degree': 'general',
+        'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'medical_degree_photo': None,
+        'cv': 'default', 'office_location': None, 'expertise_tags': 'Ophthalmologist Dermatologist Endocrinologist'},
     4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None,
         'fullname': 'Ali sadeghi', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general',
-        'medical_degree_photo': None, 'cv': 'default', 'office_location': None}}
+        'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': ''}}
 
 
 class TestSearchForTag(TestCase):
@@ -59,7 +59,8 @@ class TestSearchForTag(TestCase):
 
 
 class TestSearchDoctorByName(TestCase):
-    fixtures = ['doctors.json', 'doctor_profiles.json']
+    fixtures = ['doctors.json', 'doctor_profiles.json',
+                'tags.json', 'expertises.json']
 
     def test_all(self):
         data = {"key": ""}

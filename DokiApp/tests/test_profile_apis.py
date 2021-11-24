@@ -16,9 +16,9 @@ COMPLETE_PROFILE_PATIENT = {'username': 'patient_1', 'fullname': 'patient_1', 's
                             'profile_picture_url': None, 'height': 0, 'medical_records': 'nothing yet'}
 COMPLETE_PROFILE_DOCTOR = {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True,
                            'phone': None, 'fullname': 'DRE', 'sex': 'P', 'degree': 'general', 'cv': 'default',
-                           'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': None}
+                           'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': None,
+                           'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
 
-# TODO: change the safe profile results
 SAFE_PROFILE_PATIENT = dict(COMPLETE_PROFILE_PATIENT)
 SAFE_PROFILE_DOCTOR = dict(COMPLETE_PROFILE_DOCTOR)
 SAFE_PROFILE_PATIENT.pop('phone')
@@ -27,7 +27,8 @@ SAFE_PROFILE_DOCTOR.pop('phone')
 
 class TestProfilePreview(TestCase):
     fixtures = ['patients.json', 'patient_profiles.json',
-                'doctors.json', 'doctor_profiles.json']
+                'doctors.json', 'doctor_profiles.json',
+                'tags.json', 'expertises.json']
 
     def test_preview_patient(self):
         response = self.client.get(LOCALHOST_BASE_URL + 'profile_preview' + '?username=patient_1')
@@ -50,7 +51,8 @@ class TestProfilePreview(TestCase):
 
 class TestMyProfilePreview(TestCase):
     fixtures = ['patients.json', 'patient_profiles.json',
-                'doctors.json', 'doctor_profiles.json']
+                'doctors.json', 'doctor_profiles.json',
+                'tags.json', 'expertises.json']
 
     def test_doctor_profile(self):
         self.client.force_login(User.objects.get(id=1))

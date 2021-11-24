@@ -45,6 +45,7 @@ def doctor_profile_adapter(user):
     data["medical_degree_photo"] = profile.medical_degree_photo
     data["cv"] = profile.cv
     data["office_location"] = profile.office_location
+    data["expertise_tags"] = profile.expertise_tags
     return data
 
 
