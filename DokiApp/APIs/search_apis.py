@@ -14,18 +14,6 @@ from ..serializers import *
 from ..permissions import *
 
 
-class AddTag(APIView):
-    permission_classes = (IsAuthenticated, IsDoctor)
-
-    def post(self, request):
-        tag_serializer = TagSerializer(data=request.data)
-        if tag_serializer.is_valid():
-            tag_serializer.save()
-            return Response({"success": True, "message": "tag added successfully"}, status=status.HTTP_200_OK)
-
-        return Response({"success": False, "message": "tag not added"}, status=status.HTTP_200_OK)
-
-
 class SearchForTag(APIView):
     permission_classes = (AllowAny, )
 
