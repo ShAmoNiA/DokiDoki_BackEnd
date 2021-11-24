@@ -13,7 +13,8 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 
 from ..models import *
-from ..helper_functions import *
+from ..Helper_functions.helper_functions import *
+from ..Helper_functions.adapters import *
 from ..serializers import *
 from ..permissions import *
 
@@ -29,7 +30,7 @@ class ProfilePreview(APIView):
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 
     def get_adapted_and_filtered_profile(self, user):
-        profile = adapt_profile(user)
+        profile = ProfileAdapter().adapt_profile(user)
         return self.filter_profile(profile)
 
     def filter_profile(self, profile):
@@ -42,7 +43,7 @@ class MyProfilePreview(APIView):
 
     def get(self, request):
         user = request.user
-        profile = adapt_profile(user)
+        profile = ProfileAdapter().adapt_profile(user)
 
         return Response({"success": True, "profile": profile}, status=status.HTTP_200_OK)
 

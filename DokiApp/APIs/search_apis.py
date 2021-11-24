@@ -9,7 +9,8 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from ..models import *
-from ..helper_functions import *
+from ..Helper_functions.helper_functions import *
+from ..Helper_functions.adapters import *
 from ..serializers import *
 from ..permissions import *
 
@@ -34,7 +35,7 @@ class SearchDoctorByName(APIView):
         search_query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | Q(last_name__icontains=key)
         doctors = User.objects.filter(is_doctor=True).filter(search_query)
 
-        result = adapt_profile_list(doctors)
+        result = adapt_user_queryset_to_list(doctors)
 
         return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
@@ -46,7 +47,7 @@ class SearchDoctorByTag(APIView):
         key = request.data["key"]
         profiles = self.filter_doctors_by_expertise(key)
 
-        return Response({"success": True, "doctors": adapt_doctor_profiles_to_profile_list(profiles)},
+        return Response({"success": True, "doctors": adapt_profile_queryset_to_list(profiles)},
                         status=status.HTTP_200_OK)
 
     def filter_doctors_by_expertise(self, key):
