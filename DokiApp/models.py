@@ -86,6 +86,9 @@ class DoctorProfile(models.Model):
             self.save()
             return "the profile set successfully"
 
+    def __str__(self):
+        return str(self.id) + ". " + str(self.user.username)
+
 
 class PatientProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -107,6 +110,9 @@ class PatientProfile(models.Model):
 
 class Tag(models.Model):
     title = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return str(self.id) + ". " + str(self.title)
 
 
 class Expertise(models.Model):
