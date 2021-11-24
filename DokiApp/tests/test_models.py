@@ -137,14 +137,15 @@ class TestUser(TestCase):
 
 
 class TestDoctorProfile(TestCase):
+    fixtures = ['doctors.json', 'doctor_profiles.json', 'tags.json', 'expertises.json']
 
     def test_create(self):
         obj = mixer.blend('DokiApp.DoctorProfile')
-        self.assertEqual(obj.pk, 1)
+        self.assertEqual(obj.pk, 5)
 
     def test_fields(self):
         obj = mixer.blend('DokiApp.DoctorProfile', user=None, medical_degree_photo=None, office_location=None)
-        self.assertEqual(obj.pk, 1)
+        self.assertEqual(obj.pk, 5)
         self.assertEqual(obj.user, None)
         self.assertEqual(obj.degree, "general")
         self.assertEqual(obj.medical_degree_photo, None)
@@ -153,12 +154,23 @@ class TestDoctorProfile(TestCase):
 
         obj = mixer.blend('DokiApp.DoctorProfile', degree="the degree", user=None,
                           medical_degree_photo="photo", office_location="location")
-        self.assertEqual(obj.pk, 2)
+        self.assertEqual(obj.pk, 6)
         self.assertEqual(obj.user, None)
         self.assertEqual(obj.degree, "the degree")
         self.assertEqual(obj.medical_degree_photo, "photo")
         self.assertEqual(obj.cv, "default")
         self.assertEqual(obj.office_location, "location")
+
+    def test_expertise_tags(self):
+        doctor_1 = DoctorProfile.objects.get(id=1)
+        doctor_2 = DoctorProfile.objects.get(id=2)
+        doctor_3 = DoctorProfile.objects.get(id=3)
+        doctor_4 = DoctorProfile.objects.get(id=4)
+
+        self.assertEqual(doctor_1.expertise_tags, "Gastroenterologist Nephrologist Pulmonologist")
+        self.assertEqual(doctor_2.expertise_tags, "Nephrologist Endocrinologist")
+        self.assertEqual(doctor_3.expertise_tags, "Ophthalmologist Dermatologist Endocrinologist")
+        self.assertEqual(doctor_4.expertise_tags, "")
 
     def test_set_user(self):
         obj = mixer.blend('DokiApp.DoctorProfile', user=None)
@@ -170,13 +182,13 @@ class TestDoctorProfile(TestCase):
         set_2 = obj.set_user(user_doctor)
         self.assertEqual(set_1, "The user is a patient")
         self.assertEqual(set_2, "the profile set successfully")
-        profile = DoctorProfile.objects.get(id=1)
-        self.assertEqual(User.objects.get(id=2).profile, profile)
-        self.assertEqual(profile.user, User.objects.get(id=2))
+        profile = DoctorProfile.objects.get(id=5)
+        self.assertEqual(User.objects.get(id=6).profile, profile)
+        self.assertEqual(profile.user, User.objects.get(id=6))
 
-        profile = DoctorProfile.objects.get(id=1)
-        user_doctor = User.objects.get(id=2)
-        user_patient = User.objects.get(id=1)
+        profile = DoctorProfile.objects.get(id=5)
+        user_doctor = User.objects.get(id=6)
+        user_patient = User.objects.get(id=5)
         set_3 = profile.set_user(user_doctor)
         set_4 = profile.set_user(user_patient)
         self.assertEqual(set_3, "The user already has a profile")

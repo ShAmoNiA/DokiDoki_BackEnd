@@ -94,15 +94,6 @@ class TestEditProfile(TestCase):
         response_result = {"success": True, "message": "Profile changed successfully"}
         self.assertEqual(response.data, response_result)
 
-    def test_invalid_tags(self):
-        self.client.force_login(User.objects.get(id=1))
-        data = {'degree': 'NEW degree', 'cv': 'NEW cv', 'office_location': '021', 'expertise_tags': 'ddd aaa eee spam',
-                'fullname': 'NEW fullname', 'medical_degree_photo': "THE URL"}
-        response = self.client.post(LOCALHOST_BASE_URL + 'edit_profile', data)
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data['expertise_tags'][0], 'There is no tag: spam')
-
     def test_change_patient_profile(self):
         self.client.force_login(User.objects.get(id=5))
         data = {'fullname': 'NEW fullname', 'weight': 70, 'height': 175, 'medical_records': "NEW record"}

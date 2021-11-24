@@ -70,11 +70,11 @@ class DoctorProfile(models.Model):
 
     @property
     def expertise_tags(self):
-        tags = Expertise.objects.filter(doctor=self).values_list('tag', flat=True)
+        tags = Expertise.objects.filter(doctor=self).values_list('tag_id', flat=True)
         result = ''
-        for expertise in tags:
-            result += expertise.title + " "
-        return result
+        for tag_id in tags:
+            result += Tag.objects.get(id=tag_id).title + " "
+        return result[:-1]
 
     def set_user(self, user):
         if user.has_profile:
