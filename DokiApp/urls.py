@@ -29,11 +29,11 @@ profile_urls = [
     path('my_profile_preview', MyProfilePreview.as_view(), name='MyProfilePreview'),
 
     path('edit_profile', EditProfile.as_view(), name='EditProfile'),
+    path('add_expertise', AddExpertise.as_view(), name='AddExpertise'),
 ]
 
 search_urls = [
-    path('add_tag', AddTag.as_view(), name='AddTag'),
-    path('search_for_tag', SearchForTag.as_view(), name='SearchForTag'),
+    path('all_tags', AllTags.as_view(), name='AllTags'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]

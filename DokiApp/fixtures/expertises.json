@@ -1,0 +1,66 @@
+[
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 1,
+    "fields": {
+      "doctor_id": 1,
+      "tag_id": 3
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 2,
+    "fields": {
+      "doctor_id": 1,
+      "tag_id": 5
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 3,
+    "fields": {
+      "doctor_id": 1,
+      "tag_id": 4
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 4,
+    "fields": {
+      "doctor_id": 2,
+      "tag_id": 5
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 5,
+    "fields": {
+      "doctor_id": 2,
+      "tag_id": 6
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 6,
+    "fields": {
+      "doctor_id": 3,
+      "tag_id": 7
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 7,
+    "fields": {
+      "doctor_id": 3,
+      "tag_id": 9
+    }
+  },
+  {
+    "model": "DokiApp.Expertise",
+    "pk": 8,
+    "fields": {
+      "doctor_id": 3,
+      "tag_id": 6
+    }
+  }
+]

@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from .models import *
-from .helper_functions import *
+from .Helper_functions.helper_functions import *
 from .serializers import *
 
 from .APIs.auth_apis import *

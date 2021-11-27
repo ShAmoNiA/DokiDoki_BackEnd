@@ -1,0 +1,9 @@
+[
+  {
+    "model": "DokiApp.Image",
+    "pk": 1,
+    "fields": {
+      "image": "default.png"
+    }
+  }
+]

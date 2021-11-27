@@ -4,9 +4,9 @@ from re import search as validateRegex
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import *
 
-from .email_functions import send_verification_email
+from .Helper_functions.email_functions import send_verification_email
 
-from .string_validator import *
+from .Helper_functions.string_validator import *
 
 
 class ImageSerializer(ModelSerializer):
@@ -56,13 +56,7 @@ class UserSerializer(ModelSerializer):
 class DoctorProfileSerializer(ModelSerializer):
     class Meta:
         model = DoctorProfile
-        fields = ('user', 'degree', 'medical_degree_photo', 'cv', 'office_location', 'expertise_tags')
-
-    def validate_expertise_tags(self, tags):
-        for tag in tags.split():
-            if Tag.objects.filter(title=tag).count() == 0:
-                raise ValidationError("There is no tag: " + tag)
-        return tags
+        fields = ('user', 'degree', 'medical_degree_photo', 'cv', 'office_location')
 
 
 class PatientProfileSerializer(ModelSerializer):
@@ -79,14 +73,3 @@ class PatientProfileSerializer(ModelSerializer):
         if weight < 20 or weight > 500:
             raise ValidationError("Enter Weight in kilograms")
         return weight
-
-
-class TagSerializer(ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('title',)
-
-    def validate_title(self, title):
-        if is_valid_tag(title):
-            return title
-        raise ValidationError('Invalid title')
