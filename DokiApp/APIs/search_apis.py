@@ -20,6 +20,7 @@ from ..Helper_functions.helper_functions import *
 from ..Helper_functions.adapters import *
 from ..serializers import *
 from ..permissions import *
+from itertools import chain
 
 
 class AllTags(APIView):
@@ -63,3 +64,22 @@ class SearchDoctorByTag(APIView):
 
         doctor_ids = Expertise.objects.filter(tag__title__in=key.split()).values_list('doctor_id', flat=True)
         return DoctorProfile.objects.filter(id__in=list(doctor_ids))
+
+
+class SearchDoctorByKeyword(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request,keyword):
+        search_query = Q(fullname__icontains=keyword) | Q(first_name__icontains=keyword) | Q(last_name__icontains=keyword) | Q(username__icontains=keyword)
+        result = User.objects.filter(is_doctor=True).filter(search_query)
+        contains_names = adapt_user_queryset_to_list(result)
+
+        expertises = Expertise.objects.filter(tag__title__icontains=keyword.replace(" ","_"))
+        doctor_profiles = expertises.values_list('doctor_id',flat=True)
+        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+
+        result_list = list(set(chain(contains_tags, contains_names)))
+
+        return Response({"success": True, "doctors": result_list}, status=status.HTTP_200_OK)
+
+
