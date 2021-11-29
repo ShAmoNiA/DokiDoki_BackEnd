@@ -83,3 +83,12 @@ class SearchDoctorByKeyword(APIView):
         return Response({"success": True, "doctors": result_list}, status=status.HTTP_200_OK)
 
 
+class DoctorsWithTag(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request,keyword):
+        expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ","_"))
+        doctor_profiles = expertises.values_list('doctor_id',flat=True)
+        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        return Response({"success": True, "doctors": contains_tags}, status=status.HTTP_200_OK)
+

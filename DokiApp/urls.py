@@ -17,6 +17,7 @@ auth_urls = [
 
     path('check_username/<str:username>/', CheckUsername.as_view(), name='CheckUsername'),
     path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctor'),
+    path('tags/<str:keyword>/', DoctorsWithTag.as_view(), name='SearchByTag'),
 
     path('verify_email', VerifyEmail.as_view(), name='VerifyEmail'),
     path('forgot_password', forgot_password, name='forgot_password'),
