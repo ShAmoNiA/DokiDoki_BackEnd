@@ -115,9 +115,9 @@ class AdvancedSearch(APIView):
             if len(result) == 0:
                 result = contains_tags
             else:
-                for i in result:
-                    if i not in contains_tags:
-                        result.remove(i)
+                result = [item for item in result if item in contains_tags]
+
+
 
         sex = request.GET.get('sex', '')
         if sex != '':
@@ -126,9 +126,7 @@ class AdvancedSearch(APIView):
             if len(result) == 0:
                 result = sex_filter
             else:
-                for i in result:
-                    if i not in sex_filter:
-                        result.remove(i)
+                result = [item for item in result if item in contains_tags]
 
         sort = request.GET.get('sort','')
         if sort != '':
