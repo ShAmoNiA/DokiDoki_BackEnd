@@ -43,7 +43,7 @@ class SearchDoctorByName(APIView):
         search_query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | Q(last_name__icontains=key)
         doctors = User.objects.filter(is_doctor=True).filter(search_query)
 
-        result = adapt_user_queryset_to_list(doctors)
+        result = adapt_user_queryset_to_dict(doctors)
 
         return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
@@ -72,11 +72,11 @@ class SearchDoctorByKeyword(APIView):
     def get(self, request,keyword):
         search_query = Q(fullname__icontains=keyword) | Q(first_name__icontains=keyword) | Q(last_name__icontains=keyword) | Q(username__icontains=keyword)
         result = User.objects.filter(is_doctor=True).filter(search_query)
-        result = adapt_user_queryset_to_list(result)
+        result = adapt_user_queryset_to_dict(result)
 
         expertises = Expertise.objects.filter(tag__title__icontains=keyword.replace(" ","_"))
         doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        contains_tags = adapt_user_queryset_to_dict(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
 
         for k, v in contains_tags.items():
             if k not in result:
@@ -91,6 +91,48 @@ class DoctorsWithTag(APIView):
     def get(self, request,keyword):
         expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ","_"))
         doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        contains_tags = adapt_user_queryset_to_dict(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
         return Response({"success": True, "doctors": contains_tags}, status=status.HTTP_200_OK)
+
+
+class AdvancedSearch(APIView):
+
+    def get(self, request):
+        result = []
+        name = request.GET.get('name', '')
+        if name != '':
+            search_query = Q(fullname__icontains=name) | Q(first_name__icontains=name) | Q(last_name__icontains=name) | Q(username__icontains=name)
+            result = User.objects.filter(is_doctor=True).filter(search_query)
+
+            result = adapt_user_queryset_to_list(result)
+
+        tags = request.GET.get('tags', '')
+        if tags != '':
+            tags = tags.split(',')
+            expertises = Expertise.objects.filter(tag__title__in=tags)
+            doctor_profiles = expertises.values_list('doctor_id', flat=True)
+            contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+            if len(result) == 0:
+                result = contains_tags
+            else:
+                for i in result:
+                    if i not in contains_tags:
+                        result.remove(i)
+
+        sex = request.GET.get('sex', '')
+        if sex != '':
+            sex_filter = User.objects.filter(is_doctor=True,sex=sex)
+            sex_filter = adapt_user_queryset_to_list(sex_filter)
+            if len(result) == 0:
+                result = sex_filter
+            else:
+                for i in result:
+                    if i not in sex_filter:
+                        result.remove(i)
+
+        sort = request.GET.get('sort','')
+        if sort != '':
+            result.sort(key=lambda k : k[sort])
+
+        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 

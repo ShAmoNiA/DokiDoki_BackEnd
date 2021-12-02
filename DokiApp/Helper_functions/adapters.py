@@ -47,11 +47,20 @@ def adapt_profile_queryset_to_list(profiles):
     for profile in profiles:
         users.append(profile.user)
 
-    return adapt_user_queryset_to_list(users)
+    return adapt_user_queryset_to_dict(users)
 
 
-def adapt_user_queryset_to_list(users):
+def adapt_user_queryset_to_dict(users):
     result = {}
     for user in users:
         result[user.id] = profileAdapter.adapt_profile(user)
+    return result
+
+
+def adapt_user_queryset_to_list(users):
+    result = []
+    for user in users:
+        data = profileAdapter.adapt_profile(user)
+        data['id'] = user.id
+        result.append(data)
     return result
