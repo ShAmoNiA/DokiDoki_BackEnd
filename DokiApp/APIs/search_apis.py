@@ -72,17 +72,17 @@ class SearchDoctorByKeyword(APIView):
     def get(self, request,keyword):
         search_query = Q(fullname__icontains=keyword) | Q(first_name__icontains=keyword) | Q(last_name__icontains=keyword) | Q(username__icontains=keyword)
         result = User.objects.filter(is_doctor=True).filter(search_query)
-        result = adapt_user_queryset_to_dict(result)
+        result = adapt_user_queryset_to_list(result)
 
         expertises = Expertise.objects.filter(tag__title__icontains=keyword.replace(" ","_"))
         doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        contains_tags = adapt_user_queryset_to_dict(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
 
-        for k, v in contains_tags.items():
+        for k in contains_tags:
             if k not in result:
-                result[k] = v
+                result.append(k)
 
-        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result[0:10]}, status=status.HTTP_200_OK)
 
 
 class DoctorsWithTag(APIView):
@@ -91,8 +91,17 @@ class DoctorsWithTag(APIView):
     def get(self, request,keyword):
         expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ","_"))
         doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        contains_tags = adapt_user_queryset_to_dict(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
-        return Response({"success": True, "doctors": contains_tags}, status=status.HTTP_200_OK)
+        result = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        
+        page = int(request.GET.get('page', '1'))
+        paginator = Paginator(result, 10)
+        page_max = math.ceil(len(result)/10)
+        if(page_max < page or page < 1):
+            return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
+        result = paginator.page(page).object_list
+
+        
+        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
 
 class AdvancedSearch(APIView):
@@ -116,8 +125,8 @@ class AdvancedSearch(APIView):
                 result = contains_tags
             else:
                 result = [item for item in result if item in contains_tags]
-
-
+            
+                        
 
         sex = request.GET.get('sex', '')
         if sex != '':
@@ -126,11 +135,17 @@ class AdvancedSearch(APIView):
             if len(result) == 0:
                 result = sex_filter
             else:
-                result = [item for item in result if item in contains_tags]
+                result = [item for item in result if item in sex_filter]
 
         sort = request.GET.get('sort','')
         if sort != '':
             result.sort(key=lambda k : k[sort])
+            
+        page = int(request.GET.get('page', '1'))
+        paginator = Paginator(result, 10)
+        page_max = math.ceil(len(result)/10)
+        if(page_max < page or page < 1):
+            return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
+        result = paginator.page(page).object_list
 
-        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
-
+        return Response({"success": True, "doctors": result , "page" : page , "max_page": page_max}, status=status.HTTP_200_OK)
