@@ -8,7 +8,8 @@
       "first_name": "Andre",
       "last_name": "Romelle Young",
       "is_doctor": true,
-      "email": "dre@gmail.com"
+      "email": "dre@gmail.com",
+      "profile_picture_url": "default.png"
     }
   },
   {

@@ -3,7 +3,6 @@
     "model": "DokiApp.DoctorProfile",
     "pk": 1,
     "fields": {
-      "expertise_tags": "og_loc eye head",
       "user": 1
     }
   },
@@ -11,7 +10,6 @@
     "model": "DokiApp.DoctorProfile",
     "pk": 2,
     "fields": {
-      "expertise_tags": "og_loc",
       "user": 2
     }
   },
@@ -19,7 +17,6 @@
     "model": "DokiApp.DoctorProfile",
     "pk": 3,
     "fields": {
-      "expertise_tags": "og_loc eye",
       "user": 3
     }
   },
@@ -27,7 +24,6 @@
     "model": "DokiApp.DoctorProfile",
     "pk": 4,
     "fields": {
-      "expertise_tags": "og_loc",
       "user": 4
     }
   }
