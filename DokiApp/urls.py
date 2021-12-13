@@ -2,7 +2,7 @@ from django.urls import path
 
 from rest_framework.authtoken.views import obtain_auth_token
 
-from .APIs.feedback_apis import WriteComment
+from .APIs.feedback_apis import WriteComment, GetComments
 from .views import *
 
 
@@ -44,6 +44,7 @@ search_urls = [
 
 feedback_urls=[
     path('new_comment/', WriteComment.as_view()),
+    path('comments/<str:doctor_id>/', GetComments.as_view()),
 ]
 
 pack_list = [

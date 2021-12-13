@@ -73,3 +73,9 @@ class PatientProfileSerializer(ModelSerializer):
         if weight < 20 or weight > 500:
             raise ValidationError("Enter Weight in kilograms")
         return weight
+
+
+class CommentSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('writer', 'doctor', 'text')
