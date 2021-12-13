@@ -23,11 +23,14 @@ class WriteComment(APIView):
         else:
             return Response({'success': False, 'message': 'Please login first'})
 
+
 class GetComments(APIView):
     def get(self,request,doctor_id):
         comments = []
         query = Comment.objects.filter(doctor__id=doctor_id)
         for cm in query:
-            comments.append(CommentSerializer(instance=cm).data)
+            data = CommentSerializer(instance=cm).data
+            data["writer_name"] = User.objects.get(id=data['writer']).username
+            comments.append(data)
 
         return Response({'success': True, 'comments': comments})
