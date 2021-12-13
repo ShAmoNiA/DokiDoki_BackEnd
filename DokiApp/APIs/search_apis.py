@@ -4,7 +4,9 @@ contains:
     SearchDoctorByName
     SearchDoctorByTag
 """
+import math
 
+from django.core.paginator import Paginator
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -82,7 +84,7 @@ class SearchDoctorByKeyword(APIView):
             if k not in result:
                 result.append(k)
 
-        return Response({"success": True, "doctors": result[0:10]}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result[0:12]}, status=status.HTTP_200_OK)
 
 
 class DoctorsWithTag(APIView):
@@ -94,8 +96,8 @@ class DoctorsWithTag(APIView):
         result = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
         
         page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 10)
-        page_max = math.ceil(len(result)/10)
+        paginator = Paginator(result, 12)
+        page_max = math.ceil(len(result)/12)
         if(page_max < page or page < 1):
             return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
@@ -142,9 +144,9 @@ class AdvancedSearch(APIView):
             result.sort(key=lambda k : k[sort])
             
         page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 10)
-        page_max = math.ceil(len(result)/10)
-        if(page_max < page or page < 1):
+        paginator = Paginator(result, 12)
+        page_max = math.ceil(len(result)/12)
+        if page_max < page or page < 1:
             return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
