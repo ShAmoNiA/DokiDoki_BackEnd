@@ -1,6 +1,8 @@
 from django.urls import path
 
 from rest_framework.authtoken.views import obtain_auth_token
+
+from .APIs.feedback_apis import WriteComment
 from .views import *
 
 
@@ -19,7 +21,6 @@ auth_urls = [
     path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctor'),
     path('tags/<str:keyword>/', DoctorsWithTag.as_view(), name='SearchByTag'),
     path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
-
     path('verify_email', VerifyEmail.as_view(), name='VerifyEmail'),
     path('forgot_password', forgot_password, name='forgot_password'),
     path('reset_password', ResetPassword.as_view(), name='ResetPassword'),
@@ -41,10 +42,15 @@ search_urls = [
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]
 
+feedback_urls=[
+    path('new_comment/', WriteComment.as_view()),
+]
+
 pack_list = [
     auth_urls,
     profile_urls,
-    search_urls
+    search_urls,
+    feedback_urls
 ]
 
 

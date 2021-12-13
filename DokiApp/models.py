@@ -118,5 +118,10 @@ class Tag(models.Model):
 class Expertise(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
     image_url = models.CharField(max_length=512, null=True, blank=True)
+
+
+class Comment(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
