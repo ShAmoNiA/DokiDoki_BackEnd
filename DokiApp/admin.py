@@ -46,3 +46,7 @@ class ExpertiseAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class ExpertiseAdmin(admin.ModelAdmin):
     list_display = ['writer', 'doctor', 'text']
+
+@admin.register(Rate)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ['user', 'doctor', 'rate']

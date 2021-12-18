@@ -125,3 +125,10 @@ class Comment(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class Rate(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rate = models.IntegerField(range(1, 5))
