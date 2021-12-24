@@ -32,26 +32,19 @@ class GetComments(APIView):
 
 
 class RateDoctor(APIView):
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request, doctor_id):
         rate = Rate.objects.filter(doctor__id=doctor_id).aggregate(Avg('rate'))["rate__avg"]
         return Response({'success': True, 'rate': rate})
 
     def post(self, request, doctor_id):
-        if request.user.is_authenticated:
-            rate = request.POST['rate']
-            doctor = get_object_or_404(DoctorProfile, id=doctor_id)
+        rate = request.POST['rate']
+        doctor = get_object_or_404(DoctorProfile, id=doctor_id)
 
-            new_rate = RateSerializer(data={"doctor": doctor_id, "user": request.user.id, "rate": rate})
-            if not new_rate.is_valid():
-                return Response({'success': False, 'message': new_rate.errors})
-
-            rate_object = Rate.objects.filter(doctor=doctor, user=request.user)
-            if len(rate_object) != 0:
-                rate_object.update(rate=rate)
-                return Response({'success': True, 'message': 'New rate replaced!'})
-
-            new_rate.save()
+        rateSerializer = RateSerializer(data={"doctor": doctor, "user": request.user, "rate": rate})
+        if rateSerializer.is_valid():
+            rateSerializer.save()
             return Response({'success': True, 'message': 'Rate submitted!'})
-        else:
-            return Response({'success': False, 'message': 'Please login first'})
+
+        return Response({'success': False, 'message': rateSerializer.errors})
