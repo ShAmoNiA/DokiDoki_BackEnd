@@ -17,10 +17,10 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 COMPLETE_PROFILE_PATIENT = {'username': 'patient_1', 'fullname': 'patient_1', 'sex': 'P',
                             'is_doctor': False, 'phone': None, 'email': 'patient_1@gmail.com', 'weight': 0,
                             'profile_picture_url': "default.png", 'height': 0, 'medical_records': 'nothing yet'}
-COMPLETE_PROFILE_DOCTOR = {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True,
-                           'phone': None, 'fullname': 'DRE', 'sex': 'P', 'medical_degree_photo': None,
-                           'office_location': None, 'profile_picture_url': "default.png", 'degree': 'general',
-                           'cv': 'default', 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
+COMPLETE_PROFILE_DOCTOR = {'comments_count': 0, 'cv': 'default', 'username': 'DRE', 'email': 'dre@gmail.com',
+                           'is_doctor': True, 'phone': None, 'fullname': 'DRE', 'sex': 'P', 'rate': None,
+                           'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': "default.png",
+                           'degree': 'general', 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
 
 SAFE_PROFILE_PATIENT = dict(COMPLETE_PROFILE_PATIENT)
 SAFE_PROFILE_DOCTOR = dict(COMPLETE_PROFILE_DOCTOR)
