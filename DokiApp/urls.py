@@ -3,6 +3,7 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 
 from .APIs.feedback_apis import WriteComment, GetComments, RateDoctor
+from .APIs.reserve_apis import ReserveDoctor, ReservesList
 from .views import *
 
 
@@ -10,6 +11,8 @@ EMAIL_TOKEN = 'c754wcRr0f7c4cweFEqxgtDv5409wAw420erOmcDft43mDcr9PlFD'
 
 urlpatterns = [
     path('send_email' + EMAIL_TOKEN, send_email_by_front, name='send_email_by_front'),
+    path('reserve',ReserveDoctor.as_view(), name='Reserve'),
+        path('reserves', ReservesList.as_view(), name='Reserve'),
 ]
 
 auth_urls = [

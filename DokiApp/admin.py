@@ -50,3 +50,8 @@ class ExpertiseAdmin(admin.ModelAdmin):
 @admin.register(Rate)
 class ExpertiseAdmin(admin.ModelAdmin):
     list_display = ['user', 'doctor', 'rate']
+
+@admin.register(Reserve)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ['doctor', 'user', 'date', 'time']
+
