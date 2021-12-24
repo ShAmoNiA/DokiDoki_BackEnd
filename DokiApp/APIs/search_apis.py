@@ -98,11 +98,10 @@ class DoctorsWithTag(APIView):
         page = int(request.GET.get('page', '1'))
         paginator = Paginator(result, 12)
         page_max = math.ceil(len(result)/12)
-        if(page_max < page or page < 1):
+        if page_max < page or page < 1:
             return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        
         return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
 
@@ -127,8 +126,6 @@ class AdvancedSearch(APIView):
                 result = contains_tags
             else:
                 result = [item for item in result if item in contains_tags]
-            
-                        
 
         sex = request.GET.get('sex', '')
         if sex != '':
@@ -141,7 +138,9 @@ class AdvancedSearch(APIView):
 
         sort = request.GET.get('sort','')
         if sort != '':
-            result.sort(key=lambda k : k[sort])
+            reverse = request.GET.get('reverse', 'False')
+            reverse = True if reverse == 'True' else False
+            result.sort(key=lambda k: k[sort],reverse=reverse)
             
         page = int(request.GET.get('page', '1'))
         paginator = Paginator(result, 12)

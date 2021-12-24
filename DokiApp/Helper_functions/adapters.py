@@ -24,6 +24,9 @@ class ProfileAdapter:
         data["cv"] = profile.cv
         data["office_location"] = profile.office_location
         data["expertise_tags"] = profile.expertise_tags
+        data["rate"] = profile.rate
+        data["comments_count"] = profile.comments_count
+
         return data
 
     def adapt_patient_profile(self, user):

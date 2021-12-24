@@ -2,6 +2,7 @@ from secrets import token_hex
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Avg
 
 
 class Image(models.Model):
@@ -75,6 +76,16 @@ class DoctorProfile(models.Model):
         for tag_id in tags:
             result += Tag.objects.get(id=tag_id).title + " "
         return result[:-1]
+
+    @property
+    def comments_count(self):
+        query = Comment.objects.filter(doctor__id=self.pk)
+        return len(query)
+
+    @property
+    def rate(self):
+        rate = Rate.objects.filter(doctor__id=self.pk).aggregate(Avg('rate'))["rate__avg"]
+        return rate
 
     def set_user(self, user):
         if user.has_profile:
