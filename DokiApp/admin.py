@@ -42,3 +42,16 @@ class TagAdmin(admin.ModelAdmin):
 class ExpertiseAdmin(admin.ModelAdmin):
     list_display = ['doctor', 'tag', 'image_url']
     list_filter = ['doctor', 'tag']
+
+@admin.register(Comment)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ['writer', 'doctor', 'text']
+
+@admin.register(Rate)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ['user', 'doctor', 'rate']
+
+@admin.register(Reserve)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ['doctor', 'user', 'date', 'time']
+

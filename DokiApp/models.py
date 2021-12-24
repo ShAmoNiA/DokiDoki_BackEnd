@@ -2,6 +2,7 @@ from secrets import token_hex
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Avg
 
 
 class Image(models.Model):
@@ -76,6 +77,16 @@ class DoctorProfile(models.Model):
             result += Tag.objects.get(id=tag_id).title + " "
         return result[:-1]
 
+    @property
+    def comments_count(self):
+        query = Comment.objects.filter(doctor__id=self.pk)
+        return len(query)
+
+    @property
+    def rate(self):
+        rate = Rate.objects.filter(doctor__id=self.pk).aggregate(Avg('rate'))["rate__avg"]
+        return rate
+
     def set_user(self, user):
         if user.has_profile:
             return "The user already has a profile"
@@ -118,5 +129,26 @@ class Tag(models.Model):
 class Expertise(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
     image_url = models.CharField(max_length=512, null=True, blank=True)
+
+
+class Comment(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class Rate(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rate = models.IntegerField(range(1, 5))
+
+
+class Reserve(models.Model):
+    TIME_CHOICES = (('AM', 'Before 12',),
+                   ('PM', 'After 12',))
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    time = models.CharField(max_length=2, choices=TIME_CHOICES)

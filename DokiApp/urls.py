@@ -1,6 +1,9 @@
 from django.urls import path
 
 from rest_framework.authtoken.views import obtain_auth_token
+
+from .APIs.feedback_apis import WriteComment, GetComments, RateDoctor
+from .APIs.reserve_apis import ReserveDoctor, ReservesList
 from .views import *
 
 
@@ -8,6 +11,8 @@ EMAIL_TOKEN = 'c754wcRr0f7c4cweFEqxgtDv5409wAw420erOmcDft43mDcr9PlFD'
 
 urlpatterns = [
     path('send_email' + EMAIL_TOKEN, send_email_by_front, name='send_email_by_front'),
+    path('reserve',ReserveDoctor.as_view(), name='Reserve'),
+        path('reserves', ReservesList.as_view(), name='Reserve'),
 ]
 
 auth_urls = [
@@ -19,7 +24,6 @@ auth_urls = [
     path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctor'),
     path('tags/<str:keyword>/', DoctorsWithTag.as_view(), name='SearchByTag'),
     path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
-
     path('verify_email', VerifyEmail.as_view(), name='VerifyEmail'),
     path('forgot_password', forgot_password, name='forgot_password'),
     path('reset_password', ResetPassword.as_view(), name='ResetPassword'),
@@ -41,10 +45,17 @@ search_urls = [
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 ]
 
+feedback_urls=[
+    path('new_comment', WriteComment.as_view()),
+    path('comments/<str:doctor_id>/', GetComments.as_view()),
+    path('rate/<str:doctor_id>/', RateDoctor.as_view()),
+]
+
 pack_list = [
     auth_urls,
     profile_urls,
-    search_urls
+    search_urls,
+    feedback_urls
 ]
 
 
