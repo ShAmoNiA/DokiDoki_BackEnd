@@ -163,6 +163,5 @@ class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
 
     text = models.TextField()
-
     is_sender_doctor = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)

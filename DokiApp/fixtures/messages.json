@@ -1,0 +1,372 @@
+[
+  {
+    "model": "DokiApp.Message",
+    "pk": 1,
+    "fields": {
+      "chat": 5,
+      "text": "When he asked her favorite number, she answered without hesitation that it was diamonds.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 2,
+    "fields": {
+      "chat": 5,
+      "text": "He knew it was going to be a bad day when he saw mountain lions roaming the streets.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 3,
+    "fields": {
+      "chat": 5,
+      "text": "The truth is that you pay for your lifestyle in hours.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 4,
+    "fields": {
+      "chat": 5,
+      "text": "There was no telling what thoughts would come from the machine.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 5,
+    "fields": {
+      "chat": 5,
+      "text": "After exploring the abandoned building, he started to believe in ghosts.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 6,
+    "fields": {
+      "chat": 5,
+      "text": "She wasn't sure whether to be impressed or concerned that he folded underwear in neat little packages.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 7,
+    "fields": {
+      "chat": 5,
+      "text": "He colored deep space a soft yellow.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 8,
+    "fields": {
+      "chat": 5,
+      "text": "She finally understood that grief was her love with no place for it to go.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 9,
+    "fields": {
+      "chat": 5,
+      "text": "He was sure the Devil created red sparkly glitter.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 10,
+    "fields": {
+      "chat": 5,
+      "text": "I was fishing for compliments and accidentally caught a trout.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 11,
+    "fields": {
+      "chat": 5,
+      "text": "I love eating toasted cheese and tuna sandwiches.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 12,
+    "fields": {
+      "chat": 5,
+      "text": "He decided to live his life by the big beats manifesto.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 13,
+    "fields": {
+      "chat": 5,
+      "text": "If you don't like toenails, you probably shouldn't look at your feet.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 14,
+    "fields": {
+      "chat": 5,
+      "text": "While all her friends were positive that Mary had a sixth sense, she knew she actually had a seventh sense.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 15,
+    "fields": {
+      "chat": 5,
+      "text": "He was all business when he wore his clown suit.",
+      "is_sender_doctor": false
+    }
+  },
+
+
+
+
+
+  {
+    "model": "DokiApp.Message",
+    "pk": 16,
+    "fields": {
+      "chat": 8,
+      "text": "Joe made the sugar cookies; Susan decorated them.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 17,
+    "fields": {
+      "chat": 8,
+      "text": "The thick foliage and intertwined vines made the hike nearly impossible.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 18,
+    "fields": {
+      "chat": 8,
+      "text": "It's never been my responsibility to glaze the donuts.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 19,
+    "fields": {
+      "chat": 8,
+      "text": "As he entered the church he could hear the soft voice of someone whispering into a cell phone.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 20,
+    "fields": {
+      "chat": 8,
+      "text": "He looked behind the door and didn't like what he saw.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 21,
+    "fields": {
+      "chat": 8,
+      "text": "The heat",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 22,
+    "fields": {
+      "chat": 8,
+      "text": "The busker hoped that the people passing by would throw money, but they threw tomatoes instead, so he exchanged his hat for a juicer.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 23,
+    "fields": {
+      "chat": 8,
+      "text": "He didn’t want to go to the dentist, yet he went anyway.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 24,
+    "fields": {
+      "chat": 8,
+      "text": "He always wore his sunglasses at night.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 25,
+    "fields": {
+      "chat": 8,
+      "text": "Thirty years later, she still thought it was okay to put the toilet paper roll under rather than over.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 26,
+    "fields": {
+      "chat": 8,
+      "text": "He fumbled in the darkness looking for the light switch, but when he finally found it there was someone already there.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 27,
+    "fields": {
+      "chat": 8,
+      "text": "If my calculator had a history, it would be more embarrassing than my browser history.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 28,
+    "fields": {
+      "chat": 8,
+      "text": "Courage and stupidity were all he had.",
+      "is_sender_doctor": true
+    }
+  },
+
+
+
+
+
+  {
+    "model": "DokiApp.Message",
+    "pk": 29,
+    "fields": {
+      "chat": 13,
+      "text": "The blinking lights of the antenna tower came into focus just as I heard a loud snap.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 30,
+    "fields": {
+      "chat": 13,
+      "text": "With the high wind warning",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 31,
+    "fields": {
+      "chat": 13,
+      "text": "The golden retriever loved the fireworks each Fourth of July.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 32,
+    "fields": {
+      "chat": 13,
+      "text": "No matter how beautiful the sunset, it saddened her knowing she was one day older.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 33,
+    "fields": {
+      "chat": 13,
+      "text": "The sky is clear; the stars are twinkling.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 34,
+    "fields": {
+      "chat": 13,
+      "text": "She wrote him a long letter, but he didn't read it.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 35,
+    "fields": {
+      "chat": 13,
+      "text": "The Guinea fowl flies through the air with all the grace of a turtle.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 36,
+    "fields": {
+      "chat": 13,
+      "text": "The toy brought back fond memories of being lost in the rain forest.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 37,
+    "fields": {
+      "chat": 13,
+      "text": "He didn't understand why the bird wanted to ride the bicycle.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 38,
+    "fields": {
+      "chat": 13,
+      "text": "Lets all be unique together until we realise we are all the same.",
+      "is_sender_doctor": true
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 39,
+    "fields": {
+      "chat": 13,
+      "text": "Pink horses galloped across the sea.",
+      "is_sender_doctor": false
+    }
+  },
+  {
+    "model": "DokiApp.Message",
+    "pk": 40,
+    "fields": {
+      "chat": 13,
+      "text": "Just go ahead and press that button.",
+      "is_sender_doctor": true
+    }
+  }
+]
