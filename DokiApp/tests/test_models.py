@@ -257,9 +257,9 @@ class TestTag(TestCase):
     def test_create(self):
         obj = mixer.blend('DokiApp.Tag')
         self.assertEqual(obj.pk, 1)
-        
+
+    def test_fields(self):
         obj = mixer.blend('DokiApp.Tag', title="the title")
-        self.assertEqual(obj.pk, 2)
         self.assertEqual(obj.title, "the title")
 
     def test_unique(self):
@@ -268,3 +268,46 @@ class TestTag(TestCase):
         with self.assertRaises(Exception) as raised:
             mixer.blend('DokiApp.Tag', title="the title")
         self.assertEqual(IntegrityError, type(raised.exception))
+
+
+class TestChat(TestCase):
+    fixtures = ['patients.json', 'patient_profiles.json',
+                'doctors.json', 'doctor_profiles.json']
+
+    def setUp(self):
+        self.doctor = DoctorProfile.objects.get(id=3)
+        self.patient = PatientProfile.objects.get(id=2)
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.Chat')
+        self.assertEqual(obj.pk, 1)
+
+    def test_fields(self):
+        obj = mixer.blend('DokiApp.Chat', doctor=self.doctor, patient=self.patient)
+        self.assertEqual(obj.doctor.id, 3)
+        self.assertEqual(obj.patient.id, 2)
+
+
+class TestMessage(TestChat):
+    fixtures = ['patients.json', 'patient_profiles.json',
+                'doctors.json', 'doctor_profiles.json',
+                'chats.json']
+
+    def setUp(self):
+        self.chat_2 = Chat.objects.get(id=2)
+
+    def test_create(self):
+        obj = mixer.blend('DokiApp.Message')
+        self.assertEqual(obj.pk, 1)
+
+    def test_fields(self):
+        text = "the_text"
+        obj = mixer.blend('DokiApp.Message', chat=self.chat_2, text=text, is_sender_doctor=True)
+        self.assertEqual(obj.chat.id, 2)
+        self.assertEqual(obj.chat, self.chat_2)
+        self.assertEqual(obj.text, text)
+        self.assertEqual(obj.is_sender_doctor, True)
+
+    def test_default_is_sender_doctor(self):
+        obj = mixer.blend('DokiApp.Message')
+        self.assertEqual(obj.is_sender_doctor, False)

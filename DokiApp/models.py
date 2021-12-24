@@ -152,3 +152,17 @@ class Reserve(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
     time = models.CharField(max_length=2, choices=TIME_CHOICES)
+
+
+class Chat(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
+
+
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+
+    text = models.TextField()
+
+    is_sender_doctor = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now=True)
