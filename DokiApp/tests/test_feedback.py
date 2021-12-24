@@ -14,6 +14,7 @@ from ..models import *
 
 LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 
+
 class TestComment(TestCase):
     def test_read_comments(self):
         # self.client.force_login(User.objects.get(id=1))
