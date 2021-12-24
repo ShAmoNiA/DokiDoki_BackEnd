@@ -86,7 +86,6 @@ class TestSearchDoctorByTag(TestCase):
     fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json', 'expertises.json']
 
     def test_all(self):
-        self.maxDiff=None
         data = {"key": ""}
         request = RequestFactory().post('api/search_doctor_by_tag', data, content_type='application/json')
         response = SearchDoctorByTag.as_view()(request)

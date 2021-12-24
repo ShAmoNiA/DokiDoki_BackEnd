@@ -8,6 +8,6 @@ class IsDoctor(BasePermission):
 
 
 class IsPatient(BasePermission):
-    pass
-    # def has_permission(self, request, view):
-        # return request.user.is_patient
+
+    def has_permission(self, request, view):
+        return request.user.is_patient
