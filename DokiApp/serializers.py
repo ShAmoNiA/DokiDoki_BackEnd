@@ -78,7 +78,7 @@ class PatientProfileSerializer(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('writer', 'doctor', 'text', 'date' )
+        fields = ('writer', 'doctor', 'text', 'date')
 
 
 class RateSerializer(ModelSerializer):
@@ -90,3 +90,9 @@ class RateSerializer(ModelSerializer):
         if rate < 1 or rate > 5:
             raise ValidationError("Enter rate between 1 and 5")
         return rate
+
+
+class ReserveSerializer(ModelSerializer):
+    class Meta:
+        model = Reserve
+        fields = ('doctor', 'user', 'date', 'time')

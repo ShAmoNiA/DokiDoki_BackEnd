@@ -16,7 +16,9 @@ from .Helper_functions.helper_functions import *
 from .serializers import *
 
 from .APIs.auth_apis import *
+from .APIs.feedback_apis import *
 from .APIs.profile_apis import *
+from .APIs.reserve_apis import *
 from .APIs.search_apis import *
 
 

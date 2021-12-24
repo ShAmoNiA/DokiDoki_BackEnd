@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.shortcuts import get_object_or_404
 
@@ -7,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ..Helper_functions.email_functions import send_reserve_message
-from ..permissions import IsPatient
+from ..permissions import IsPatient, IsDoctor
 from ..serializers import *
 
 
@@ -28,7 +29,11 @@ class ReserveDoctor(APIView):
         return Response({'success': True, 'message': 'Reserved!'})
 
 
-class ReservesList(APIView):
+class ReserveList(APIView):
+    permission_classes = (IsAuthenticated, IsDoctor)
 
-    def get(self):
-        return Response({'success': True, 'message': 'Not available for now'})
+    def get(self, request):
+        reserves = Reserve.objects.filter(doctor=request.user.profile)
+
+        result = ReserveSerializer(instance=reserves, many=True).data
+        return Response({'success': True, 'reserves': json.dumps(result)})
