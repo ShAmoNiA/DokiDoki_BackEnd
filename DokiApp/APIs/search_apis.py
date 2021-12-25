@@ -28,6 +28,9 @@ from ..permissions import *
 from itertools import chain
 
 
+PAGINATE_BY = 12
+
+
 def name_query(key):
     query = Q(fullname__icontains=key) | Q(first_name__icontains=key) |\
             Q(last_name__icontains=key) | Q(username__icontains=key)
@@ -103,9 +106,8 @@ class SearchDoctorsWithTag(APIView):
         result = adapt_user_queryset_to_list(result)
 
         page = int(request.GET.get('page', 1))
-        paginator = Paginator(result, 12)
-        page_max = int(len(result) / 12) + 1
-        if page_max < page or page < 1:
+        paginator = Paginator(result, PAGINATE_BY)
+        if paginator.num_pages < page or page < 1:
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
@@ -118,23 +120,21 @@ class AdvancedSearch(APIView):
         tags = request.GET.get('tags', '')
         name = request.GET.get('name', '')
         sex = request.GET.get('sex', '')
+        page = int(request.GET.get('page', 1))
+        sort = request.GET.get('sort', '')
+        reverse = request.GET.get('reverse', False)
 
         result = search_doctor_by_expertises(tags.split(','), want_users=True)
         result = result.filter(name_query(name))
         result = result.filter(sex=sex)
         result = adapt_user_queryset_to_list(result)
-
-        sort = request.GET.get('sort', '')
         if sort != '':
-            reverse = request.GET.get('reverse', False)
             result.sort(key=lambda k: k[sort], reverse=reverse)
 
-        page = int(request.GET.get('page', 1))
-        paginator = Paginator(result, 12)
-        page_max = int(len(result) / 12) + 1
-        if page_max < page or page < 1:
+        paginator = Paginator(result, PAGINATE_BY)
+        if paginator.num_pages < page or page < 1:
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        return Response({"success": True, "doctors": result, "page": page, "max_page": page_max},
+        return Response({"success": True, "doctors": result, "page": page, "max_page": paginator.num_pages},
                         status=status.HTTP_200_OK)
