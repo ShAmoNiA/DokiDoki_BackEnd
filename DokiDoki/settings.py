@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 
     'DokiApp',
 
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -95,7 +96,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DokiDoki.wsgi.application'
+# WSGI_APPLICATION = 'DokiDoki.wsgi.application'
+
+# Channels:
+ASGI_APPLICATION = 'DokiDoki.routing.application'
 
 
 # Database
