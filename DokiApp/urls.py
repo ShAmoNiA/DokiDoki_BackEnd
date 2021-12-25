@@ -16,9 +16,7 @@ auth_urls = [
     path('logout', LogOut.as_view(), name='LogOut'),
 
     path('check_username/<str:username>/', CheckUsername.as_view(), name='CheckUsername'),
-    path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctor'),
-    path('tags/<str:keyword>/', DoctorsWithTag.as_view(), name='SearchByTag'),
-    path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
+
     path('verify_email', VerifyEmail.as_view(), name='VerifyEmail'),
     path('forgot_password', forgot_password, name='forgot_password'),
     path('reset_password', ResetPassword.as_view(), name='ResetPassword'),
@@ -38,19 +36,22 @@ search_urls = [
     path('all_tags', AllTags.as_view(), name='AllTags'),
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
+
+    path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctorByKeyword'),
+    path('tags/<str:keyword>/', SearchDoctorsWithTag.as_view(), name='SearchDoctorsWithTag'),
+    path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
 ]
 
 feedback_urls = [
-    path('new_comment', WriteComment.as_view()),
-    path('comments/<str:doctor_id>/', GetComments.as_view()),
-    path('rate/<str:doctor_id>/', RateDoctor.as_view()),
+    path('new_comment', WriteComment.as_view(), name="WriteComment"),
+    path('comments/<str:doctor_id>/', GetComments.as_view(), name="GetComments"),
+    path('rate/<str:doctor_id>/', RateDoctor.as_view(), name="RateDoctor"),
 ]
 
 reserve_urls = [
     path('reserve', ReserveDoctor.as_view(), name='ReserveDoctor'),
     path('reserves', ReserveList.as_view(), name='ReserveList'),
 ]
-
 
 pack_list = [
     auth_urls,
@@ -59,7 +60,6 @@ pack_list = [
     feedback_urls,
     reserve_urls
 ]
-
 
 for pack in pack_list:
     for url in pack:
