@@ -29,3 +29,9 @@ def pop_dangerous_keys(request):
             data.pop(key)
 
     return data
+
+
+def first_twelve_items_if_exists(the_list):
+    if len(the_list) < 12:
+        return the_list
+    return the_list[:12]

@@ -37,15 +37,15 @@ search_urls = [
     path('search_doctor_by_name', SearchDoctorByName.as_view(), name='SearchDoctorByName'),
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 
-    path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctor'),
-    path('tags/<str:keyword>/', DoctorsWithTag.as_view(), name='SearchByTag'),
+    path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctorByKeyword'),
+    path('tags/<str:keyword>/', SearchDoctorsWithTag.as_view(), name='SearchDoctorsWithTag'),
     path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
 ]
 
 feedback_urls = [
-    path('new_comment', WriteComment.as_view()),
-    path('comments/<str:doctor_id>/', GetComments.as_view()),
-    path('rate/<str:doctor_id>/', RateDoctor.as_view()),
+    path('new_comment', WriteComment.as_view(), name="WriteComment"),
+    path('comments/<str:doctor_id>/', GetComments.as_view(), name="GetComments"),
+    path('rate/<str:doctor_id>/', RateDoctor.as_view(), name="RateDoctor"),
 ]
 
 reserve_urls = [
