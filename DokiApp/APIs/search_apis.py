@@ -93,7 +93,7 @@ class SearchDoctorByKeyword(APIView):
 
         result = list(chain(name_result, tag_result))
         result = adapt_user_queryset_to_list(result)
-        result = first_twelve_items_if_exists(result)
+        result = first_n_items_if_exists(result, 12)
 
         return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
 
@@ -111,7 +111,8 @@ class SearchDoctorsWithTag(APIView):
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result, "page": page, "max_page": paginator.num_pages}
+                        , status=status.HTTP_200_OK)
 
 
 class AdvancedSearch(APIView):
@@ -124,9 +125,9 @@ class AdvancedSearch(APIView):
         sort = request.GET.get('sort', '')
         reverse = request.GET.get('reverse', False)
 
-        result = search_doctor_by_expertises(tags.split(','), want_users=True)
+        result = search_doctor_by_expertises(tags.split(), want_users=True)
         result = result.filter(name_query(name))
-        result = result.filter(sex=sex)
+        result = result.filter(sex=sex) if len(sex) else result
         result = adapt_user_queryset_to_list(result)
         if sort != '':
             result.sort(key=lambda k: k[sort], reverse=reverse)

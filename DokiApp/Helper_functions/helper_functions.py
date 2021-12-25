@@ -31,7 +31,7 @@ def pop_dangerous_keys(request):
     return data
 
 
-def first_twelve_items_if_exists(the_list):
-    if len(the_list) < 12:
+def first_n_items_if_exists(the_list, n):
+    if len(the_list) < n:
         return the_list
-    return the_list[:12]
+    return the_list[:n]

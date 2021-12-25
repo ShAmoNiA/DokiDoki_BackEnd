@@ -127,3 +127,135 @@ class TestSearchDoctorByTag(TestCase):
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True, 'doctors': {}}
         self.assertEqual(response_result, response.data)
+
+
+class TestSearchDoctorByKeyword(TestCase):
+
+    def test_empty_keyword(self):
+        pass
+
+    def test_space_keyword(self):
+        pass
+
+    def test_keyword_contains_name(self):
+        pass
+
+    def test_keyword_contains_tag(self):
+        pass
+
+    def test_keyword_contains_name_and_tag_both(self):
+        pass
+
+    def test_no_results(self):
+        pass
+
+
+class TestSearchDoctorsWithTag(TestCase):
+
+    def test_empty_keyword(self):
+        pass
+
+    def test_space_keyword(self):
+        pass
+
+    def test_only_one_page_result(self):
+        pass
+
+    def test_some_pages_result_max_page_number(self):
+        pass
+
+    def test_some_pages_result_the_first_page(self):
+        pass
+
+    def test_some_pages_result_a_middle_page(self):
+        pass
+
+    def test_some_pages_result_the_last_page(self):
+        pass
+
+    def test_under_range_page_number(self):
+        pass
+
+    def test_over_range_page_number(self):
+        pass
+
+    def test_no_results(self):
+        pass
+
+
+class TestAdvancedSearch(TestCase):
+
+    def test_empty_params(self):
+        pass
+
+    def test_space_tags(self):
+        pass
+
+    def test_space_name(self):
+        pass
+
+    def test_space_sex(self):
+        pass
+
+    def test_invalid_page(self):
+        pass
+
+    def test_invalid_sort(self):
+        pass
+
+    def test_invalid_reverse(self):
+        pass
+
+    def test_found_by_tags(self):
+        pass
+
+    def test_found_by_name(self):
+        pass
+
+    def test_found_by_sex(self):
+        pass
+
+    def test_found_by_all_params(self):
+        pass
+
+    def sort_by_sex(self):
+        pass
+
+    def sort_by_fullname(self):
+        pass
+
+    def sort_by_last_name(self):
+        pass
+
+    def sort_by_sex_reverse(self):
+        pass
+
+    def sort_by_fullname_reverse(self):
+        pass
+
+    def sort_by_last_name_reverse(self):
+        pass
+
+    def test_only_one_page_result(self):
+        pass
+
+    def test_some_pages_result_max_page_number(self):
+        pass
+
+    def test_some_pages_result_the_first_page(self):
+        pass
+
+    def test_some_pages_result_a_middle_page(self):
+        pass
+
+    def test_some_pages_result_the_last_page(self):
+        pass
+
+    def test_under_range_page_number(self):
+        pass
+
+    def test_over_range_page_number(self):
+        pass
+
+    def test_no_results(self):
+        pass
