@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_db
+
+    networks:
+      - doki_chat_network
+    ports:
+      - "6379:6379"
+
+    restart: always
+
+  django:
+    build: .
+    container_name: doki_django
+
+    ports:
+    - "8000:8000"
+
+    volumes:
+      - .:/DokiDoki
+
+    networks:
+      - doki_chat_network
+    depends_on:
+      - redis
+
+networks:
+  doki_chat_network:
+    external: true

@@ -29,6 +29,8 @@ class ChatConsumer(WebsocketConsumer):
             receiver = text_data_json['receiver_username']
             receiver_group_name = 'chat_' + receiver
 
+            # TODO: save in db
+
             async_to_sync(self.channel_layer.group_send)(
                 receiver_group_name,
                 {
