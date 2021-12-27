@@ -99,4 +99,3 @@ class AddExpertise(APIView):
 
         Expertise.objects.create(tag=tag, image_url=image_url, doctor=profile)
         return Response({"success": True, "message": "Expertise saved successfully"}, status=status.HTTP_200_OK)
-

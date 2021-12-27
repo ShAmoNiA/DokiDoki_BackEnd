@@ -4,19 +4,22 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 
+def generate_group_name(username):
+    return 'chat_' + username
+
+
 class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
-        token = self.scope['url_route']['kwargs']['sender_token']
-        user = Token.objects.get(key=token).user
-        self.username = user.username
-        self.group_name = 'chat_' + self.username
-
-        async_to_sync(
-            self.channel_layer.group_add(self.group_name, self.channel_name)
-        )
-
-        self.accept()
+        self.user = self.scope['user']
+        if self.user.is_authenticated:
+            self.group_name = generate_group_name(user.username)
+            async_to_sync(
+                self.channel_layer.group_add(self.group_name, self.channel_name)
+            )
+            self.accept()
+        else:
+            self.close(code=403)
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -27,7 +30,7 @@ class ChatConsumer(WebsocketConsumer):
         if text_data:
             text_data_json = json.loads(text_data)
             receiver = text_data_json['receiver_username']
-            receiver_group_name = 'chat_' + receiver
+            receiver_group_name = generate_group_name(receiver)
 
             # TODO: save in db
 
