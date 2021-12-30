@@ -11,29 +11,21 @@ def generate_group_name(username):
 class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
-        print()
 
         self.user = self.scope['user']
         if self.user.is_authenticated:
-            print('Authed')
-            print()
-
-            # self.group_name = generate_group_name(self.user.username)
-            # async_to_sync(
-            #     self.channel_layer.group_add(self.group_name, self.channel_name)
-            # )
+            self.group_name = generate_group_name(self.user.username)
+            async_to_sync(
+                self.channel_layer.group_add(self.group_name, self.channel_name)
+            )
             self.accept()
-            print('Authed')
         else:
             self.close(code=403)
 
     def disconnect(self, code):
-        print()
-        print('Disconnected')
-        print()
-        # async_to_sync(self.channel_layer.group_discard)(
-        #     self.group_name, self.channel_name
-        # )
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name, self.channel_name
+        )
 
     def receive(self, text_data=None, bytes_data=None):
         if text_data:
@@ -41,7 +33,7 @@ class ChatConsumer(WebsocketConsumer):
             receiver = text_data_json['receiver_username']
             receiver_group_name = generate_group_name(receiver)
 
-            # TODO: save in db
+            # TODO: save the message in db
 
             async_to_sync(self.channel_layer.group_send)(
                 receiver_group_name,

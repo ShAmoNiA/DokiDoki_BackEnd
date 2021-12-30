@@ -7,8 +7,6 @@ services:
 
     networks:
       - doki_chat_network
-    ports:
-      - "6379:6379"
 
     restart: always
 
@@ -17,7 +15,7 @@ services:
     container_name: doki_django
 
     ports:
-    - "8000:8000"
+    - "1111:1111"
 
     volumes:
       - .:/DokiDoki
@@ -26,6 +24,8 @@ services:
       - doki_chat_network
     depends_on:
       - redis
+
+    restart: always
 
 networks:
   doki_chat_network:
