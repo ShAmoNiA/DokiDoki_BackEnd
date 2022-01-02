@@ -1,10 +1,10 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
-from .auth_token import TokenAuthMiddlewareStack
+from .auth_token import AuthMiddlewareStack
 
 from DokiApp import routing as DokiApp_routing
 
 application = ProtocolTypeRouter({
-    'websocket': TokenAuthMiddlewareStack(
+    'websocket': AuthMiddlewareStack(
         URLRouter(
             DokiApp_routing.websocket_urlpatterns
         )

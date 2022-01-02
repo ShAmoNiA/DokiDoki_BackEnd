@@ -7,5 +7,5 @@ WEBSOCKET_BASE_URL = 'ws' + '/'
 
 
 websocket_urlpatterns = [
-    path(WEBSOCKET_BASE_URL + 'chat_socket/', consumers.ChatConsumer.as_asgi()),
+    path(WEBSOCKET_BASE_URL + 'chat_socket/<str:token>/', consumers.ChatConsumer.as_asgi()),
 ]
