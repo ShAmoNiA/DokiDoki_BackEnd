@@ -268,3 +268,48 @@ class TestTag(TestCase):
         with self.assertRaises(Exception) as raised:
             mixer.blend('DokiApp.Tag', title="the title")
         self.assertEqual(IntegrityError, type(raised.exception))
+
+
+class TestExpertise(TestCase):
+
+    def test_create(self):
+        pass
+
+    def test_fields(self):
+        pass
+
+
+class TestComment(TestCase):
+
+    def test_create(self):
+        pass
+
+    def test_fields(self):
+        pass
+
+
+class TestRate(TestCase):
+
+    def test_create(self):
+        pass
+
+    def test_fields(self):
+        pass
+
+    def test_rate_under_range(self):
+        pass
+
+    def test_rate_over_range(self):
+        pass
+
+
+class TestReserve(TestCase):
+
+    def test_create(self):
+        pass
+
+    def test_fields(self):
+        pass
+
+    def test_invalid_time_choices(self):
+        pass

@@ -67,3 +67,12 @@ def adapt_user_queryset_to_list(users):
         data['id'] = user.id
         result.append(data)
     return result
+
+
+def adapt_comment(comments):
+    result = []
+    for comment in comments:
+        data = CommentSerializer(instance=comment).data
+        data["writer_name"] = User.objects.get(id=data['writer']).username
+        result.append(data)
+    return result

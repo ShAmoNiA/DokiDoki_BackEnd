@@ -147,7 +147,7 @@ class Rate(models.Model):
 
 class Reserve(models.Model):
     TIME_CHOICES = (('AM', 'Before 12',),
-                   ('PM', 'After 12',))
+                    ('PM', 'After 12',))
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
