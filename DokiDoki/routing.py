@@ -1,5 +1,5 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
-from .auth_token import AuthMiddlewareStack
+from channels.auth import AuthMiddlewareStack
 
 from DokiApp import routing as DokiApp_routing
 

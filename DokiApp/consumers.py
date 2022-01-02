@@ -22,7 +22,8 @@ class ChatConsumer(WebsocketConsumer):
         except:
             self.close(code=403)
 
-        self.group_name = generate_group_name(self.user.username)
+        # self.group_name = generate_group_name(self.user.username)
+        self.group_name = 'A'
         async_to_sync(
             self.channel_layer.group_add(self.group_name, self.channel_name)
         )
@@ -39,17 +40,17 @@ class ChatConsumer(WebsocketConsumer):
 
             message = text_data_json["message"]
             receiver = text_data_json['receiver_username']
-            receiver_group_name = generate_group_name(receiver)
+            #receiver_group_name = generate_group_name(receiver)
 
             # TODO: save the message in db
 
             print()
-            print('FROM: ' + self.group_name)
-            print('TO: ' + receiver_group_name)
-            print('MESSAGE: ' + message)
+            #print('FROM: ' + self.group_name)
+            #print('TO: ' + receiver_group_name)
+            #print('MESSAGE: ' + message)
 
             async_to_sync(self.channel_layer.group_send)(
-                receiver_group_name,
+                self.group_name,
                 {
                     'type': 'chat_message',
                     'message': message
