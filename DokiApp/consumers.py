@@ -50,13 +50,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             message = text_data_json["message"]
 
-            # TODO: save the message in db
+            message = await self.save_message_in_database(message)
 
             await self.channel_layer.group_send(
                 self.group_name,
                 {
                     'type': 'chat_message',
-                    'message': message
+                    'message': message.text,
+                    'date': str(message.date),
+                    'is_sender_doctor': message.is_sender_doctor
                 }
             )
 
@@ -78,6 +80,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def chat_exists_by_name(self, name):
         return bool(Chat.objects.filter(name=name).count())
+
+    @database_sync_to_async
+    def save_message_in_database(self, text):
+        return Message.objects.create(chat=self.chat, text=text, is_sender_doctor=self.user.is_doctor)
 
     @sync_to_async
     def generate_group_name(self, username_1, username_2):
