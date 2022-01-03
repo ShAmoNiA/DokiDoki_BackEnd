@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ..Helper_functions.email_functions import send_reserve_message
+from ..Helper_functions.helper_functions import create_chat_name
 from ..permissions import IsPatient, IsDoctor
 from ..serializers import *
 
@@ -24,10 +25,7 @@ def create_chat_object_in_db(patient, doctor):
     user_1_id = patient.user.id
     user_2_id = doctor.user.id
 
-    name = str(user_1_id) + "_" + str(user_2_id)
-    if user_1_id > user_2_id:
-        name = str(user_2_id) + "_" + str(user_1_id)
-
+    name = create_chat_name(user_1_id, user_2_id)
     Chat.objects.create(name=name, patient=patient, doctor=doctor)
 
 

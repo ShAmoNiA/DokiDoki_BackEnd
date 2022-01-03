@@ -9,6 +9,8 @@ from channels.auth import login, logout
 from rest_framework.authtoken.models import Token
 from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
+from .Helper_functions.helper_functions import create_chat_name
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -82,8 +84,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user_1_id = User.objects.get(username=username_1).id
         user_2_id = User.objects.get(username=username_2).id
 
-        name = str(user_1_id) + "_" + str(user_2_id)
-        if user_1_id > user_2_id:
-            name = str(user_2_id) + "_" + str(user_1_id)
-
-        return 'chat_' + name
+        return create_chat_name(user_1_id, user_2_id)
