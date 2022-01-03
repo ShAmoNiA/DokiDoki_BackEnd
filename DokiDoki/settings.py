@@ -96,8 +96,6 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'DokiDoki.wsgi.application'
-
 # Channels:
 ASGI_APPLICATION = 'DokiDoki.routing.application'
 CHANNEL_LAYERS = {
