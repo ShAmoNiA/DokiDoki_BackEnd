@@ -155,6 +155,8 @@ class Reserve(models.Model):
 
 
 class Chat(models.Model):
+    name = models.CharField(default="chat_name", unique=True, max_length=32)
+
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
 

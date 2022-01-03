@@ -328,9 +328,20 @@ class TestChat(TestCase):
         self.assertEqual(obj.pk, 1)
 
     def test_fields(self):
-        obj = mixer.blend('DokiApp.Chat', doctor=self.doctor, patient=self.patient)
+        obj = mixer.blend('DokiApp.Chat', name="the_name", doctor=self.doctor, patient=self.patient)
+        self.assertEqual(obj.name, "the_name")
         self.assertEqual(obj.doctor.id, 3)
         self.assertEqual(obj.patient.id, 2)
+
+    def test_default_name(self):
+        obj = mixer.blend('DokiApp.Chat')
+        self.assertEqual(obj.name, "chat_name")
+
+    def test_unique_name(self):
+        mixer.blend('DokiApp.Chat', name="the_name2")
+        with self.assertRaises(Exception) as raised:
+            mixer.blend('DokiApp.Chat', name="the_name2")
+        self.assertEqual(IntegrityError, type(raised.exception))
 
 
 class TestMessage(TestChat):

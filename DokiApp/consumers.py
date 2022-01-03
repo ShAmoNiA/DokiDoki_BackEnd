@@ -21,14 +21,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         partner_username = self.scope['url_route']['kwargs']['partner_username']
         self.group_name = await self.generate_group_name(self.user.username, partner_username)
-        print(self.group_name)
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(
-            self.group_name, self.channel_name
+            self.group_name,
+            self.channel_name
         )
 
     async def receive(self, text_data=None, bytes_data=None):
