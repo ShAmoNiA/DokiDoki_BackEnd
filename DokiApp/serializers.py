@@ -101,3 +101,9 @@ class ReserveSerializer(ModelSerializer):
     class Meta:
         model = Reserve
         fields = ('doctor', 'user', 'date', 'time')
+
+
+class MessageSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('text', 'is_sender_doctor', 'date')

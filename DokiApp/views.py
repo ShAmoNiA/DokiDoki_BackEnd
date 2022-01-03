@@ -9,6 +9,7 @@ from rest_framework.parsers import FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import *
@@ -43,3 +44,26 @@ class UploadImage(APIView):
             image_serializer.save()
             return Response({"image_url": image_serializer.data["image"]}, status=status.HTTP_200_OK)
         return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoadOldChat(APIView):
+    permission_classes = (IsAuthenticated,)
+    PAGINATE_BY = 15
+
+    def get(self, request):
+        partner_username = request.GET['partner_username']
+        partner = get_object_or_404(User, username=partner_username)
+        chat_name = create_chat_name(partner.id, request.user.id)
+        chat = Chat.objects.get(name=chat_name)
+        messages = Message.objects.filter(chat=chat).order_by('-date')
+
+        result = adapt_message(messages)
+
+        page = int(request.GET.get('page', 1))
+        paginator = Paginator(result, self.PAGINATE_BY)
+        if paginator.num_pages < page or page < 1:
+            return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
+        result = paginator.page(page).object_list
+
+        return Response({"success": True, "messages": result, "page": page, "max_page": paginator.num_pages}
+                        , status=status.HTTP_200_OK)

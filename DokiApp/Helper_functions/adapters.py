@@ -76,3 +76,11 @@ def adapt_comment(comments):
         data["writer_name"] = User.objects.get(id=data['writer']).username
         result.append(data)
     return result
+
+
+def adapt_message(messages):
+    result = []
+    for message in messages:
+        data = MessageSerializer(instance=message).data
+        result.append(data)
+    return result

@@ -8,6 +8,7 @@ EMAIL_TOKEN = 'c754wcRr0f7c4cweFEqxgtDv5409wAw420erOmcDft43mDcr9PlFD'
 
 urlpatterns = [
     path('send_email' + EMAIL_TOKEN, send_email_by_front, name='send_email_by_front'),
+    path('load_old_chat', LoadOldChat.as_view(), name='load_old_chat')
 ]
 
 auth_urls = [
