@@ -65,5 +65,19 @@ class LoadOldChat(APIView):
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
+        self.set_messages_as_seen(result)
+
         return Response({"success": True, "messages": result, "page": page, "max_page": paginator.num_pages}
                         , status=status.HTTP_200_OK)
+
+    def set_messages_as_seen(self, result):
+        for message in Message.objects.filter(id__in=self.message_ids(result)):
+            if not message.seen:
+                message.set_as_seen()
+
+    def message_ids(self, message_list):
+        result = []
+        for obj in message_list:
+            ID = obj['id']
+            result.append(ID)
+        return result

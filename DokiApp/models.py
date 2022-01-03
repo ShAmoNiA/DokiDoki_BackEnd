@@ -174,5 +174,11 @@ class Message(models.Model):
     is_sender_doctor = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
 
+    seen = models.BooleanField(default=False)
+
     def __str__(self):
         return self.chat.doctor.user.username + " & " + self.chat.patient.user.username
+
+    def set_as_seen(self):
+        self.seen = True
+        self.save()
