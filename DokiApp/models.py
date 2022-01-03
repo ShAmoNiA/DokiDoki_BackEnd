@@ -118,6 +118,9 @@ class PatientProfile(models.Model):
             self.save()
             return "the profile set successfully"
 
+    def __str__(self):
+        return str(self.id) + ". " + str(self.user.username)
+
 
 class Tag(models.Model):
     title = models.CharField(max_length=64, unique=True)
@@ -160,6 +163,9 @@ class Chat(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name + " (" + self.doctor.user.username + " & " + self.patient.user.username + ")"
+
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
@@ -167,3 +173,6 @@ class Message(models.Model):
     text = models.TextField()
     is_sender_doctor = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.chat.doctor.user.username + " & " + self.chat.patient.user.username

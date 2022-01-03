@@ -62,3 +62,15 @@ class RateAdmin(admin.ModelAdmin):
 class ReserveAdmin(admin.ModelAdmin):
     list_display = ['doctor', 'user', 'date', 'time']
     # TODO: list_filter, list_editable
+
+
+@admin.register(Chat)
+class ChatAdmin(admin.ModelAdmin):
+    list_display = ['name', 'doctor', 'patient']
+    list_filter = ['doctor', 'patient']
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['text', 'chat', 'is_sender_doctor', 'date']
+    list_filter = ['chat']
