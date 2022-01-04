@@ -52,6 +52,7 @@ def send_reset_pass_email(email, fullname, token):
                to_list=[email],
                html_content=html_content)
 
+
 def send_reserve_message(email, fullname, time, patient_name):
     context = {
         'HOST': HOST,
@@ -66,4 +67,3 @@ def send_reserve_message(email, fullname, time, patient_name):
                message='message',
                to_list=[email],
                html_content=html_content)
-

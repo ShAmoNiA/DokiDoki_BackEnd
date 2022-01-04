@@ -10,6 +10,7 @@ from rest_framework.authtoken.models import Token
 from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
 from .Helper_functions.helper_functions import create_chat_name
+from .Helper_functions.email_functions import send_text_email
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -50,10 +51,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             message = text_data_json["message"]
 
-            if len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2:
-                seen = True
-            else:
-                seen = False
+            seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
+
+            if not seen:
+                try: await self.email_to_offline_user()
+                except: pass
+
             message = await self.save_message_in_database(message, seen)
 
             await self.channel_layer.group_send(
@@ -96,3 +99,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user_2_id = User.objects.get(username=username_2).id
 
         return create_chat_name(user_1_id, user_2_id)
+
+    @sync_to_async
+    def email_to_offline_user(self):
+        send_text_email('New message in DokiDokiChat',
+                        'the user: ' + self.user.username + ", has answered to your chat",
+                        [self.partner_user.email])
