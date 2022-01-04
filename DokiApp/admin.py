@@ -72,5 +72,5 @@ class ChatAdmin(admin.ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['text', 'chat', 'is_sender_doctor', 'date']
-    list_filter = ['chat']
+    list_display = ['text', 'seen', 'chat', 'is_sender_doctor', 'date']
+    list_filter = ['chat', 'seen']
