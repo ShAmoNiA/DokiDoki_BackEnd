@@ -358,12 +358,17 @@ class TestMessage(TestChat):
 
     def test_fields(self):
         text = "the_text"
-        obj = mixer.blend('DokiApp.Message', chat=self.chat_2, text=text, is_sender_doctor=True)
+        obj = mixer.blend('DokiApp.Message', seen=True, chat=self.chat_2, text=text, is_sender_doctor=True)
         self.assertEqual(obj.chat.id, 2)
         self.assertEqual(obj.chat, self.chat_2)
         self.assertEqual(obj.text, text)
         self.assertEqual(obj.is_sender_doctor, True)
+        self.assertEqual(obj.seen, True)
 
     def test_default_is_sender_doctor(self):
         obj = mixer.blend('DokiApp.Message')
         self.assertEqual(obj.is_sender_doctor, False)
+
+    def test_default_seen(self):
+        obj = mixer.blend('DokiApp.Message')
+        self.assertEqual(obj.seen, False)

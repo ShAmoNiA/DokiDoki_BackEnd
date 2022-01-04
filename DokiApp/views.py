@@ -46,6 +46,21 @@ class UploadImage(APIView):
         return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ChatList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        profile = user.profile
+
+        if user.is_doctor:
+            chats = Chat.objects.filter(doctor=profile)
+        else:
+            chats = Chat.objects.filter(patient=profile)
+
+        return Response({'success': True, 'chats': adapt_chat(chats, user)})
+
+
 class LoadOldChat(APIView):
     permission_classes = (IsAuthenticated,)
     PAGINATE_BY = 15

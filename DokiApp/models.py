@@ -163,6 +163,14 @@ class Chat(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
 
+    def get_partner_user(self, user):
+        if user.is_doctor:
+            partnerProfile = self.patient
+        else:
+            partnerProfile = self.doctor
+
+        return partnerProfile.user
+
     def __str__(self):
         return self.name + " (" + self.doctor.user.username + " & " + self.patient.user.username + ")"
 

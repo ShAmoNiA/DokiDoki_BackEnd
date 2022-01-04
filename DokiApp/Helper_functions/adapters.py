@@ -78,6 +78,17 @@ def adapt_comment(comments):
     return result
 
 
+def adapt_chat(chats, user):
+    result = []
+    for chat in chats:
+        data = ChatSerializer(instance=chat).data
+
+        data['partner_username'] = chat.get_partner_user(user).username
+
+        result.append(data)
+    return result
+
+
 def adapt_message(messages):
     result = []
     for message in messages:

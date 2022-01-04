@@ -103,6 +103,12 @@ class ReserveSerializer(ModelSerializer):
         fields = ('doctor', 'user', 'date', 'time')
 
 
+class ChatSerializer(ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = ('doctor', 'patient')
+
+
 class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
