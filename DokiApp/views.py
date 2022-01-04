@@ -54,7 +54,7 @@ class LoadOldChat(APIView):
         partner_username = request.GET['partner_username']
         partner = get_object_or_404(User, username=partner_username)
         chat_name = create_chat_name(partner.id, request.user.id)
-        chat = Chat.objects.get(name=chat_name)
+        chat = get_object_or_404(Chat, name=chat_name)
         messages = Message.objects.filter(chat=chat).order_by('-date')
 
         result = adapt_message(messages)
@@ -65,14 +65,14 @@ class LoadOldChat(APIView):
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        self.set_messages_as_seen(result)
+        self.set_messages_as_seen(result, request.user)
 
         return Response({"success": True, "messages": result, "page": page, "max_page": paginator.num_pages}
                         , status=status.HTTP_200_OK)
 
-    def set_messages_as_seen(self, result):
+    def set_messages_as_seen(self, result, user):
         for message in Message.objects.filter(id__in=self.message_ids(result)):
-            if not message.seen:
+            if (not message.seen) and (message.is_sender_doctor != user.is_doctor):
                 message.set_as_seen()
 
     def message_ids(self, message_list):

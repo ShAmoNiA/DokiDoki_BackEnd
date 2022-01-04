@@ -61,6 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {
                     'type': 'chat_message',
                     'message': message.text,
+                    'seen': message.seen,
                     'date': str(message.date),
                     'is_sender_doctor': message.is_sender_doctor
                 }
