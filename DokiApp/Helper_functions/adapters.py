@@ -84,6 +84,7 @@ def adapt_chat(chats, user):
         data = ChatSerializer(instance=chat).data
 
         data['partner_username'] = chat.get_partner_user(user).username
+        data['has_new_message'] = chat.has_new_message(user)
 
         result.append(data)
     return result

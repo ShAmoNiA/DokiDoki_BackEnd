@@ -171,6 +171,15 @@ class Chat(models.Model):
 
         return partnerProfile.user
 
+    def has_new_message(self, user):
+        messages = Message.objects.filter(chat=self)
+
+        for message in messages:
+            if (message.is_sender_doctor != user.is_doctor) and not message.seen:
+                return True
+
+        return False
+
     def __str__(self):
         return self.name + " (" + self.doctor.user.username + " & " + self.patient.user.username + ")"
 
