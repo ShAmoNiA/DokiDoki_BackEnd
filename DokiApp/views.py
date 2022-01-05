@@ -71,6 +71,7 @@ class LoadOldChat(APIView):
         chat_name = create_chat_name(partner.id, request.user.id)
         chat = get_object_or_404(Chat, name=chat_name)
         messages = Message.objects.filter(chat=chat).order_by('-date')
+        oldest_unseen = oldest_unseen_message_id(messages, request.user)
 
         result = adapt_message(messages)
 
@@ -86,6 +87,7 @@ class LoadOldChat(APIView):
         self.set_messages_as_seen(result, request.user)
 
         return Response({"success": True, "page": page if page else 'not defined', "max_page": num_pages,
+                         "oldest_unseen_message_id": oldest_unseen,
                          "messages": result}, status=status.HTTP_200_OK)
 
     def set_messages_as_seen(self, result, user):
