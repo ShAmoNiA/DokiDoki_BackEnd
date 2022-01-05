@@ -34,6 +34,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
         self.chat = await self.get_chat_by_name(self.group_name)
 
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'partner_status',
+                'partner_is_online': True,
+            }
+        )
+
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
@@ -54,8 +62,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
 
             if not seen:
-                try: await self.email_to_offline_user()
-                except: pass
+                try:
+                    await self.email_to_offline_user()
+                except:
+                    pass
 
             message = await self.save_message_in_database(message, seen)
 
@@ -71,6 +81,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
     async def chat_message(self, event):
+        await self.send_chat(event)
+
+    async def partner_status(self, event):
+        await self.send_chat(event)
+
+    async def send_chat(self, event):
         await self.send(text_data=json.dumps(event))
 
     @sync_to_async
