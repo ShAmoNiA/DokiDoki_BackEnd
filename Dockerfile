@@ -1,11 +1,21 @@
-FROM python:latest
+FROM python:3
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR /DokiDoki
+WORKDIR /code
+COPY requirements.txt /code/
 
-COPY requirements.txt requirements.txt
-RUN pip install --upgrade pip setuptools wheel
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
+RUN python3 manage.py makemigrations
+RUN python3 manage.py migrate
 
-COPY . .
+python manage.py loaddata "doctors.json"
+python manage.py loaddata "patients.json"
+python manage.py loaddata "doctor_profiles.json"
+python manage.py loaddata "patient_profiles.json"
+python manage.py loaddata "tags.json"
+python manage.py loaddata "expertises.json"
+python manage.py loaddata "chats.json"
+python manage.py loaddata "messages.json"
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:1111"]
+COPY . /code/

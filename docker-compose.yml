@@ -1,32 +1,17 @@
-version: '2'
+version: "3.3"
 
 services:
-  redis:
-    image: redis:latest
-    container_name: redis_db
-
-    networks:
-      - doki_chat_network
-
-    restart: always
-
-  django:
-    build: .
-    container_name: doki_django
-
+  redis-server:
+    image: "redis:alpine"
+    command: redis-server
     ports:
-    - "1111:1111"
-
+      - "6379:6379"
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:1111
     volumes:
-      - .:/DokiDoki
-
-    networks:
-      - doki_chat_network
+      - .:/code
+    ports:
+      - "1111:1111"
     depends_on:
-      - redis
-
-    restart: always
-
-networks:
-  doki_chat_network:
-    external: true
+      - redis-server
