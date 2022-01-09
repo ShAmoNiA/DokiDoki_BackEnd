@@ -5,6 +5,7 @@
     "fields": {
       "chat": 5,
       "text": "When he asked her favorite number, she answered without hesitation that it was diamonds.",
+      "date": "2012-09-06T13:23:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -14,6 +15,7 @@
     "fields": {
       "chat": 5,
       "text": "He knew it was going to be a bad day when he saw mountain lions roaming the streets.",
+      "date": "2014-09-01T13:20:30+03:30",
       "is_sender_doctor": true
     }
   },
@@ -23,6 +25,7 @@
     "fields": {
       "chat": 5,
       "text": "The truth is that you pay for your lifestyle in hours.",
+      "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -32,6 +35,7 @@
     "fields": {
       "chat": 5,
       "text": "There was no telling what thoughts would come from the machine.",
+      "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -41,6 +45,7 @@
     "fields": {
       "chat": 5,
       "text": "After exploring the abandoned building, he started to believe in ghosts.",
+      "date": "2021-07-18T15:11:34+03:30",
       "is_sender_doctor": true
     }
   },
@@ -50,6 +55,7 @@
     "fields": {
       "chat": 5,
       "text": "She wasn't sure whether to be impressed or concerned that he folded underwear in neat little packages.",
+      "date": "2007-08-18T15:11:34+03:30",
       "is_sender_doctor": false
     }
   },
@@ -59,6 +65,7 @@
     "fields": {
       "chat": 5,
       "text": "He colored deep space a soft yellow.",
+      "date": "2021-07-18T15:11:34+03:30",
       "is_sender_doctor": false
     }
   },
@@ -68,6 +75,7 @@
     "fields": {
       "chat": 5,
       "text": "She finally understood that grief was her love with no place for it to go.",
+      "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -77,6 +85,7 @@
     "fields": {
       "chat": 5,
       "text": "He was sure the Devil created red sparkly glitter.",
+      "date": "2021-07-18T15:11:34+03:30",
       "is_sender_doctor": true
     }
   },
@@ -86,6 +95,7 @@
     "fields": {
       "chat": 5,
       "text": "I was fishing for compliments and accidentally caught a trout.",
+      "date": "2021-07-13T15:11:34+03:30",
       "is_sender_doctor": true
     }
   },
@@ -95,6 +105,7 @@
     "fields": {
       "chat": 5,
       "text": "I love eating toasted cheese and tuna sandwiches.",
+      "date": "2021-07-18T15:11:34+03:30",
       "is_sender_doctor": true
     }
   },
@@ -104,6 +115,7 @@
     "fields": {
       "chat": 5,
       "text": "He decided to live his life by the big beats manifesto.",
+      "date": "2011-09-01T13:20:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -113,6 +125,7 @@
     "fields": {
       "chat": 5,
       "text": "If you don't like toenails, you probably shouldn't look at your feet.",
+      "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -122,6 +135,7 @@
     "fields": {
       "chat": 5,
       "text": "While all her friends were positive that Mary had a sixth sense, she knew she actually had a seventh sense.",
+      "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": true
     }
   },
@@ -131,20 +145,17 @@
     "fields": {
       "chat": 5,
       "text": "He was all business when he wore his clown suit.",
+      "date": "2011-09-01T13:20:30+03:30",
       "is_sender_doctor": false
     }
   },
-
-
-
-
-
   {
     "model": "DokiApp.Message",
     "pk": 16,
     "fields": {
       "chat": 8,
       "text": "Joe made the sugar cookies; Susan decorated them.",
+      "date": "2021-07-18T15:11:34+03:30",
       "is_sender_doctor": false
     }
   },
@@ -154,6 +165,7 @@
     "fields": {
       "chat": 8,
       "text": "The thick foliage and intertwined vines made the hike nearly impossible.",
+      "date": "2020-03-23T15:11:18+03:30",
       "is_sender_doctor": false
     }
   },
@@ -163,6 +175,7 @@
     "fields": {
       "chat": 8,
       "text": "It's never been my responsibility to glaze the donuts.",
+      "date": "2011-09-01T13:20:30+03:30",
       "is_sender_doctor": false
     }
   },
@@ -172,6 +185,7 @@
     "fields": {
       "chat": 8,
       "text": "As he entered the church he could hear the soft voice of someone whispering into a cell phone.",
+      "date": "2020-03-23T15:11:18+03:30",
       "is_sender_doctor": true
     }
   },
@@ -181,6 +195,7 @@
     "fields": {
       "chat": 8,
       "text": "He looked behind the door and didn't like what he saw.",
+      "date": "2011-09-01T13:20:30+03:30",
       "is_sender_doctor": true
     }
   },
@@ -190,6 +205,7 @@
     "fields": {
       "chat": 8,
       "text": "The heat",
+      "date": "2020-03-23T15:11:18+03:30",
       "is_sender_doctor": false
     }
   },
@@ -199,6 +215,7 @@
     "fields": {
       "chat": 8,
       "text": "The busker hoped that the people passing by would throw money, but they threw tomatoes instead, so he exchanged his hat for a juicer.",
+      "date": "2020-03-23T15:11:18+03:30",
       "is_sender_doctor": true
     }
   },
@@ -208,6 +225,7 @@
     "fields": {
       "chat": 8,
       "text": "He didn’t want to go to the dentist, yet he went anyway.",
+      "date": "2018-05-23T15:21:32+03:30",
       "is_sender_doctor": true
     }
   },
@@ -217,6 +235,7 @@
     "fields": {
       "chat": 8,
       "text": "He always wore his sunglasses at night.",
+      "date": "2018-05-23T15:21:32+03:30",
       "is_sender_doctor": true
     }
   },
@@ -226,6 +245,7 @@
     "fields": {
       "chat": 8,
       "text": "Thirty years later, she still thought it was okay to put the toilet paper roll under rather than over.",
+      "date": "2016-05-23T13:21:43+03:30",
       "is_sender_doctor": false
     }
   },
@@ -235,6 +255,7 @@
     "fields": {
       "chat": 8,
       "text": "He fumbled in the darkness looking for the light switch, but when he finally found it there was someone already there.",
+      "date": "2020-03-23T15:11:18+03:30",
       "is_sender_doctor": true
     }
   },
@@ -244,6 +265,7 @@
     "fields": {
       "chat": 8,
       "text": "If my calculator had a history, it would be more embarrassing than my browser history.",
+      "date": "2018-05-23T15:21:32+03:30",
       "is_sender_doctor": false
     }
   },
@@ -253,20 +275,17 @@
     "fields": {
       "chat": 8,
       "text": "Courage and stupidity were all he had.",
+      "date": "2016-05-23T13:21:43+03:30",
       "is_sender_doctor": true
     }
   },
-
-
-
-
-
   {
     "model": "DokiApp.Message",
     "pk": 29,
     "fields": {
       "chat": 13,
       "text": "The blinking lights of the antenna tower came into focus just as I heard a loud snap.",
+      "date": "2016-05-23T13:21:43+03:30",
       "is_sender_doctor": false
     }
   },
@@ -276,6 +295,7 @@
     "fields": {
       "chat": 13,
       "text": "With the high wind warning",
+      "date": "2019-11-23T15:11:33+03:30",
       "is_sender_doctor": true
     }
   },
@@ -285,6 +305,7 @@
     "fields": {
       "chat": 13,
       "text": "The golden retriever loved the fireworks each Fourth of July.",
+      "date": "2018-05-23T15:21:32+03:30",
       "is_sender_doctor": true
     }
   },
@@ -294,6 +315,7 @@
     "fields": {
       "chat": 13,
       "text": "No matter how beautiful the sunset, it saddened her knowing she was one day older.",
+      "date": "2011-09-01T13:20:30+03:30",
       "is_sender_doctor": true
     }
   },
@@ -303,6 +325,7 @@
     "fields": {
       "chat": 13,
       "text": "The sky is clear; the stars are twinkling.",
+      "date": "2019-11-23T15:11:33+03:30",
       "is_sender_doctor": false
     }
   },
@@ -312,6 +335,7 @@
     "fields": {
       "chat": 13,
       "text": "She wrote him a long letter, but he didn't read it.",
+      "date": "2018-05-23T15:21:32+03:30",
       "is_sender_doctor": false
     }
   },
@@ -321,6 +345,7 @@
     "fields": {
       "chat": 13,
       "text": "The Guinea fowl flies through the air with all the grace of a turtle.",
+      "date": "2016-05-23T13:21:43+03:30",
       "is_sender_doctor": true
     }
   },
@@ -330,6 +355,7 @@
     "fields": {
       "chat": 13,
       "text": "The toy brought back fond memories of being lost in the rain forest.",
+      "date": "2019-11-23T15:11:33+03:30",
       "is_sender_doctor": false
     }
   },
@@ -339,6 +365,7 @@
     "fields": {
       "chat": 13,
       "text": "He didn't understand why the bird wanted to ride the bicycle.",
+      "date": "2019-11-23T15:11:33+03:30",
       "is_sender_doctor": false
     }
   },
@@ -348,6 +375,7 @@
     "fields": {
       "chat": 13,
       "text": "Lets all be unique together until we realise we are all the same.",
+      "date": "2014-09-01T13:20:30+03:30",
       "is_sender_doctor": true
     }
   },
@@ -357,6 +385,7 @@
     "fields": {
       "chat": 13,
       "text": "Pink horses galloped across the sea.",
+      "date": "2016-05-23T13:21:43+03:30",
       "is_sender_doctor": false
     }
   },
@@ -366,6 +395,7 @@
     "fields": {
       "chat": 13,
       "text": "Just go ahead and press that button.",
+      "date": "2014-09-01T13:20:30+03:30",
       "is_sender_doctor": true
     }
   }
