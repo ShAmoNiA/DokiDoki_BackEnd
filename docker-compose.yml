@@ -21,7 +21,8 @@ services:
       && python manage.py loaddata "expertises.json"
       && python manage.py loaddata "chats.json"
       && python manage.py loaddata "messages.json"
-      && python manage.py set_password_for_fixtures_users
+      && python manage.py set_password_for_fixture_users
+      && python manage.py verify_emails
       && python manage.py create_admin_admin
       && python manage.py runserver 0.0.0.0:1111
       "

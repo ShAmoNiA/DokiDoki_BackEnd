@@ -15,3 +15,4 @@ def set_password(password):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         set_password(PASSWORD)
+        print(f"user passwords set as: {PASSWORD}")
