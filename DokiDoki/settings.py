@@ -102,6 +102,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
+            # "redis-server" if dockerized_on_server else "localhost"
             "hosts": [("redis-server", 6379)],
         },
     },

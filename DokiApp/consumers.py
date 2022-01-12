@@ -20,7 +20,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             token = self.scope['url_route']['kwargs']['auth_token']
             self.user = await self.get_user_by_token(token)
-            await login(self.scope, self.user)
 
             partner_username = self.scope['url_route']['kwargs']['partner_username']
             self.partner_user = await self.get_user_by_username(partner_username)
@@ -44,6 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
+        # TODO: send to connected user -> is partner online?
 
     async def disconnect(self, code):
         try:
@@ -66,7 +66,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             message = text_data_json["message"]
 
-            seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
+            # if using channels-redis:
+            seen = len(self.channel_layer.receive_buffer) == 2
+            # if using InMemory channels:
+            # seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
 
             if not seen:
                 try:
