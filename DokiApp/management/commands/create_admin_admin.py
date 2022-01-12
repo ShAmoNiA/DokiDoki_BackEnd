@@ -22,4 +22,4 @@ def create_superuser(username, password):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         create_superuser(USERNAME, PASSWORD)
-        print(f"superuser created ---> username, password = {USERNAME}, {PASSWORD}")
+        print(f"superuser created ---> (username, password) = ({USERNAME}, {PASSWORD})")
