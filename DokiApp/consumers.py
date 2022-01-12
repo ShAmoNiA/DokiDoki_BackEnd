@@ -33,17 +33,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
         self.chat = await self.get_chat_by_name(self.group_name)
 
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+
+        # if using channels-redis:
+        is_partner_online = len(self.channel_layer.receive_buffer) == 2
+        # if using InMemoryChannelLayer:
+        # is_partner_online = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
+
         await self.channel_layer.group_send(
             self.group_name,
             {
                 'type': 'partner_status',
-                'partner_is_online': True,
+                'partner_is_online': is_partner_online,
             }
         )
-
-        await self.channel_layer.group_add(self.group_name, self.channel_name)
-        await self.accept()
-        # TODO: send to connected user -> is partner online?
 
     async def disconnect(self, code):
         try:
@@ -68,7 +72,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
             # if using channels-redis:
             seen = len(self.channel_layer.receive_buffer) == 2
-            # if using InMemory channels:
+            # if using InMemoryChannelLayer:
             # seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
 
             if not seen:
