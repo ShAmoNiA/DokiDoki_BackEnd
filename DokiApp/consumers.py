@@ -37,7 +37,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         # if using channels-redis:
-        is_partner_online = len(self.channel_layer.receive_buffer) == 2
+        is_partner_online = self.channel_layer.receive_count == 2
         # if using InMemoryChannelLayer:
         # is_partner_online = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
 
@@ -50,20 +50,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def disconnect(self, code):
-        try:
-            await self.channel_layer.group_discard(
-                self.group_name,
-                self.channel_name
-            )
-            await self.channel_layer.group_send(
-                self.group_name,
-                {
-                    'type': 'partner_status',
-                    'partner_is_online': False,
-                }
-            )
-        except:
-            pass
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'partner_status',
+                'partner_is_online': False,
+            }
+        )
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
@@ -71,7 +68,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message = text_data_json["message"]
 
             # if using channels-redis:
-            seen = len(self.channel_layer.receive_buffer) == 2
+            seen = self.channel_layer.receive_count == 2
             # if using InMemoryChannelLayer:
             # seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
 
