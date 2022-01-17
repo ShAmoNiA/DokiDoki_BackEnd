@@ -38,7 +38,7 @@ search_urls = [
     path('search_doctor_by_tag', SearchDoctorByTag.as_view(), name='SearchDoctorByTag'),
 
     path('search/<str:keyword>/', SearchDoctorByKeyword.as_view(), name='SearchDoctorByKeyword'),
-    path('tags/<str:keyword>/', SearchDoctorsWithTag.as_view(), name='SearchDoctorsWithTag'),
+    path('tags/<str:keyword>/', SearchDoctorByTag.as_view(), name='SearchDoctorsWithTag'),
     path('search/', AdvancedSearch.as_view(), name="AdvancedSearch"),
 ]
 
