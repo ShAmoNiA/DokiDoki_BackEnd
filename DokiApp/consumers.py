@@ -11,6 +11,7 @@ from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
 from .Helper_functions.helper_functions import create_chat_name
 from .Helper_functions.email_functions import send_text_email
+from DokiDoki.settings import CHANNEL_LAYERS
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -36,16 +37,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
-        # if using channels-redis:
-        # is_partner_online = self.channel_layer.receive_count == 2
-        # if using InMemoryChannelLayer:
-        is_partner_online = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
-
         await self.channel_layer.group_send(
             self.group_name,
             {
                 'type': 'partner_status',
-                'partner_is_online': is_partner_online,
+                'partner_is_online': await self.is_partner_online(),
             }
         )
 
@@ -67,10 +63,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             message = text_data_json["message"]
 
-            # if using channels-redis:
-            # seen = self.channel_layer.receive_count == 2
-            # if using InMemoryChannelLayer:
-            seen = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
+            seen = await self.is_partner_online()
 
             if not seen:
                 try:
@@ -100,6 +93,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def send_chat(self, event):
         await self.send(text_data=json.dumps(event))
 
+    async def is_partner_online(self):
+        channel_layer = CHANNEL_LAYERS["default"]["BACKEND"]
+
+        if channel_layer == "channels_redis.core.RedisChannelLayer":
+            is_online = self.channel_layer.receive_count == 2
+        elif channel_layer == "channels.layers.InMemoryChannelLayer":
+            is_online = len(self.channel_layer.groups.get(self.group_name, {}).items()) == 2
+        else:
+            is_online = False
+
+        return is_online
+
     @sync_to_async
     def get_user_by_token(self, token):
         return Token.objects.get(key=token).user
@@ -113,10 +118,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Chat.objects.get(name=name)
 
     @database_sync_to_async
+    # TODO: @sync_to_async
     def chat_exists_by_name(self, name):
         return bool(Chat.objects.filter(name=name).count())
 
     @database_sync_to_async
+    # TODO: @sync_to_async
     def save_message_in_database(self, text, seen):
         return Message.objects.create(chat=self.chat, text=text, seen=seen, is_sender_doctor=self.user.is_doctor)
 
