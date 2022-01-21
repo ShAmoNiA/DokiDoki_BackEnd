@@ -79,13 +79,14 @@ class DoctorProfile(models.Model):
 
     @property
     def comments_count(self):
-        query = Comment.objects.filter(doctor__id=self.pk)
-        return len(query)
+        return Comment.objects.filter(doctor=self).count()
 
     @property
     def rate(self):
-        rate = Rate.objects.filter(doctor__id=self.pk).aggregate(Avg('rate'))["rate__avg"]
-        return rate
+        result = Rate.objects.filter(doctor=self).aggregate(Avg('rate'))["rate__avg"]
+        if result is None:
+            return 0
+        return result
 
     def set_user(self, user):
         if user.has_profile:
@@ -143,9 +144,12 @@ class Comment(models.Model):
 
 
 class Rate(models.Model):
+    from django.utils.translation import gettext as _
+    RATE_CHOICES = ((0, _('0')), (1, _('*')), (2, _('**')), (3, _('***')), (4, _('****')), (5, _('*****')))
+
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rate = models.IntegerField(range(1, 5))
+    rate = models.PositiveSmallIntegerField(default=0, choices=RATE_CHOICES)
 
 
 class Reserve(models.Model):
@@ -154,7 +158,7 @@ class Reserve(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
-    time = models.CharField(max_length=2, choices=TIME_CHOICES)
+    time = models.CharField(default='AM', max_length=2, choices=TIME_CHOICES)
 
 
 class Chat(models.Model):
@@ -193,9 +197,9 @@ class Message(models.Model):
 
     seen = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.chat.doctor.user.username + " & " + self.chat.patient.user.username
-
     def set_as_seen(self):
         self.seen = True
         self.save()
+
+    def __str__(self):
+        return self.chat.doctor.user.username + " & " + self.chat.patient.user.username

@@ -1,0 +1,72 @@
+[
+  {
+    "model": "DokiApp.Comment",
+    "pk": 1,
+    "fields": {
+      "doctor": 1,
+      "writer": 5,
+      "text": "It,s ok",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 2,
+    "fields": {
+      "doctor": 1,
+      "writer": 7,
+      "text": "It,s better",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 3,
+    "fields": {
+      "doctor": 2,
+      "writer": 5,
+      "text": "It,s the best",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 4,
+    "fields": {
+      "doctor": 2,
+      "writer": 6,
+      "text": "It,s ok",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 5,
+    "fields": {
+      "doctor": 2,
+      "writer": 8,
+      "text": "It,s better",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 6,
+    "fields": {
+      "doctor": 3,
+      "writer": 5,
+      "text": "It,s the best",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  },
+  {
+    "model": "DokiApp.Comment",
+    "pk": 7,
+    "fields": {
+      "doctor": 4,
+      "writer": 5,
+      "text": "It,s better",
+      "date": "2014-09-01T13:20:30+03:30"
+    }
+  }
+]

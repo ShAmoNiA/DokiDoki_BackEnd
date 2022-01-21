@@ -18,7 +18,7 @@ COMPLETE_PROFILE_PATIENT = {'username': 'patient_1', 'fullname': 'patient_1', 's
                             'is_doctor': False, 'phone': None, 'email': 'patient_1@gmail.com', 'weight': 0,
                             'profile_picture_url': "default.png", 'height': 0, 'medical_records': 'nothing yet'}
 COMPLETE_PROFILE_DOCTOR = {'comments_count': 0, 'cv': 'default', 'username': 'DRE', 'email': 'dre@gmail.com',
-                           'is_doctor': True, 'phone': None, 'fullname': 'DRE', 'sex': 'P', 'rate': None,
+                           'is_doctor': True, 'phone': None, 'fullname': 'DRE', 'sex': 'P', 'rate': 0,
                            'medical_degree_photo': None, 'office_location': None, 'profile_picture_url': "default.png",
                            'degree': 'general', 'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'}
 

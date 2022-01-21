@@ -14,16 +14,16 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 ALL_DOCTORS_PROFILES = {
     1: {'username': 'DRE', 'email': 'dre@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'DRE',
         'sex': 'P', 'profile_picture_url': "default.png", 'degree': 'general', 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None, 'rate': None, 'comments_count': 0,
+        'cv': 'default', 'office_location': None, 'rate': 0, 'comments_count': 0,
         'expertise_tags': 'Gastroenterologist Nephrologist Pulmonologist'},
     2: {'username': 'CJ', 'email': 'cj@gmail.com', 'is_doctor': True, 'phone': None,  'office_location': None,
-        'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None, 'rate': None,
+        'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None, 'rate': 0,
         'cv': 'default', 'fullname': 'CJ', 'expertise_tags': 'Nephrologist Endocrinologist', 'comments_count': 0},
     3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None, 'degree': 'general',
         'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'medical_degree_photo': None,
-        'cv': 'default', 'office_location': None, 'rate': None, 'comments_count': 0,
+        'cv': 'default', 'office_location': None, 'rate': 0, 'comments_count': 0,
         'expertise_tags': 'Ophthalmologist Dermatologist Endocrinologist'},
-    4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None, 'rate': None,
+    4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None, 'rate': 0,
         'fullname': 'Ali sadeghi', 'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'comments_count': 0,
         'medical_degree_photo': None, 'cv': 'default', 'office_location': None, 'expertise_tags': ''}
 }
