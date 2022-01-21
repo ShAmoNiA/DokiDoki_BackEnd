@@ -100,7 +100,7 @@ class RateSerializer(ModelSerializer):
 class ReserveSerializer(ModelSerializer):
     class Meta:
         model = Reserve
-        fields = ('doctor', 'user', 'date', 'time')
+        fields = ('doctor', 'creator', 'date', 'time')
 
 
 class ChatSerializer(ModelSerializer):

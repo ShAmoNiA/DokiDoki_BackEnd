@@ -152,8 +152,8 @@ class Reserve(models.Model):
     TIME_CHOICES = (('AM', 'Before 12',),
                     ('PM', 'After 12',))
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
     time = models.CharField(max_length=2, choices=TIME_CHOICES)
 
 

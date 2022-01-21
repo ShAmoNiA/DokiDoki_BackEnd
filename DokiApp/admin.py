@@ -60,7 +60,7 @@ class RateAdmin(admin.ModelAdmin):
 
 @admin.register(Reserve)
 class ReserveAdmin(admin.ModelAdmin):
-    list_display = ['doctor', 'user', 'date', 'time']
+    list_display = ['doctor', 'creator', 'date', 'time']
     # TODO: list_filter, list_editable
 
 
