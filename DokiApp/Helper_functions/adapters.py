@@ -42,9 +42,6 @@ class ProfileAdapter:
         return data
 
 
-profileAdapter = ProfileAdapter()
-
-
 def adapt_profile_queryset_to_list(profiles):
     users = []
     for profile in profiles:
@@ -56,14 +53,14 @@ def adapt_profile_queryset_to_list(profiles):
 def adapt_user_queryset_to_dict(users):
     result = {}
     for user in users:
-        result[user.id] = profileAdapter.adapt_profile(user)
+        result[user.id] = ProfileAdapter().adapt_profile(user)
     return result
 
 
 def adapt_user_queryset_to_list(users):
     result = []
     for user in users:
-        data = profileAdapter.adapt_profile(user)
+        data = ProfileAdapter().adapt_profile(user)
         data['id'] = user.id
         result.append(data)
     return result

@@ -39,9 +39,9 @@ class ProfilePreview(APIView):
 
     def get_adapted_and_filtered_profile(self, user):
         profile = ProfileAdapter().adapt_profile(user)
-        return self.filter_profile(profile)
+        return self.filter_private_profile_fields(profile)
 
-    def filter_profile(self, profile):
+    def filter_private_profile_fields(self, profile):
         profile.pop("phone")
         return profile
 
@@ -61,26 +61,42 @@ class EditProfile(APIView):
 
     def post(self, request):
         user = request.user
-        profile = user.profile
-
-        data = pop_dangerous_keys(request)
-        serializerClass = get_profile_serializer(user)
+        data = self.pop_dangerous_keys(request)
 
         self.delete_old_picture(user, data)
+        self.save_changes(user, data)
 
-        serializer = serializerClass(profile, data=data, partial=True)
+        return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)
+
+    def pop_dangerous_keys(self, request):
+        dangerous_keys = ['password', 'username', 'email', 'is_doctor', 'user',
+                          'reset_password_token', 'verify_email_token']
+
+        try:
+            # This will be run for tests:
+            request.data._mutable = True
+        except: pass
+
+        data = request.data
+        for key in dangerous_keys:
+            if key in data.keys():
+                data.pop(key)
+
+        return data
+
+    def delete_old_picture(self, user, data):
+        if ('profile_picture_url' in data) and (data['profile_picture_url'] != user.profile_picture_url):
+            Image.objects.get(image=user.profile_picture_url).delete()
+            os.remove(os.getcwd() + "/static/images/" + user.profile_picture_url)
+
+    def save_changes(self, user, data):
+        serializer = get_profile_serializer(user)(user.profile, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         serializer = UserSerializer(user, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"success": True, "message": "Profile changed successfully"}, status=status.HTTP_200_OK)
-
-    def delete_old_picture(self, user, data):
-        if ('profile_picture_url' in data) and (data['profile_picture_url'] != user.profile_picture_url):
-            Image.objects.get(image=user.profile_picture_url).delete()
-            os.remove(os.getcwd() + "/static/images/" + user.profile_picture_url)
 
 
 class AddExpertise(APIView):
