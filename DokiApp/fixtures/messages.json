@@ -54,7 +54,7 @@
     "pk": 6,
     "fields": {
       "chat": 5,
-      "text": "She wasn't sure whether to be impressed or concerned that he folded underwear in neat little packages.",
+      "text": "She wasn't sure whether to be impressed or concerned.",
       "date": "2007-08-18T15:11:34+03:30",
       "is_sender_doctor": false
     }
@@ -134,7 +134,7 @@
     "pk": 14,
     "fields": {
       "chat": 5,
-      "text": "While all her friends were positive that Mary had a sixth sense, she knew she actually had a seventh sense.",
+      "text": "While all her friends were positive that Mary had a sixth sense.",
       "date": "2022-09-05T13:28:30+03:30",
       "is_sender_doctor": true
     }

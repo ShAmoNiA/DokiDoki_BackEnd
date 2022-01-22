@@ -28,7 +28,6 @@ class ChatList(APIView):
 
 class LoadOldChat(APIView):
     permission_classes = (IsAuthenticated,)
-    PAGINATE_BY = 15
 
     def get(self, request):
         partner_username = request.GET['partner_username']
@@ -39,21 +38,10 @@ class LoadOldChat(APIView):
         oldest_unseen = oldest_unseen_message_id(messages, request.user)
 
         result = adapt_message(messages)
-
-        page = int(request.GET.get('page', False))
-        num_pages = 'not defined'
-        if page:
-            paginator = Paginator(result, self.PAGINATE_BY)
-            if paginator.num_pages < page or page < 1:
-                return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
-            result = paginator.page(page).object_list
-            num_pages = paginator.num_pages
-
         self.set_messages_as_seen(result, request.user)
 
-        return Response({"success": True, "page": page if page else 'not defined', "max_page": num_pages,
-                         "oldest_unseen_message_id": oldest_unseen,
-                         "messages": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "messages": result, "oldest_unseen_message_id": oldest_unseen},
+                        status=status.HTTP_200_OK)
 
     def set_messages_as_seen(self, result, user):
         for message in Message.objects.filter(id__in=self.message_ids(result)):
