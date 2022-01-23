@@ -87,9 +87,6 @@ class RateSerializer(ModelSerializer):
         fields = ('doctor', 'user', 'rate')
 
     def validate_rate(self, rate):
-        if not isinstance(rate, int):
-            raise ValidationError("Enter an Integer please")
-
         rate = int(rate)
         if rate < 1 or rate > 5:
             raise ValidationError("Enter rate between 1 and 5")

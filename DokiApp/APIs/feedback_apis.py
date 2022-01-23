@@ -49,16 +49,18 @@ class RateDoctor(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, doctor_id):
-        rate = Rate.objects.filter(doctor__id=doctor_id).aggregate(Avg('rate'))["rate__avg"]
+        doctorProfile = get_object_or_404(User, is_doctor=True, id=doctor_id).profile
+        rate = Rate.objects.filter(doctor=doctorProfile).aggregate(Avg('rate'))["rate__avg"]
         return Response({'success': True, 'rate': rate})
 
     def post(self, request, doctor_id):
-        rate = request.POST['rate']
-        doctor = get_object_or_404(DoctorProfile, id=doctor_id)
+        rate = int(float(request.POST['rate']))
+        doctor = get_object_or_404(User, is_doctor=True, id=doctor_id)
+        doctorProfile = get_object_or_404(DoctorProfile, user=doctor)
 
-        rateSerializer = RateSerializer(data={"doctor": doctor, "user": request.user, "rate": rate})
+        rateSerializer = RateSerializer(data={"doctor": doctorProfile.id, "user": request.user.id, "rate": rate})
         if rateSerializer.is_valid():
             rateSerializer.save()
-            return Response({'success': True, 'message': 'Rate submitted!'})
+            return Response({'success': True, 'message': 'Rate submitted!'}, status=status.HTTP_200_OK)
 
-        return Response({'success': False, 'message': rateSerializer.errors})
+        return Response({'success': False, 'message': rateSerializer.errors}, status=status.HTTP_400_BAD_REQUEST)

@@ -57,9 +57,9 @@
     "model": "DokiApp.Rate",
     "pk": 7,
     "fields": {
-      "doctor": 4,
+      "doctor": 3,
       "user": 5,
-      "rate": 2
+      "rate": 5
     }
   }
 ]

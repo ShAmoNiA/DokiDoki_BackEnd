@@ -197,7 +197,7 @@ class TestDoctorProfile(TestCase):
     def test_rate(self):
         self.assertEqual(DoctorProfile.objects.get(id=1).rate, 4.5)
         self.assertEqual(DoctorProfile.objects.get(id=2).rate, 10/3)
-        self.assertEqual(DoctorProfile.objects.get(id=3).rate, 3)
+        self.assertEqual(DoctorProfile.objects.get(id=3).rate, 4)
 
         self.assertEqual(mixer.blend('DokiApp.DoctorProfile').rate, 0)
 

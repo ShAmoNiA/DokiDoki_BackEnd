@@ -2,6 +2,8 @@ from django.test import TestCase
 
 from mixer.backend.django import mixer
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 from ..views import *
 from ..models import *
 
@@ -99,30 +101,120 @@ class TestGetComments(TestCase):
 
 
 class TestRateDoctor(TestCase):
+    fixtures = ['doctors.json', 'doctor_profiles.json', 'patients.json', 'rates.json']
 
-    def test_not_authed(self):
-        # response = self.client.post(LOCALHOST_BASE_URL + 'rate/<str:doctor_id>/')
-        # patient = User.objects.get(id=5)
-        # self.client.force_login(patient)
-        pass
+    def test_get_not_authed(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'rate/2/')
+        self.assertEqual(response.status_code, 401)
 
     def test_get_doctor_average_rate(self):
-        pass
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.get(LOCALHOST_BASE_URL + 'rate/3/')
 
-    def test_doctor_not_found(self):
-        pass
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'rate': 4})
 
-    def test_not_integer_rate(self):
-        pass
+    def test_get_doctor_not_found(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.get(LOCALHOST_BASE_URL + 'rate/9/')
 
-    def test_under_range_rate(self):
-        pass
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_not_integer_rate(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.get(LOCALHOST_BASE_URL + 'rate/2/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'rate': 10/3})
+
+    def test_post_not_authed(self):
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/')
+        self.assertEqual(response.status_code, 401)
+
+    def test_post_rate_not_passed(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        with self.assertRaises(Exception) as raised:
+            self.client.post(LOCALHOST_BASE_URL + 'rate/2/')
+        self.assertEqual(MultiValueDictKeyError, type(raised.exception))
+
+    def test_post_doctor_not_found(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/9/', {'rate': 3})
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_not_integer_rate(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 3.2})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'message': 'Rate submitted!'})
+        self.assertEqual(Rate.objects.all()[::-1][0].rate, 3)
+
+    def test_under_range_rate_between_0_1(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 0.6})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message']['rate'][0], 'Enter rate between 1 and 5')
+
+    def test_under_range_rate_zero(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 0})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message']['rate'][0], 'Enter rate between 1 and 5')
+
+    def test_under_range_rate_negative(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': -1})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message']['rate'][0], '"-1" is not a valid choice.')
 
     def test_over_range_rate(self):
-        pass
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 6})
 
-    def test_rate_submitted(self):
-        pass
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message']['rate'][0], '"6" is not a valid choice.')
 
-    def test_rate_saved(self):
-        pass
+    def test_rate_submitted_integer(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 3})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'message': 'Rate submitted!'})
+
+    def test_rate_submitted_float(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 3.2})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'message': 'Rate submitted!'})
+
+    def test_rate_saved_integer(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 3})
+
+        self.assertEqual(Rate.objects.all()[::-1][0].rate, 3)
+
+    def test_rate_saved_float(self):
+        patient = User.objects.get(id=5)
+        self.client.force_login(patient)
+        self.client.post(LOCALHOST_BASE_URL + 'rate/2/', {'rate': 3.2})
+
+        self.assertEqual(Rate.objects.all()[::-1][0].rate, 3)
