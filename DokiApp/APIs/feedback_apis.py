@@ -9,6 +9,7 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -20,15 +21,20 @@ class WriteComment(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        text = request.POST['text']
-        doctor_id = request.POST['doctor_id']
+        text = request.POST.get('text', None)
+        doctor_id = int(request.POST.get('doctor_id', -1))
 
-        if text.isspace():
-            return Response({'success': False, 'message': 'Comment is empty'})
+        empty_comment = bool(text == '' or text == ' ' or text is None)
+        if empty_comment:
+            return Response({'success': False, 'message': 'Comment is empty'}, status=status.HTTP_400_BAD_REQUEST)
 
-        doctor = get_object_or_404(DoctorProfile, id=doctor_id)
-        Comment.objects.create(writer=request.user, text=text, doctor=doctor)
-        return Response({'success': True, 'message': 'Comment submitted'})
+        user = get_object_or_404(User, id=doctor_id)
+        if user.is_patient:
+            return Response({'success': False, 'message': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        doctorProfile = user.profile
+        Comment.objects.create(writer=request.user, text=text, doctor=doctorProfile)
+        return Response({'success': True, 'message': 'Comment submitted'}, status=status.HTTP_200_OK)
 
 
 class GetComments(APIView):

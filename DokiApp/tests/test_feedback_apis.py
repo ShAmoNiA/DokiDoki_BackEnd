@@ -9,26 +9,75 @@ LOCALHOST_BASE_URL = 'https://127.0.0.1:8000/api/'
 
 
 class TestWriteComment(TestCase):
+    fixtures = ['doctors.json', 'doctor_profiles.json', 'patients.json']
 
     def test_not_authed(self):
         response = self.client.post(LOCALHOST_BASE_URL + 'new_comment')
+        self.assertEqual(response.status_code, 401)
+
+    def test_text_not_passed(self):
+        patient = User.objects.get(id=5)
+        data = {'doctor_id': 3}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'success': False, 'message': 'Comment is empty'})
 
     def test_text_is_empty(self):
-        # patient = User.objects.get(id=5)
-        # self.client.force_login(patient)
-        pass
+        patient = User.objects.get(id=5)
+        data = {'text': "", 'doctor_id': 3}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'success': False, 'message': 'Comment is empty'})
 
     def test_text_is_space(self):
-        pass
+        patient = User.objects.get(id=5)
+        data = {'text': " ", 'doctor_id': 3}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
 
-    def test_doctor_not_found(self):
-        pass
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'success': False, 'message': 'Comment is empty'})
+
+    def test_doctor_profile_not_found(self):
+        patient = User.objects.get(id=5)
+        data = {'text': "ok", 'doctor_id': 6}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {'success': False, 'message': 'Doctor not found'})
+
+    def test_doctor_user_not_found(self):
+        patient = User.objects.get(id=5)
+        data = {'text': "ok", 'doctor_id': 11}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        self.assertEqual(response.status_code, 404)
 
     def test_comment_wrote(self):
-        pass
+        patient = User.objects.get(id=5)
+        data = {'text': "ok", 'doctor_id': 3}
+        self.client.force_login(patient)
+        response = self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'message': 'Comment submitted'})
 
     def test_comment_saved(self):
-        pass
+        patient = User.objects.get(id=5)
+        data = {'text': "ok", 'doctor_id': 3}
+        self.client.force_login(patient)
+        self.client.post(LOCALHOST_BASE_URL + 'new_comment', data)
+
+        comment = Comment.objects.get(id=1)
+        self.assertEqual(comment.writer, patient)
+        self.assertEqual(comment.doctor, DoctorProfile.objects.get(id=3))
+        self.assertEqual(comment.text, 'ok')
 
 
 class TestGetComments(TestCase):
