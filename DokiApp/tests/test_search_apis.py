@@ -20,7 +20,7 @@ ALL_DOCTORS_PROFILES = {
         'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None, 'rate': 0,
         'cv': 'default', 'fullname': 'CJ', 'expertise_tags': 'Nephrologist Endocrinologist', 'comments_count': 0},
     3: {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None, 'degree': 'general',
-        'fullname': 'OG LOC', 'sex': 'P', 'profile_picture_url': None, 'medical_degree_photo': None,
+        'fullname': 'OG LOC', 'sex': 'U', 'profile_picture_url': None, 'medical_degree_photo': None,
         'cv': 'default', 'office_location': None, 'rate': 0, 'comments_count': 0,
         'expertise_tags': 'Ophthalmologist Dermatologist Endocrinologist'},
     4: {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None, 'rate': 0,
@@ -38,7 +38,7 @@ ALL_DOCTORS_LIST = [
      'office_location': None, 'expertise_tags': 'Nephrologist Endocrinologist', 'rate': 0, 'comments_count': 0,
      'id': 2},
     {'username': 'OG LOC', 'email': 'og.loc@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'OG LOC',
-     'sex': 'P', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None, 'cv': 'default',
+     'sex': 'U', 'profile_picture_url': None, 'degree': 'general', 'medical_degree_photo': None, 'cv': 'default',
      'office_location': None, 'expertise_tags': 'Ophthalmologist Dermatologist Endocrinologist', 'rate': 0,
      'comments_count': 0, 'id': 3},
     {'username': 'Ali', 'email': 'ali@gmail.com', 'is_doctor': True, 'phone': None, 'fullname': 'Ali sadeghi',
@@ -316,78 +316,198 @@ class TestSearchDoctorsWithTag(TestCase):
 
 
 class TestAdvancedSearch(TestCase):
+    fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json', 'expertises.json']
+
+    def setup_more_doctors_and_tags(self):
+        tag = Tag.objects.get(title='Oncologist')
+        for i in range(40):
+            doctor = mixer.blend('DokiApp.User', is_doctor=True)
+            doctorProfile = mixer.blend('DokiApp.DoctorProfile', user=doctor)
+            mixer.blend('DokiApp.Expertise', doctor=doctorProfile, tag=tag)
 
     def test_empty_params(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'doctors': [], 'page': 1, 'max_page': 1})
 
     def test_space_tags(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags= ')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'doctors': [], 'page': 1, 'max_page': 1})
 
     def test_space_name(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?name= ')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[2], ALL_DOCTORS_LIST[3]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
     def test_space_sex(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex= ')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'doctors': [], 'page': 1, 'max_page': 1})
 
     def test_invalid_page(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&page=2')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {'success': False, 'message': 'Page not found'})
 
     def test_invalid_sort(self):
-        pass
+        with self.assertRaises(Exception) as raised:
+            self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&sort=spam')
+        self.assertEqual(KeyError, type(raised.exception))
 
     def test_invalid_reverse(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&sort=username&reverse=spam')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_true_reverse(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&sort=username&reverse=1')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_false_reverse(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&sort=username')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[1], ALL_DOCTORS_LIST[0]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
     def test_found_by_tags(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_found_by_multi_tags(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist,Endocrinologist')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1], ALL_DOCTORS_LIST[2]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
     def test_found_by_name(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?name=Ali')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[3]], 'success': True, 'page': 1, 'max_page': 1})
 
     def test_found_by_sex(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1], ALL_DOCTORS_LIST[3]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_found_by_all_params_no_result(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&name=DRE&sex=U')
+        self.assertEqual(response.data, {'doctors': [], 'success': True, 'page': 1, 'max_page': 1})
 
     def test_found_by_all_params(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=Nephrologist&name=DRE&sex=P')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0]], 'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_sex(self):
-        pass
+    def test_found_by_case_sensitive(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?tags=nephrologist')
+        self.assertEqual(response.data, {'doctors': [], 'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_fullname(self):
-        pass
+    def test_found_by_name_case_sensitive(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?name=ali')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[3]], 'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_last_name(self):
-        pass
+    def test_found_by_sex_case_sensitive(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=p')
+        self.assertEqual(response.data, {'doctors': [], 'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_sex_reverse(self):
-        pass
+    def test_sort_by_sex(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=sex&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[2]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_fullname_reverse(self):
-        pass
+    def test_sort_by_fullname(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=fullname&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[2]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
-    def sort_by_last_name_reverse(self):
-        pass
+    def test_sort_by_email(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=email&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[2]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_sort_by_sex_reverse(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=sex&reverse=1&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[2], ALL_DOCTORS_LIST[0]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_sort_by_fullname_reverse(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=fullname&reverse=1&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[2], ALL_DOCTORS_LIST[0]],
+                                         'success': True, 'page': 1, 'max_page': 1})
+
+    def test_sort_by_email_reverse(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sort=email&reverse=1&name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[2], ALL_DOCTORS_LIST[0]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
     def test_only_one_page_result(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?name=e ')
+        self.assertEqual(response.data, {'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[2]],
+                                         'success': True, 'page': 1, 'max_page': 1})
 
     def test_some_pages_result_max_page_number(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
 
     def test_some_pages_result_the_first_page(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=1')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
 
     def test_some_pages_result_a_middle_page(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=2')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [i + 14 for i in range(12)]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
 
     def test_some_pages_result_the_last_page(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=4')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [38, 39, 40, 41, 42, 43, 44]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
+
+    def test_zero_page_number(self):
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=0')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {"success": False, "message": "Page not found"})
 
     def test_under_range_page_number(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=-1')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {"success": False, "message": "Page not found"})
 
     def test_over_range_page_number(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?sex=P&page=5')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {"success": False, "message": "Page not found"})
 
     def test_no_results(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'search/?name=spam')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'doctors': [], 'page': 1, 'max_page': 1})

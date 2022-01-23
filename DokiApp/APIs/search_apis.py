@@ -8,8 +8,6 @@ contains:
     AdvancedSearch
 """
 
-import math
-
 from django.core.paginator import Paginator
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -118,48 +116,56 @@ class SearchDoctorsWithTag(APIView):
 
 
 class AdvancedSearch(APIView):
+    permission_classes = (AllowAny,)
 
     def get(self, request):
-        result = []
         name = request.GET.get('name', '')
-        if name != '':
-            result = User.objects.filter(is_doctor=True).filter(name_query(name))
-
-            result = adapt_user_queryset_to_list(result)
-
         tags = request.GET.get('tags', '')
-        if tags != '':
-            tags = tags.split(',')
-            expertises = Expertise.objects.filter(tag__title__in=tags)
-            doctor_profiles = expertises.values_list('doctor_id', flat=True)
-            contains_tags = adapt_user_queryset_to_list(
-                User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
-            if len(result) == 0:
-                result = contains_tags
-            else:
-                result = [item for item in result if item in contains_tags]
-
         sex = request.GET.get('sex', '')
-        if sex != '':
-            sex_filter = User.objects.filter(is_doctor=True, sex=sex)
-            sex_filter = adapt_user_queryset_to_list(sex_filter)
-            if len(result) == 0:
-                result = sex_filter
-            else:
-                result = [item for item in result if item in sex_filter]
+        sort_key = request.GET.get('sort', '')
+        reverse = bool(request.GET.get('reverse', 0))
 
-        sort = request.GET.get('sort', '')
-        if sort != '':
-            reverse = request.GET.get('reverse', 'False')
-            reverse = True if reverse == 'True' else False
-            result.sort(key=lambda k: k[sort], reverse=reverse)
+        result = []
+
+        if name != '':
+            result = self.filter_by_name(name)
+
+        if tags != '':
+            filtered_by_tag = self.filter_by_tag(tags)
+            result = self.attach_new_results(result, filtered_by_tag)
+
+        if sex != '':
+            filtered_by_sex = self.filter_by_sex(sex)
+            result = self.attach_new_results(result, filtered_by_sex)
+
+        if sort_key != '':
+            result.sort(key=lambda k: k[sort_key], reverse=reverse)
 
         page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 12)
-        page_max = math.ceil(len(result) / 12)
-        if page_max < page or page < 1:
+        paginator = Paginator(result, PAGINATE_BY)
+        max_page = paginator.num_pages
+        if max_page < page or page < 1:
             return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        return Response({"success": True, "doctors": result, "page": page, "max_page": page_max},
+        return Response({"success": True, "doctors": result, "page": page, "max_page": max_page},
                         status=status.HTTP_200_OK)
+
+    def attach_new_results(self, result, new_results):
+        if not len(result):
+            return new_results
+        return [item for item in result if item in new_results]
+
+    def filter_by_name(self, name):
+        result = User.objects.filter(is_doctor=True).filter(name_query(name))
+        return adapt_user_queryset_to_list(result)
+
+    def filter_by_tag(self, tags):
+        tags = tags.split(',')
+        doctorProfiles = Expertise.objects.filter(tag__title__in=tags).values_list('doctor_id', flat=True)
+        users = User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctorProfiles)
+        return adapt_user_queryset_to_list(users)
+
+    def filter_by_sex(self, sex):
+        users = User.objects.filter(is_doctor=True, sex=sex)
+        return adapt_user_queryset_to_list(users)
