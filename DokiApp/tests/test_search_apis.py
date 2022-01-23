@@ -209,36 +209,110 @@ class TestSearchDoctorByKeyword(TestCase):
 
 
 class TestSearchDoctorsWithTag(TestCase):
+    fixtures = ['tags.json', 'doctors.json', 'doctor_profiles.json', 'expertises.json']
+
+    def setup_more_doctors_and_tags(self):
+        tag = Tag.objects.get(title='Oncologist')
+        for i in range(40):
+            doctor = mixer.blend('DokiApp.User', is_doctor=True)
+            doctorProfile = mixer.blend('DokiApp.DoctorProfile', user=doctor)
+            mixer.blend('DokiApp.Expertise', doctor=doctorProfile, tag=tag)
 
     def test_empty_keyword(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags//')
+        self.assertEqual(response.status_code, 404)
 
     def test_space_keyword(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/ /')
+        self.assertEqual(response.status_code, 404)
+
+    def test_tag_does_not_exist(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/spam/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_tag_is_not_complete(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/gi/')
+        self.assertEqual(response.status_code, 404)
 
     def test_only_one_page_result(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Nephrologist/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'max_page': 1,
+                                         'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1]]})
 
-    def test_some_pages_result_max_page_number(self):
-        pass
+    def test_case_sensitive(self):
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/nephrologist/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'success': True, 'max_page': 1,
+                                         'doctors': [ALL_DOCTORS_LIST[0], ALL_DOCTORS_LIST[1]]})
 
-    def test_some_pages_result_the_first_page(self):
-        pass
+    def test_some_pages_result_the_first_page_default(self):
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [i + 4 for i in range(1, 13)]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
+
+    def test_some_pages_result_the_first_page_manual(self):
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=1')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [i + 4 for i in range(1, 13)]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
 
     def test_some_pages_result_a_middle_page(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=2')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [i + 4 + 12 for i in range(1, 13)]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
 
     def test_some_pages_result_the_last_page(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=4')
+        response_doctor_ids = [doctor['id'] for doctor in response.data['doctors']]
+        doctor_ids = [41, 42, 43, 44]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['success'], True)
+        self.assertEqual(response.data['max_page'], 4)
+        self.assertEqual(response_doctor_ids, doctor_ids)
+
+    def test_zero_page_number(self):
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=0')
+
+        self.assertEqual(response.status_code, 404)
 
     def test_under_range_page_number(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=-1')
+
+        self.assertEqual(response.status_code, 404)
 
     def test_over_range_page_number(self):
-        pass
+        self.setup_more_doctors_and_tags()
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/?page=5')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {"success": False, "message": "Page not found", "max_page": 4})
 
     def test_no_results(self):
-        pass
+        response = self.client.get(LOCALHOST_BASE_URL + 'tags/Oncologist/')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {'success': False, 'message': 'There is no doctors with the expertise.'})
 
 
 class TestAdvancedSearch(TestCase):

@@ -3,7 +3,11 @@ contains:
     AllTags
     SearchDoctorByName
     SearchDoctorByTag
+    SearchDoctorByKeyword
+    SearchDoctorsWithTag
+    AdvancedSearch
 """
+
 import math
 
 from django.core.paginator import Paginator
@@ -16,6 +20,9 @@ from django.db.models import Q
 
 from ..Helper_functions.adapters import *
 from ..serializers import *
+
+
+PAGINATE_BY = 12
 
 
 def name_query(key):
@@ -86,23 +93,28 @@ class SearchDoctorByKeyword(APIView):
         return Response({"success": True, "doctors": result[0:12]}, status=status.HTTP_200_OK)
 
 
-class DoctorsWithTag(APIView):
+class SearchDoctorsWithTag(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, keyword):
         expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ", "_"))
-        doctor_profiles = expertises.values_list('doctor_id', flat=True)
+        if len(expertises) == 0:
+            return Response({"success": False, "message": "There is no doctors with the expertise."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        doctorProfiles = expertises.values_list('doctor_id', flat=True)
         result = adapt_user_queryset_to_list(
-            User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+            User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctorProfiles))
 
-        page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 12)
-        page_max = math.ceil(len(result) / 12)
-        if page_max < page or page < 1:
-            return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
+        page = int(request.GET.get('page', 1))
+        paginator = Paginator(result, PAGINATE_BY)
+        max_page = paginator.num_pages
+        if max_page < page or page < 1:
+            return Response({"success": False, "message": "Page not found", "max_page": max_page}
+                            , status=status.HTTP_404_NOT_FOUND)
+
         result = paginator.page(page).object_list
-
-        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result, 'max_page': max_page}, status=status.HTTP_200_OK)
 
 
 class AdvancedSearch(APIView):
