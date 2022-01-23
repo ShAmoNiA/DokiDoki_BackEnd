@@ -5,20 +5,19 @@ contains:
     RateDoctor
 """
 
-
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from ..Helper_functions.adapters import adapt_comment
 from ..serializers import *
 
 
 class WriteComment(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         text = request.POST['text']
@@ -33,14 +32,15 @@ class WriteComment(APIView):
 
 
 class GetComments(APIView):
+    permission_classes = (AllowAny,)
 
     def get(self, request, doctor_id):
-        comments = Comment.objects.filter(doctor__id=doctor_id)
+        comments = Comment.objects.filter(doctor__user__id=doctor_id)
         return Response({'success': True, 'comments': adapt_comment(comments)})
 
 
 class RateDoctor(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, doctor_id):
         rate = Rate.objects.filter(doctor__id=doctor_id).aggregate(Avg('rate'))["rate__avg"]

@@ -14,12 +14,6 @@ def get_profile_serializer(user):
     return PatientProfileSerializer
 
 
-def first_n_items_if_exists(the_list, n):
-    if len(the_list) < n:
-        return the_list
-    return the_list[:n]
-
-
 def create_chat_name(user_1_id, user_2_id):
     name = str(user_1_id) + "_" + str(user_2_id)
     if user_1_id > user_2_id:
