@@ -21,7 +21,7 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 
 from ..models import *
-from ..Helper_functions.adapters import *
+from .adapters import ProfileAdapter
 from ..serializers import *
 from ..permissions import *
 

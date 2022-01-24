@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from ..models import User, Chat, Message
 
-from ..Helper_functions.adapters import adapt_message, adapt_chat
+from .adapters import adapt_message, adapt_chat
 
 
 def create_chat_name(user_1_id, user_2_id):

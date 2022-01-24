@@ -16,7 +16,7 @@ from rest_framework.permissions import AllowAny
 
 from django.db.models import Q
 
-from ..Helper_functions.adapters import *
+from .adapters import adapt_user_queryset_to_dict, adapt_user_queryset_to_list, adapt_profile_queryset_to_list
 from ..serializers import *
 
 

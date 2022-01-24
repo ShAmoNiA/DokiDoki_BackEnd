@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from ..Helper_functions.adapters import adapt_comment
+from .adapters import adapt_comment
 from ..serializers import *
 
 
