@@ -9,7 +9,6 @@ contains:
     ResetPassword
 """
 
-
 from secrets import token_hex
 from django.shortcuts import render
 
@@ -18,18 +17,17 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..serializers import UserSerializer
-from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
 
 from ..models import User
+from ..serializers import UserSerializer
 from ..Helper_functions.email_functions import send_reset_pass_email, send_text_email
 
 
 class SignUp(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
@@ -41,7 +39,7 @@ class SignUp(APIView):
 
 
 class CheckUsername(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get(self, request, username):
         user = User.objects.filter(username__iexact=username)
@@ -49,7 +47,7 @@ class CheckUsername(APIView):
 
 
 class LogIn(ObtainAuthToken):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -63,7 +61,7 @@ class LogIn(ObtainAuthToken):
 
 
 class LogOut(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         request.user.auth_token.delete()
@@ -71,7 +69,7 @@ class LogOut(APIView):
 
 
 class VerifyEmail(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         result = "Your email verified successfully"
@@ -112,7 +110,7 @@ def forgot_password(request):
 
 
 class ResetPassword(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         token = request.data['token']

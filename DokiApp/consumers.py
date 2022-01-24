@@ -4,14 +4,13 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.db import database_sync_to_async
 
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.auth import login, logout
 
 from rest_framework.authtoken.models import Token
 from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
+from DokiDoki.settings import CHANNEL_LAYERS
 from .APIs.chat_apis import create_chat_name
 from .Helper_functions.email_functions import send_text_email
-from DokiDoki.settings import CHANNEL_LAYERS
 
 
 class ChatConsumer(AsyncWebsocketConsumer):

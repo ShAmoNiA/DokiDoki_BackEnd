@@ -14,7 +14,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .adapters import adapt_comment
-from ..serializers import *
+from ..serializers import RateSerializer
+from ..models import User, DoctorProfile, Rate, Comment
 
 
 class WriteComment(APIView):

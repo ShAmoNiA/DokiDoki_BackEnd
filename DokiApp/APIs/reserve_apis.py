@@ -4,7 +4,6 @@ contains:
     ReserveList
 """
 
-
 import json
 from datetime import datetime
 
@@ -13,11 +12,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-from ..Helper_functions.email_functions import send_reserve_message
-from .chat_apis import create_chat_name
 from ..permissions import IsPatient, IsDoctor
-from ..serializers import *
+
+from .chat_apis import create_chat_name
+from ..Helper_functions.email_functions import send_reserve_message
+from ..serializers import ReserveSerializer
+from ..models import User, DoctorProfile, Reserve, Chat
 
 
 class ReserveDoctor(APIView):

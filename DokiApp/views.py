@@ -6,14 +6,7 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.parsers import FormParser
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
-
-from django.core.paginator import Paginator
-from django.db.models import Q
-
-from .models import *
-from .serializers import *
+from .serializers import ImageSerializer
 
 from .APIs.auth_apis import *
 from .APIs.feedback_apis import *

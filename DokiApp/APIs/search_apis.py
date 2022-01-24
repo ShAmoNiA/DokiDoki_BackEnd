@@ -9,6 +9,7 @@ contains:
 """
 
 from django.core.paginator import Paginator
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,14 +18,13 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from .adapters import adapt_user_queryset_to_dict, adapt_user_queryset_to_list, adapt_profile_queryset_to_list
-from ..serializers import *
-
+from ..models import User, DoctorProfile, Tag, Expertise
 
 PAGINATE_BY = 12
 
 
 def name_query(key):
-    query = Q(fullname__icontains=key) | Q(first_name__icontains=key) |\
+    query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | \
             Q(last_name__icontains=key) | Q(username__icontains=key)
     return query
 

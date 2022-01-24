@@ -8,26 +8,22 @@ contains:
 
 import os
 
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from ..permissions import IsDoctor
 
-from django.shortcuts import get_object_or_404
-
-from ..models import *
 from .adapters import ProfileAdapter
-from ..serializers import *
-from ..permissions import *
+from ..serializers import UserSerializer, DoctorProfileSerializer, PatientProfileSerializer
+from ..models import User, Image, Tag, Expertise
 
 
 class ProfilePreview(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         username = request.GET['username']
@@ -46,7 +42,7 @@ class ProfilePreview(APIView):
 
 
 class MyProfilePreview(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         user = request.user
@@ -56,7 +52,7 @@ class MyProfilePreview(APIView):
 
 
 class EditProfile(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         user = request.user
@@ -74,7 +70,8 @@ class EditProfile(APIView):
         try:
             # This will be run for tests:
             request.data._mutable = True
-        except: pass
+        except:
+            pass
 
         data = request.data
         for key in dangerous_keys:
