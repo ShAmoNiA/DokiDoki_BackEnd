@@ -58,6 +58,9 @@ class User(AbstractUser):
         self.verify_email_token = "verified"
         self.save()
 
+    def __str__(self):
+        return f"{self.id}.{self.username}"
+
 
 class DoctorProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -97,7 +100,7 @@ class DoctorProfile(models.Model):
             return "the profile set successfully"
 
     def __str__(self):
-        return str(self.id) + ". " + str(self.user.username)
+        return f"{self.id}.{self.user.username}"
 
 
 class PatientProfile(models.Model):
@@ -118,14 +121,14 @@ class PatientProfile(models.Model):
             return "the profile set successfully"
 
     def __str__(self):
-        return str(self.id) + ". " + str(self.user.username)
+        return f"{self.id}.{self.user.username}"
 
 
 class Tag(models.Model):
     title = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
-        return str(self.id) + ". " + str(self.title)
+        return f"{self.id}.{self.title}"
 
 
 class Expertise(models.Model):
@@ -133,12 +136,18 @@ class Expertise(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     image_url = models.CharField(max_length=512, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.doctor.user.username} as a ({self.tag.title})"
+
 
 class Comment(models.Model):
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.writer.username}'s comment for {self.doctor.user.username}"
 
 
 class Rate(models.Model):
@@ -149,6 +158,9 @@ class Rate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate = models.PositiveSmallIntegerField(default=0, choices=RATE_CHOICES)
 
+    def __str__(self):
+        return f"{self.user.username}'s rate for {self.doctor.user.username} ({'*'*self.rate} stars)"
+
 
 class Reserve(models.Model):
     TIME_CHOICES = (('AM', 'Before 12',),
@@ -157,6 +169,9 @@ class Reserve(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.CharField(default='AM', max_length=2, choices=TIME_CHOICES)
+
+    def __str__(self):
+        return f"{self.creator.username} reserved {self.doctor.user.username} for {self.date}({self.time})"
 
 
 class Chat(models.Model):
@@ -183,7 +198,7 @@ class Chat(models.Model):
         return False
 
     def __str__(self):
-        return self.name + " (" + self.doctor.user.username + " & " + self.patient.user.username + ")"
+        return f"{self.name} ({self.doctor.user.username} & {self.patient.user.username})"
 
 
 class Message(models.Model):
@@ -200,4 +215,4 @@ class Message(models.Model):
         self.save()
 
     def __str__(self):
-        return self.chat.doctor.user.username + " & " + self.chat.patient.user.username
+        return f"{self.chat.doctor.user.username} & {self.chat.patient.user.username}"

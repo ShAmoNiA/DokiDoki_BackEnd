@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'DokiApp',
+    'DokiApp.apps.DokiAppConfig',
 
     'channels',
     'rest_framework',
