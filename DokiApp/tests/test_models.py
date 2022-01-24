@@ -43,6 +43,10 @@ class TestUser(TestCase):
         obj = mixer.blend('DokiApp.User')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.User')
+        self.assertEqual(obj.__str__(), f"{obj.id}.{obj.username}")
+
     def test_fields(self):
         obj = mixer.blend('DokiApp.User', username="username_1", email="email@email.com", phone="09371112233",
                           fullname="full name 1", verify_email_token="6843gt43hfr", profile_picture_url="image_url",
@@ -158,6 +162,10 @@ class TestDoctorProfile(TestCase):
         obj = mixer.blend('DokiApp.DoctorProfile')
         self.assertEqual(obj.pk, 5)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.DoctorProfile')
+        self.assertEqual(obj.__str__(), f"{obj.id}.{obj.user.username}")
+
     def test_fields(self):
         obj = mixer.blend('DokiApp.DoctorProfile', user=None, medical_degree_photo=None, office_location=None)
         self.assertEqual(obj.pk, 5)
@@ -230,6 +238,10 @@ class TestPatientProfile(TestCase):
         obj = mixer.blend('DokiApp.PatientProfile')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.PatientProfile')
+        self.assertEqual(obj.__str__(), f"{obj.id}.{obj.user.username}")
+
     def test_fields(self):
         obj = mixer.blend('DokiApp.PatientProfile', medical_records=None, user=None)
         self.assertEqual(obj.pk, 1)
@@ -275,6 +287,10 @@ class TestTag(TestCase):
         obj = mixer.blend('DokiApp.Tag')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Tag')
+        self.assertEqual(obj.__str__(), f"{obj.id}.{obj.title}")
+
     def test_fields(self):
         obj = mixer.blend('DokiApp.Tag', title="the title")
         self.assertEqual(obj.title, "the title")
@@ -293,6 +309,10 @@ class TestExpertise(TestCase):
         obj = mixer.blend('DokiApp.Expertise')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Expertise')
+        self.assertEqual(obj.__str__(), f"{obj.doctor.user.username} as a ({obj.tag.title})")
+
     def test_fields(self):
         tag = mixer.blend('DokiApp.Tag')
         doctor = mixer.blend('DokiApp.DoctorProfile')
@@ -309,6 +329,10 @@ class TestComment(TestCase):
         obj = mixer.blend('DokiApp.Comment')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Comment')
+        self.assertEqual(obj.__str__(), f"{obj.writer.username}'s comment for {obj.doctor.user.username}")
+
     def test_fields(self):
         doctor = mixer.blend('DokiApp.DoctorProfile')
         writer = mixer.blend('DokiApp.User')
@@ -324,6 +348,10 @@ class TestRate(TestCase):
     def test_create(self):
         obj = mixer.blend('DokiApp.Rate')
         self.assertEqual(obj.pk, 1)
+
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Rate')
+        self.assertEqual(obj.__str__(), f"{obj.user.username}'s rate for {obj.doctor.user.username} ({'*'*obj.rate} stars)")
 
     def test_fields(self):
         doctor = mixer.blend('DokiApp.DoctorProfile')
@@ -349,6 +377,11 @@ class TestReserve(TestCase):
         obj = mixer.blend('DokiApp.Reserve')
         self.assertEqual(obj.pk, 1)
 
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Reserve')
+        self.assertEqual(obj.__str__(),
+                         f"{obj.creator.username} reserved {obj.doctor.user.username} for {obj.date}({obj.time})")
+
     def test_fields(self):
         doctor = mixer.blend('DokiApp.DoctorProfile')
         creator = mixer.blend('DokiApp.User')
@@ -373,6 +406,10 @@ class TestChat(TestCase):
     def test_create(self):
         obj = mixer.blend('DokiApp.Chat')
         self.assertEqual(obj.pk, 1)
+
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Chat')
+        self.assertEqual(obj.__str__(), f"{obj.name} ({obj.doctor.user.username} & {obj.patient.user.username})")
 
     def test_fields(self):
         obj = mixer.blend('DokiApp.Chat', name="the_name", doctor=self.doctor, patient=self.patient)
@@ -444,6 +481,10 @@ class TestMessage(TestChat):
     def test_create(self):
         obj = mixer.blend('DokiApp.Message')
         self.assertEqual(obj.pk, 1)
+
+    def test_str(self):
+        obj = mixer.blend('DokiApp.Message')
+        self.assertEqual(obj.__str__(), f"{obj.chat.doctor.user.username} & {obj.chat.patient.user.username}")
 
     def test_fields(self):
         text = "the_text"
