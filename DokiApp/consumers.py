@@ -9,7 +9,7 @@ from channels.auth import login, logout
 from rest_framework.authtoken.models import Token
 from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
-from .Helper_functions.helper_functions import create_chat_name
+from .APIs.chat_apis import create_chat_name
 from .Helper_functions.email_functions import send_text_email
 from DokiDoki.settings import CHANNEL_LAYERS
 

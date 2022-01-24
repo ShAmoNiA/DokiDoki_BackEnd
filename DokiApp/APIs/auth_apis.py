@@ -11,6 +11,7 @@ contains:
 
 
 from secrets import token_hex
+from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -24,7 +25,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
 from ..models import User
-from ..Helper_functions.helper_functions import result_page
 from ..Helper_functions.email_functions import send_reset_pass_email, send_text_email
 
 
@@ -85,7 +85,10 @@ class VerifyEmail(APIView):
         else:
             result = "ERROR: privateTokenError"
 
-        return result_page(request, result)
+        return self.result_page(request, result)
+
+    def result_page(self, request, result):
+        return render(request, 'result.html', context={'result': result})
 
 
 @api_view(['GET'])
@@ -119,19 +122,22 @@ class ResetPassword(APIView):
 
         user = User.objects.filter(email=email)
         if user.count() == 0:
-            return result_page(request, "user not found")
+            return self.result_page(request, "user not found")
         elif password_1 != password_2:
-            return result_page(request, "passwords are different")
+            return self.result_page(request, "passwords are different")
 
         user = user[0]
         if not user.verified_email:
-            return result_page(request, "Your email is not verified")
+            return self.result_page(request, "Your email is not verified")
         elif user.reset_password_token == "expired":
-            return result_page(request, "Your token is expired")
+            return self.result_page(request, "Your token is expired")
         elif user.reset_password_token != token:
-            return result_page(request, "Your token is wrong")
+            return self.result_page(request, "Your token is wrong")
 
         user.set_password(password_1)
         user.reset_password_token = "expired"
         user.save()
-        return result_page(request, "Password changed successfully. you can sign in.")
+        return self.result_page(request, "Password changed successfully. you can sign in.")
+
+    def result_page(self, request, result):
+        return render(request, 'result.html', context={'result': result})

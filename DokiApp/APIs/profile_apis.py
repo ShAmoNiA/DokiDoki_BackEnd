@@ -21,7 +21,6 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 
 from ..models import *
-from ..Helper_functions.helper_functions import *
 from ..Helper_functions.adapters import *
 from ..serializers import *
 from ..permissions import *
@@ -90,13 +89,18 @@ class EditProfile(APIView):
             os.remove(os.getcwd() + "/static/images/" + user.profile_picture_url)
 
     def save_changes(self, user, data):
-        serializer = get_profile_serializer(user)(user.profile, data=data, partial=True)
+        serializer = self.get_profile_serializer(user)(user.profile, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         serializer = UserSerializer(user, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+    def get_profile_serializer(self, user):
+        if user.is_doctor:
+            return DoctorProfileSerializer
+        return PatientProfileSerializer
 
 
 class AddExpertise(APIView):

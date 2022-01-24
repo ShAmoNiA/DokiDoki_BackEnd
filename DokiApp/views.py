@@ -13,7 +13,6 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import *
-from .Helper_functions.helper_functions import *
 from .serializers import *
 
 from .APIs.auth_apis import *
