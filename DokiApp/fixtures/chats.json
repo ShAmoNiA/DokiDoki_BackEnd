@@ -1,0 +1,74 @@
+[
+  {
+    "model": "DokiApp.Chat",
+    "pk": 1,
+    "fields": {
+      "name": "chat_1_5",
+      "doctor": 1,
+      "patient": 1
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 2,
+    "fields": {
+      "name": "chat_1_6",
+      "doctor": 1,
+      "patient": 2
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 3,
+    "fields": {
+      "name": "chat_1_7",
+      "doctor": 1,
+      "patient": 3
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 5,
+    "fields": {
+      "name": "chat_2_5",
+      "doctor": 2,
+      "patient": 1
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 6,
+    "fields": {
+      "name": "chat_2_6",
+      "doctor": 2,
+      "patient": 2
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 8,
+    "fields": {
+      "name": "chat_2_8",
+      "doctor": 2,
+      "patient": 4
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 9,
+    "fields": {
+      "name": "chat_3_5",
+      "doctor": 3,
+      "patient": 1
+    }
+  },
+  {
+    "model": "DokiApp.Chat",
+    "pk": 13,
+    "fields": {
+      "name": "chat_4_5",
+      "doctor": 4,
+      "patient": 1
+    }
+  }
+]

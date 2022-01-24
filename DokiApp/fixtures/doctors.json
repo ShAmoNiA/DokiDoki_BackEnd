@@ -30,6 +30,7 @@
     "fields": {
       "username": "OG LOC",
       "fullname": "OG LOC",
+      "sex": "U",
       "first_name": "Jeffry",
       "last_name": "the gangsta",
       "is_doctor": true,

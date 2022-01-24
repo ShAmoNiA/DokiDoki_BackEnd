@@ -55,8 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'DokiApp',
+    'DokiApp.apps.DokiAppConfig',
 
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -95,7 +96,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DokiDoki.wsgi.application'
+# Channels:
+ASGI_APPLICATION = 'DokiDoki.routing.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            # "redis-server" if dockerized_on_server else "localhost"
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
 # Database

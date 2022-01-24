@@ -1,1 +1,0 @@
-python manage.py loaddata "doctors.json" && python manage.py loaddata "patients.json" && python manage.py loaddata "doctor_profiles.json" && python manage.py loaddata "patient_profiles.json" && python manage.py loaddata "tags.json" && python manage.py loaddata "expertises.json"

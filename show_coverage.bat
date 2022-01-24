@@ -5,4 +5,4 @@ if exist .coverage (
 del /f .coverage)
 if exist htmlcov (
 rmdir /S /Q htmlcov)
-cd .venv/Scripts && activate && cd ../.. && pip install -r requirements.txt && coverage run --omit=*/.venv*,*DokiApp/__init__.py*,*DokiApp/admin.py*,*DokiApp/apps.py*,*/manage.py*,*DokiApp/test*,*DokiDoki/settings.py*,*DokiDoki\urls.py*,*DokiApp/urls.py*,*DokiApp/migrations*,*DokiDoki/__init__.py* manage.py test && coverage report && coverage html && cd htmlcov && start index.html && exit
+cd .venv/Scripts && activate && cd ../.. && pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && coverage run --omit=*/.venv*,*DokiApp/__init__.py*,*DokiApp/admin.py*,*DokiApp/apps.py*,*/manage.py*,*DokiApp/test*,*DokiDoki/settings.py*,*DokiDoki\urls.py*,*DokiApp/urls.py*,*DokiApp/migrations*,*DokiDoki/__init__.py* manage.py test && coverage report && coverage html && cd htmlcov && start index.html && exit

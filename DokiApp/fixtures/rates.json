@@ -1,0 +1,65 @@
+[
+  {
+    "model": "DokiApp.Rate",
+    "pk": 1,
+    "fields": {
+      "doctor": 1,
+      "user": 5,
+      "rate": 4
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 2,
+    "fields": {
+      "doctor": 1,
+      "user": 7,
+      "rate": 5
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 3,
+    "fields": {
+      "doctor": 2,
+      "user": 5,
+      "rate": 5
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 4,
+    "fields": {
+      "doctor": 2,
+      "user": 6,
+      "rate": 4
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 5,
+    "fields": {
+      "doctor": 2,
+      "user": 8,
+      "rate": 1
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 6,
+    "fields": {
+      "doctor": 3,
+      "user": 5,
+      "rate": 3
+    }
+  },
+  {
+    "model": "DokiApp.Rate",
+    "pk": 7,
+    "fields": {
+      "doctor": 3,
+      "user": 5,
+      "rate": 5
+    }
+  }
+]
