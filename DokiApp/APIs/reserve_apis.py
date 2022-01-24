@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from ..permissions import IsPatient, IsDoctor
 
@@ -38,7 +39,7 @@ class ReserveDoctor(APIView):
 
         self.create_chat_object_in_db(request.user.profile, doctorProfile)
 
-        return Response({'success': True, 'message': 'Reserved!'})
+        return Response({'success': True, 'message': 'Reserved!'}, status=status.HTTP_200_OK)
 
     def create_chat_object_in_db(self, patient, doctor):
         user_1_id = patient.user.id
@@ -55,4 +56,4 @@ class ReserveList(APIView):
         reserves = Reserve.objects.filter(doctor=request.user.profile)
 
         result = [ReserveSerializer(instance=reserve).data for reserve in reserves]
-        return Response({'success': True, 'reserves': result})
+        return Response({'success': True, 'reserves': result}, status=status.HTTP_200_OK)

@@ -32,9 +32,9 @@ class SignUp(APIView):
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
             user_serializer.save()
-            return Response({'success': True, 'message': 'User saved successfully'})
+            return Response({'success': True, 'message': 'User saved successfully'}, status=status.HTTP_200_OK)
 
-        return Response({'success': False, 'message': user_serializer.errors})
+        return Response({'success': False, 'message': user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CheckUsername(APIView):
@@ -42,7 +42,7 @@ class CheckUsername(APIView):
 
     def get(self, request, username):
         user = User.objects.filter(username__iexact=username)
-        return Response({"exists": user.exists()})
+        return Response({"exists": user.exists()}, status=status.HTTP_200_OK)
 
 
 class LogIn(ObtainAuthToken):
@@ -56,7 +56,7 @@ class LogIn(ObtainAuthToken):
             return Response({'success': False, 'message': 'Email is not verified'},
                             status=status.HTTP_405_METHOD_NOT_ALLOWED)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'success': True, 'token': token.key})
+        return Response({'success': True, 'token': token.key}, status=status.HTTP_200_OK)
 
 
 class LogOut(APIView):
@@ -64,7 +64,7 @@ class LogOut(APIView):
 
     def post(self, request):
         request.user.auth_token.delete()
-        return Response({"success": True, "message": "logged out successfully."})
+        return Response({"success": True, "message": "logged out successfully."}, status=status.HTTP_200_OK)
 
 
 class VerifyEmail(APIView):
@@ -85,7 +85,7 @@ class VerifyEmail(APIView):
         return self.result_page(request, result)
 
     def result_page(self, request, result):
-        return render(request, 'result.html', context={'result': result})
+        return render(request, 'result.html', context={'result': result}, status=status.HTTP_200_OK)
 
 
 class ForgotPassword(APIView):
@@ -95,18 +95,18 @@ class ForgotPassword(APIView):
         email = request.GET['email']
 
         if User.objects.filter(email=email).count() == 0:
-            return Response(data={"success": False, "message": "user not found"})
+            return Response(data={"success": False, "message": "user not found"}, status=status.HTTP_200_OK)
         user = User.objects.get(email=email)
 
         if not user.verified_email:
-            return Response(data={"success": False, "message": "email not verified"})
+            return Response(data={"success": False, "message": "email not verified"}, status=status.HTTP_200_OK)
 
         reset_password_token = token_hex(64)
         user.reset_password_token = reset_password_token
         user.save()
         send_reset_pass_email(email, user.fullname, reset_password_token)
 
-        return Response(data={"success": True, "message": "email sent"})
+        return Response(data={"success": True, "message": "email sent"}, status=status.HTTP_200_OK)
 
 
 class ResetPassword(APIView):
@@ -138,4 +138,4 @@ class ResetPassword(APIView):
         return self.result_page(request, "Password changed successfully. you can sign in.")
 
     def result_page(self, request, result):
-        return render(request, 'result.html', context={'result': result})
+        return render(request, 'result.html', context={'result': result}, status=status.HTTP_200_OK)

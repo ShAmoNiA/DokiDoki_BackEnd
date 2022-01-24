@@ -43,7 +43,7 @@ class GetComments(APIView):
 
     def get(self, request, doctor_id):
         comments = Comment.objects.filter(doctor__user__id=doctor_id)
-        return Response({'success': True, 'comments': adapt_comment(comments)})
+        return Response({'success': True, 'comments': adapt_comment(comments)}, status=status.HTTP_200_OK)
 
 
 class RateDoctor(APIView):
@@ -52,7 +52,7 @@ class RateDoctor(APIView):
     def get(self, request, doctor_id):
         doctorProfile = get_object_or_404(User, is_doctor=True, id=doctor_id).profile
         rate = Rate.objects.filter(doctor=doctorProfile).aggregate(Avg('rate'))["rate__avg"]
-        return Response({'success': True, 'rate': rate})
+        return Response({'success': True, 'rate': rate}, status=status.HTTP_200_OK)
 
     def post(self, request, doctor_id):
         rate = int(float(request.POST['rate']))

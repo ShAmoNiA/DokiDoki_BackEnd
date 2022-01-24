@@ -36,7 +36,7 @@ class ChatList(APIView):
         else:
             chats = Chat.objects.filter(patient=profile)
 
-        return Response({'success': True, 'chats': adapt_chat(chats, user)})
+        return Response({'success': True, 'chats': adapt_chat(chats, user)}, status=status.HTTP_200_OK)
 
 
 class LoadOldChat(APIView):

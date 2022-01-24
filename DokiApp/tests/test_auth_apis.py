@@ -80,7 +80,7 @@ class TestSignUp(TestCase):
         data["username"] = "username_1"
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['username'][0], 'user with this username already exists.')
 
     def test_duplicated_email(self):
@@ -89,7 +89,7 @@ class TestSignUp(TestCase):
         data = dict(DATA_USER_DOCTOR_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['email'][0], 'user with this email already exists.')
 
     def test_duplicated_phone(self):
@@ -98,7 +98,7 @@ class TestSignUp(TestCase):
         data = dict(DATA_USER_DOCTOR_2)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['phone'][0], 'user with this phone already exists.')
 
     def test_blank_username(self):
