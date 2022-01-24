@@ -1,18 +1,23 @@
 from secrets import token_hex
-from re import search as validateRegex
+from re import search as validate_regex
 
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import *
 
 from .Helper_functions.email_functions import send_verification_email
 
-from .Helper_functions.string_validator import *
 
+class StringValidator:
+    def is_valid_username(self, text: str):
+        username_regex = r'^(?![_.0-9])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$'
+        return validate_regex(username_regex, text)
 
-class ImageSerializer(ModelSerializer):
-    class Meta:
-        model = Image
-        fields = '__all__'
+    def is_hard_password(self, text: str):
+        return len(text) > 7
+
+    def is_valid_phone_number(self, text: str):
+        phone_regex = r'^(0|0098|\+98)9\d{9}$'
+        return validate_regex(phone_regex, text)
 
 
 class UserSerializer(ModelSerializer):
@@ -21,17 +26,17 @@ class UserSerializer(ModelSerializer):
         fields = ('username', 'password', 'email', 'is_doctor', 'phone', 'fullname', 'sex', 'profile_picture_url')
 
     def validate_username(self, username):
-        if is_valid_username(username):
+        if StringValidator().is_valid_username(username):
             return username
         raise ValidationError('username is invalid')
 
     def validate_password(self, password):
-        if is_hard_password(password):
+        if StringValidator().is_hard_password(password):
             return password
         raise ValidationError('Password is too short')
 
     def validate_phone(self, phone):
-        if is_valid_phone_number(phone):
+        if StringValidator().is_valid_phone_number(phone):
             return phone
         raise ValidationError('Invalid phone number')
 
@@ -51,6 +56,12 @@ class UserSerializer(ModelSerializer):
 
         send_verification_email(user)
         return user
+
+
+class ImageSerializer(ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
 
 
 class DoctorProfileSerializer(ModelSerializer):
