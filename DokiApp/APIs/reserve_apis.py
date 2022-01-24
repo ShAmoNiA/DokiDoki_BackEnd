@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..permissions import IsPatient, IsDoctor
 
 from .chat_apis import create_chat_name
-from ..Helper_functions.email_functions import send_reserve_message
+from .email_functions import send_reserve_message
 from ..serializers import ReserveSerializer
 from ..models import User, DoctorProfile, Reserve, Chat
 

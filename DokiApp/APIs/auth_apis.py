@@ -21,9 +21,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
+from .email_functions import send_reset_pass_email
 from ..models import User
 from ..serializers import UserSerializer
-from ..Helper_functions.email_functions import send_reset_pass_email, send_text_email
 
 
 class SignUp(APIView):

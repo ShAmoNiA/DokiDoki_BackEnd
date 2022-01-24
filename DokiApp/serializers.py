@@ -4,7 +4,7 @@ from re import search as validate_regex
 from rest_framework.serializers import ModelSerializer, ValidationError
 
 from .models import *
-from .Helper_functions.email_functions import send_verification_email
+from .APIs.email_functions import send_verification_email
 
 
 class StringValidator:

@@ -10,7 +10,7 @@ from .models import User, DoctorProfile, PatientProfile, Chat, Message
 
 from DokiDoki.settings import CHANNEL_LAYERS
 from .APIs.chat_apis import create_chat_name
-from .Helper_functions.email_functions import send_text_email
+from .APIs.email_functions import send_text_email
 
 
 class ChatConsumer(AsyncWebsocketConsumer):

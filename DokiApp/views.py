@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.parsers import FormParser
 
+from .APIs.email_functions import send_text_email
+
 from .serializers import ImageSerializer
 
 from .APIs.auth_apis import *

@@ -61,7 +61,7 @@ def send_reserve_message(email, fullname, time, patient_name):
         'email': email,
         'name': fullname,
         'time': time,
-        'patient_name' : patient_name}
+        'patient_name': patient_name}
     html_content = get_template('reserve_message.html').render(context=context)
     send_email(subject='New reservation',
                message='message',
