@@ -23,6 +23,9 @@ services:
       && python manage.py loaddata "patient_profiles.json"
       && python manage.py loaddata "tags.json"
       && python manage.py loaddata "expertises.json"
+      && python manage.py loaddata "reserves.json"
+      && python manage.py loaddata "rates.json"
+      && python manage.py loaddata "comments.json"
       && python manage.py loaddata "chats.json"
       && python manage.py loaddata "messages.json"
       && python manage.py set_password_for_fixture_users
