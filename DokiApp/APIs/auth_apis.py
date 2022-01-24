@@ -13,7 +13,6 @@ from secrets import token_hex
 from django.shortcuts import render
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -89,24 +88,25 @@ class VerifyEmail(APIView):
         return render(request, 'result.html', context={'result': result})
 
 
-@api_view(['GET'])
-def forgot_password(request):
-    email = request.GET['email']
+class ForgotPassword(APIView):
+    PermissionError = (AllowAny,)
 
-    user = User.objects.filter(email=email)
-    if user.count() == 0:
-        return Response(data={"success": False, "message": "user not found"})
-    user = user[0]
+    def get(self, request):
+        email = request.GET['email']
 
-    if not user.verified_email:
-        return Response(data={"success": False, "message": "email not verified"})
+        if User.objects.filter(email=email).count() == 0:
+            return Response(data={"success": False, "message": "user not found"})
+        user = User.objects.get(email=email)
 
-    reset_password_token = token_hex(64)
-    user.reset_password_token = reset_password_token
-    user.save()
-    send_reset_pass_email(email, user.fullname, reset_password_token)
+        if not user.verified_email:
+            return Response(data={"success": False, "message": "email not verified"})
 
-    return Response(data={"success": True, "message": "email sent"})
+        reset_password_token = token_hex(64)
+        user.reset_password_token = reset_password_token
+        user.save()
+        send_reset_pass_email(email, user.fullname, reset_password_token)
+
+        return Response(data={"success": True, "message": "email sent"})
 
 
 class ResetPassword(APIView):

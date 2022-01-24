@@ -343,7 +343,7 @@ class TestResetPassword(TestCase):
         user.verify_email()
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email sent")
         self.assertEqual(len(User.objects.get(id=1).reset_password_token), 128)
@@ -353,7 +353,7 @@ class TestResetPassword(TestCase):
         user.verify_email()
         data = {"email": "wrong@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "user not found")
 
@@ -361,7 +361,7 @@ class TestResetPassword(TestCase):
         mixer.blend("DokiApp.User", email="e@gmail.com")
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email not verified")
 
