@@ -42,3 +42,35 @@ class TagAdmin(admin.ModelAdmin):
 class ExpertiseAdmin(admin.ModelAdmin):
     list_display = ['doctor', 'tag', 'image_url']
     list_filter = ['doctor', 'tag']
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['writer', 'doctor', 'text']
+    list_filter = ['writer', 'doctor', 'date']
+    list_editable = ['text']
+
+
+@admin.register(Rate)
+class RateAdmin(admin.ModelAdmin):
+    list_display = ['user', 'doctor', 'rate']
+    list_filter = ['user', 'doctor', 'rate']
+    list_editable = ['rate']
+
+
+@admin.register(Reserve)
+class ReserveAdmin(admin.ModelAdmin):
+    list_display = ['doctor', 'creator', 'date', 'time']
+    # TODO: list_filter, list_editable
+
+
+@admin.register(Chat)
+class ChatAdmin(admin.ModelAdmin):
+    list_display = ['name', 'doctor', 'patient']
+    list_filter = ['doctor', 'patient']
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ['text', 'seen', 'chat', 'is_sender_doctor', 'date']
+    list_filter = ['chat', 'seen']

@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+
+  redis-server:
+    image: "redis:alpine"
+    container_name: redis_db
+    command: redis-server
+    restart: always
+
+
+  web:
+    build: .
+    container_name: doki_django
+    command: bash -c "
+      rm -rf .venv htmlcov .idea db.sqlite3 *.bat .coverage .gitignore pyvenv.cfg README.md
+      && pip install -r requirements.txt
+      && python3 manage.py makemigrations
+      && python3 manage.py migrate
+      && python manage.py loaddata "doctors.json"
+      && python manage.py loaddata "patients.json"
+      && python manage.py loaddata "doctor_profiles.json"
+      && python manage.py loaddata "patient_profiles.json"
+      && python manage.py loaddata "tags.json"
+      && python manage.py loaddata "expertises.json"
+      && python manage.py loaddata "reserves.json"
+      && python manage.py loaddata "rates.json"
+      && python manage.py loaddata "comments.json"
+      && python manage.py loaddata "chats.json"
+      && python manage.py loaddata "messages.json"
+      && python manage.py set_password_for_fixture_users
+      && python manage.py verify_emails
+      && python manage.py create_admin_admin
+      && python manage.py runserver 0.0.0.0:1111
+      "
+    ports:
+      - "1111:1111"
+    depends_on:
+      - redis-server
+    links:
+      - redis-server
+    restart: always

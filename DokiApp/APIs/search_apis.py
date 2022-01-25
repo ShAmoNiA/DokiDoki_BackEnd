@@ -3,30 +3,34 @@ contains:
     AllTags
     SearchDoctorByName
     SearchDoctorByTag
+    SearchDoctorByKeyword
+    SearchDoctorsWithTag
+    AdvancedSearch
 """
-import math
 
 from django.core.paginator import Paginator
+
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 
 from django.db.models import Q
 
-from ..models import *
-from ..Helper_functions.helper_functions import *
-from ..Helper_functions.adapters import *
-from ..serializers import *
-from ..permissions import *
-from itertools import chain
+from .adapters import adapt_user_queryset_to_dict, adapt_user_queryset_to_list, adapt_profile_queryset_to_list
+from ..models import User, DoctorProfile, Tag, Expertise
+
+PAGINATE_BY = 12
+
+
+def name_query(key):
+    query = Q(fullname__icontains=key) | Q(first_name__icontains=key) | \
+            Q(last_name__icontains=key) | Q(username__icontains=key)
+    return query
 
 
 class AllTags(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         tags = Tag.objects.all().values_list('title', flat=True)
@@ -38,7 +42,7 @@ class AllTags(APIView):
 
 
 class SearchDoctorByName(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         key = request.data["key"]
@@ -51,7 +55,7 @@ class SearchDoctorByName(APIView):
 
 
 class SearchDoctorByTag(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         key = request.data["key"]
@@ -69,16 +73,16 @@ class SearchDoctorByTag(APIView):
 
 
 class SearchDoctorByKeyword(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
-    def get(self, request,keyword):
-        search_query = Q(fullname__icontains=keyword) | Q(first_name__icontains=keyword) | Q(last_name__icontains=keyword) | Q(username__icontains=keyword)
-        result = User.objects.filter(is_doctor=True).filter(search_query)
+    def get(self, request, keyword):
+        result = User.objects.filter(is_doctor=True).filter(name_query(keyword))
         result = adapt_user_queryset_to_list(result)
 
-        expertises = Expertise.objects.filter(tag__title__icontains=keyword.replace(" ","_"))
-        doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
+        expertises = Expertise.objects.filter(tag__title__icontains=keyword.replace(" ", "_"))
+        doctor_profiles = expertises.values_list('doctor_id', flat=True)
+        contains_tags = adapt_user_queryset_to_list(
+            User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
 
         for k in contains_tags:
             if k not in result:
@@ -87,67 +91,81 @@ class SearchDoctorByKeyword(APIView):
         return Response({"success": True, "doctors": result[0:12]}, status=status.HTTP_200_OK)
 
 
-class DoctorsWithTag(APIView):
-    permission_classes = (AllowAny, )
+class SearchDoctorsWithTag(APIView):
+    permission_classes = (AllowAny,)
 
-    def get(self, request,keyword):
-        expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ","_"))
-        doctor_profiles = expertises.values_list('doctor_id',flat=True)
-        result = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
-        
-        page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 12)
-        page_max = math.ceil(len(result)/12)
-        if(page_max < page or page < 1):
-            return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, keyword):
+        expertises = Expertise.objects.filter(tag__title__iexact=keyword.replace(" ", "_"))
+        if len(expertises) == 0:
+            return Response({"success": False, "message": "There is no doctors with the expertise."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        doctorProfiles = expertises.values_list('doctor_id', flat=True)
+        result = adapt_user_queryset_to_list(
+            User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctorProfiles))
+
+        page = int(request.GET.get('page', 1))
+        paginator = Paginator(result, PAGINATE_BY)
+        max_page = paginator.num_pages
+        if max_page < page or page < 1:
+            return Response({"success": False, "message": "Page not found", "max_page": max_page}
+                            , status=status.HTTP_404_NOT_FOUND)
+
         result = paginator.page(page).object_list
-
-        
-        return Response({"success": True, "doctors": result}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result, 'max_page': max_page}, status=status.HTTP_200_OK)
 
 
 class AdvancedSearch(APIView):
+    permission_classes = (AllowAny,)
 
     def get(self, request):
-        result = []
         name = request.GET.get('name', '')
-        if name != '':
-            search_query = Q(fullname__icontains=name) | Q(first_name__icontains=name) | Q(last_name__icontains=name) | Q(username__icontains=name)
-            result = User.objects.filter(is_doctor=True).filter(search_query)
-
-            result = adapt_user_queryset_to_list(result)
-
         tags = request.GET.get('tags', '')
-        if tags != '':
-            tags = tags.split(',')
-            expertises = Expertise.objects.filter(tag__title__in=tags)
-            doctor_profiles = expertises.values_list('doctor_id', flat=True)
-            contains_tags = adapt_user_queryset_to_list(User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctor_profiles))
-            if len(result) == 0:
-                result = contains_tags
-            else:
-                result = [item for item in result if item in contains_tags]
-            
-                        
-
         sex = request.GET.get('sex', '')
-        if sex != '':
-            sex_filter = User.objects.filter(is_doctor=True,sex=sex)
-            sex_filter = adapt_user_queryset_to_list(sex_filter)
-            if len(result) == 0:
-                result = sex_filter
-            else:
-                result = [item for item in result if item in sex_filter]
+        sort_key = request.GET.get('sort', '')
+        reverse = bool(request.GET.get('reverse', 0))
 
-        sort = request.GET.get('sort','')
-        if sort != '':
-            result.sort(key=lambda k : k[sort])
-            
+        result = []
+
+        if name != '':
+            result = self.filter_by_name(name)
+
+        if tags != '':
+            filtered_by_tag = self.filter_by_tag(tags)
+            result = self.attach_new_results(result, filtered_by_tag)
+
+        if sex != '':
+            filtered_by_sex = self.filter_by_sex(sex)
+            result = self.attach_new_results(result, filtered_by_sex)
+
+        if sort_key != '':
+            result.sort(key=lambda k: k[sort_key], reverse=reverse)
+
         page = int(request.GET.get('page', '1'))
-        paginator = Paginator(result, 12)
-        page_max = math.ceil(len(result)/12)
-        if page_max < page or page < 1:
-            return Response({"success" : False, "message":"Page not found"},status=status.HTTP_404_NOT_FOUND)
+        paginator = Paginator(result, PAGINATE_BY)
+        max_page = paginator.num_pages
+        if max_page < page or page < 1:
+            return Response({"success": False, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
         result = paginator.page(page).object_list
 
-        return Response({"success": True, "doctors": result , "page" : page , "max_page": page_max}, status=status.HTTP_200_OK)
+        return Response({"success": True, "doctors": result, "page": page, "max_page": max_page},
+                        status=status.HTTP_200_OK)
+
+    def attach_new_results(self, result, new_results):
+        if not len(result):
+            return new_results
+        return [item for item in result if item in new_results]
+
+    def filter_by_name(self, name):
+        result = User.objects.filter(is_doctor=True).filter(name_query(name))
+        return adapt_user_queryset_to_list(result)
+
+    def filter_by_tag(self, tags):
+        tags = tags.split(',')
+        doctorProfiles = Expertise.objects.filter(tag__title__in=tags).values_list('doctor_id', flat=True)
+        users = User.objects.filter(is_doctor=True).filter(doctorprofile__in=doctorProfiles)
+        return adapt_user_queryset_to_list(users)
+
+    def filter_by_sex(self, sex):
+        users = User.objects.filter(is_doctor=True, sex=sex)
+        return adapt_user_queryset_to_list(users)

@@ -80,7 +80,7 @@ class TestSignUp(TestCase):
         data["username"] = "username_1"
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['username'][0], 'user with this username already exists.')
 
     def test_duplicated_email(self):
@@ -89,7 +89,7 @@ class TestSignUp(TestCase):
         data = dict(DATA_USER_DOCTOR_1)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['email'][0], 'user with this email already exists.')
 
     def test_duplicated_phone(self):
@@ -98,7 +98,7 @@ class TestSignUp(TestCase):
         data = dict(DATA_USER_DOCTOR_2)
         request = RequestFactory().post('api/sign_up', data, content_type='application/json')
         response = SignUp.as_view()(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message']['phone'][0], 'user with this phone already exists.')
 
     def test_blank_username(self):
@@ -343,7 +343,7 @@ class TestResetPassword(TestCase):
         user.verify_email()
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email sent")
         self.assertEqual(len(User.objects.get(id=1).reset_password_token), 128)
@@ -353,7 +353,7 @@ class TestResetPassword(TestCase):
         user.verify_email()
         data = {"email": "wrong@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "user not found")
 
@@ -361,7 +361,7 @@ class TestResetPassword(TestCase):
         mixer.blend("DokiApp.User", email="e@gmail.com")
         data = {"email": "e@gmail.com"}
         request = RequestFactory().get('api/forgot_password', data, content_type='application/json')
-        response = forgot_password(request)
+        response = ForgotPassword.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "email not verified")
 

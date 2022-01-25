@@ -21,7 +21,7 @@ class TestSendEmail(TestCase):
                 "message": "the_message",
                 "to_list": EMAIL}
         request = RequestFactory().post('api/send_email', data, content_type='application/json')
-        response = send_email_by_front(request)
+        response = SendEmail.as_view()(request)
         self.assertEqual(response.status_code, 200)
         response_result = {'success': True, 'message': 'email sent'}
         self.assertEqual(response.data, response_result)
